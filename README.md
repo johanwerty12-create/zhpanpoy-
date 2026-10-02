@@ -16,6 +16,8 @@ Then visit `http://localhost:8000`.
 
 - `index.html` — accessible app shell
 - `styles.css` — responsive visual system and reusable components
-- `app.js` — lesson data, hash routes, quiz interactions, practice timer, and local progress
+- `app.js` — core lesson data, original app behavior, and local progress
+- `product-pass.js` — product-improvement views, quick practice, routines, body explorer, and reference hub
+- `product-pass.css` — focused UX and responsive improvements layered over the base design system
 
 The guide is educational and does not replace professional medical care. It intentionally avoids forceful manipulation and includes safety boundaries throughout the course.
