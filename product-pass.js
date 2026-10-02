@@ -201,3 +201,65 @@ function render() {
 
 window.addEventListener("hashchange", render);
 window.addEventListener("DOMContentLoaded", render);
+function bindEvents() {
+  const menu = document.querySelector(".menu-toggle");
+  const nav = document.querySelector(".main-nav");
+  if (menu) menu.addEventListener("click", function () {
+    const open = nav.classList.toggle("open");
+    menu.setAttribute("aria-expanded", String(open));
+    menu.textContent = open ? "×" : "☰";
+  });
+  if (nav) nav.querySelectorAll("a").forEach(function (link) {
+    link.addEventListener("click", function () {
+      nav.classList.remove("open");
+      if (menu) { menu.setAttribute("aria-expanded", "false"); menu.textContent = "☰"; }
+    });
+  });
+  const complete = document.querySelector(".complete-button");
+  if (complete) complete.addEventListener("click", function (event) {
+    markLesson(Number(event.currentTarget.dataset.lesson));
+    render();
+    window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
+  });
+  const reset = document.querySelector(".reset-progress");
+  if (reset) reset.addEventListener("click", function () {
+    if (window.confirm("Reset all completed lessons? This cannot be undone.")) {
+      progress = { completed: [], current: 1 };
+      saveProgress();
+      render();
+    }
+  });
+  const reveal = document.querySelector(".reveal-full");
+  if (reveal) reveal.addEventListener("click", function () {
+    const detail = document.querySelector(".full-lesson");
+    if (detail) {
+      detail.open = true;
+      detail.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+  const detail = document.querySelector(".full-lesson");
+  if (detail) detail.addEventListener("toggle", function () {
+    const label = detail.querySelector("summary > strong");
+    if (label) label.textContent = detail.open ? "Hide details ↑" : "Show details";
+  });
+  const search = document.querySelector("#technique-search");
+  const filter = document.querySelector("#technique-filter");
+  const grid = document.querySelector("#reference-grid");
+  function filterLibrary() {
+    const query = search ? search.value.toLowerCase().trim() : "";
+    const category = filter ? filter.value : "all";
+    const cards = document.querySelectorAll(".enhanced-reference-card");
+    cards.forEach(function (card) {
+      card.hidden = Boolean((query && !card.dataset.search.includes(query)) || (category !== "all" && card.dataset.category !== category));
+    });
+    if (grid) grid.classList.toggle("has-no-results", Array.from(cards).every(function (card) { return card.hidden; }));
+  }
+  if (search) search.addEventListener("input", filterLibrary);
+  if (filter) filter.addEventListener("change", filterLibrary);
+  const start = document.querySelector(".practice-start");
+  if (start) start.addEventListener("click", function (event) { startTimer(event.currentTarget); });
+  const practiceReset = document.querySelector(".practice-reset");
+  if (practiceReset) practiceReset.addEventListener("click", resetTimer);
+  const quiz = document.querySelector(".quiz");
+  if (quiz) quiz.addEventListener("submit", function (event) { event.preventDefault(); checkQuiz(event.currentTarget); });
+}

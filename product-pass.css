@@ -159,3 +159,18 @@
   .main-nav.open { display: flex; }
   .nav-link { padding: 12px 13px; font-size: 13px; }
 }
+/* Final QA polish */
+.hero { min-height: 500px; }
+.hero h1 { font-size: clamp(42px, 6vw, 64px); }
+#reference-grid { position: relative; }
+#reference-grid.has-no-results::after { display: block; grid-column: 1 / -1; padding: 30px; color: var(--ink-soft); background: var(--cream); border-radius: var(--radius-md); content: "No techniques match that search. Try a broader word or choose All techniques."; font-size: 13px; text-align: center; }
+.filter-label select:focus-visible { outline: 3px solid rgba(82,125,132,.35); outline-offset: 2px; }
+@media (max-width: 650px) {
+  .lesson-layout .lesson-aside { order: initial; margin-top: 6px; }
+  .hero { min-height: 0; }
+  .hero h1 { font-size: 49px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
