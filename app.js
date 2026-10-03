@@ -244,7 +244,7 @@ function visualSvg(type) {
     foot: "<path d=\"M103 43c5 30 13 49 30 63 12 9 18 20 12 29-7 11-34 5-46-8-17-19-31-44-36-66\" fill=\"#bd8169\"/><path d=\"M82 82c17 3 31 12 40 26\" " + common + "/><path d=\"M116 108l21 2M113 115l24 8M110 121l18 14\" " + common + "/>",
     routine: "<circle cx=\"106\" cy=\"95\" r=\"49\" fill=\"#f4f0e9\"/><path d=\"M106 46v19M106 125v19M57 95H38M155 95h19\" " + common + "/><path d=\"M106 66c-22 0-36 12-42 28M106 124c22 0 36-12 42-28\" " + common + "/><path d=\"M59 95l8-8M153 95l-8 8\" " + common + "/><circle cx=\"106\" cy=\"95\" r=\"9\" fill=\"#f2c76a\"/>"
   };
-  return "<svg class=\"visual-svg\" viewBox=\"0 0 212 170\" role=\"img\" aria-label=\"" + esc(type) + " movement illustration\" xmlns=\"http://www.w3.org/2000/svg\">" + (svg[type] || svg.welcome) + "</svg>";
+  return "<svg class=\"visual-svg\" viewBox=\"0 0 212 170\" preserveAspectRatio=\"xMidYMid meet\" role=\"img\" aria-label=\"" + esc(type) + " movement illustration\" xmlns=\"http://www.w3.org/2000/svg\">" + (svg[type] || svg.welcome) + "</svg>";
 }
 
 function shell(content, active) {
