@@ -106,8 +106,8 @@ const lessons = [
     quiz: [["What must you never do in this lesson?", ["Ask how it feels", "Use light support", "Forcefully twist or crack the neck"], 2, "Never force, twist, crack, or pull the neck."], ["Where should pressure stay?", ["The front of the throat", "Soft muscle at the back of the neck", "Directly on the spine"], 1, "Use very light contact on soft muscle at the back, with the head still."]]
   },
   {
-    id: 9, title: "Head & Scalp", short: "Create a soothing scalp rhythm with relaxed fingertips.", time: 5, level: "Beginner", icon: "✺",
-    learn: "Scalp massage uses light contact and small movements. Use finger pads rather than nails while protecting hair, skin, and the temples.",
+    id: 9, title: "Head & Scalp", short: "Explore 13 gentle scalp techniques with relaxed fingertips.", time: 12, level: "Beginner", icon: "✺",
+    learn: "Practice light movements across the scalp, hairline, and temples. Keep the head supported and still; scalp massage never includes neck manipulation.",
     before: ["Ask about scalp sensitivity, hair styling, skin irritation, or headache symptoms.", "Remove rings and keep nails short.", "Sit where your arms can stay relaxed."],
     position: [["Their position", "A supported seat works well. Let the head stay upright and natural rather than pulling it into a new angle."], ["Your position", "Stand or sit close by with elbows loose. Move around the head instead of stretching across it."]],
     steps: [["Settle with still contact.", "Rest fingertips lightly on the scalp for one breath so the person knows where you are."], ["Make small circles.", "Use finger pads to move the scalp gently. Keep circles small and avoid scratching with nails."], ["Change zones.", "Move from crown to sides and back, checking pressure and hair comfort as you go."], ["Finish at the temples lightly.", "If wanted, make tiny circles at the temples with almost no pressure, then lift away."]],
@@ -115,7 +115,7 @@ const lessons = [
     feel: "A gentle, rhythmic movement that feels warm and unhurried. Hair should not tug at the roots.",
     mistakes: ["Using fingernails.", "Pulling hair while moving the scalp.", "Pressing firmly on the temples or a tender area."],
     safety: "Avoid broken or inflamed skin, recent head injury, and active scalp irritation. Stop for new or unusual headache symptoms and seek appropriate care.",
-    practice: ["finger pads", "small circles", "no hair tug", "light temples"], visual: ["scalp", "Finger pads move the scalp; nails stay out of the way.", "Head diagram showing fingertips making small circles across the scalp"],
+    practice: ["finger pads", "light pressure", "no hair tug", "head stays still"], visual: ["scalp", "Move gently across scalp zones; keep hair relaxed and the head still.", "Therapist using relaxed finger pads to massage a supported scalp"],
     quiz: [["What should touch the scalp?", ["Fingernails", "Finger pads", "A clenched fist"], 1, "Finger pads are softer and avoid scratching."], ["What should happen to the hair?", ["It should be pulled slightly", "It should stay comfortable", "It should be twisted"], 1, "The scalp can move gently without tugging the hair."]]
   },
   {
@@ -198,16 +198,19 @@ let practiceTimer = null;
 function loadProgress() {
   try {
     const value = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1, practiceCompleted: [] };
+    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [] };
     return {
       completed: value.completed.filter(Number.isInteger),
       current: value.current || 1,
       practiceCompleted: Array.isArray(value.practiceCompleted)
         ? value.practiceCompleted.filter(function (id) { return Number.isInteger(id) && id >= 1 && id <= lessons.length; })
+        : [],
+      scalpPracticeCompleted: Array.isArray(value.scalpPracticeCompleted)
+        ? value.scalpPracticeCompleted.filter(function (id) { return typeof id === "string" && /^[a-z0-9-]+$/.test(id); })
         : []
     };
   } catch (error) {
-    return { completed: [], current: 1, practiceCompleted: [] };
+    return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [] };
   }
 }
 function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
@@ -358,7 +361,7 @@ function bindEvents() {
   const complete = document.querySelector(".complete-button");
   if (complete) complete.addEventListener("click", function (event) { markLesson(Number(event.currentTarget.dataset.lesson)); render(); window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); });
   const reset = document.querySelector(".reset-progress");
-  if (reset) reset.addEventListener("click", function () { if (window.confirm("Reset all lesson and practice progress? This cannot be undone.")) { progress = { completed: [], current: 1, practiceCompleted: [] }; saveProgress(); render(); } });
+  if (reset) reset.addEventListener("click", function () { if (window.confirm("Reset all lesson and practice progress? This cannot be undone.")) { progress = { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [] }; saveProgress(); render(); } });
   const search = document.querySelector("#technique-search");
   if (search) search.addEventListener("input", function (event) { const query = event.target.value.toLowerCase().trim(); document.querySelectorAll(".reference-card").forEach(function (card) { card.hidden = query && !card.dataset.search.includes(query); }); });
   const start = document.querySelector(".practice-start");

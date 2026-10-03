@@ -16,7 +16,7 @@ const routineData = [
   },
   {
     title: "Head & Scalp Routine", time: "5 min", tag: "Head", description: "A light, quiet rhythm for the scalp without tugging hair.", lesson: 9,
-    steps: [["1 min", "Settle with soft fingertip contact", 9], ["3 min", "Small circles with finger pads", 9], ["1 min", "Light temple contact and release", 9]],
+    steps: [["1 min", "Scalp glides and light contact", 9], ["3 min", "Small circles across scalp zones", 9], ["1 min", "Finish with light glides and a check-in", 9]],
     safety: "Keep nails out of the way. Stop for a new or unusual headache, nausea, dizziness, or scalp pain."
   },
   {
@@ -242,7 +242,102 @@ const practiceMotionByLesson = {
   12: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-12\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path motion-loop\" d=\"M720 450 C685 410 715 375 755 385 C790 394 790 438 760 452 C735 465 710 445 720 420\" marker-end=\"url(#motion-arrow-12)\"/></svg>"
 };
 
+const scalpTechniqueGroups = [
+  { id: "scalp", title: "Scalp", intro: "Keep the scalp moving gently; let the hair stay relaxed." },
+  { id: "front", title: "Face / Front", intro: "Stay above the eyes and use almost no pressure at the temples." },
+  { id: "around", title: "Around the head", intro: "Work around the ears and skull base only; keep the head still." },
+  { id: "finish", title: "Finish", intro: "Join the familiar light movements into one calm sequence." }
+];
+
+const scalpTechniques = [
+  { id: "scalp-gliding", group: "scalp", title: "Scalp gliding", image: "scalp-gliding.webp", alt: "Therapist's relaxed finger pads contact the front scalp and begin a gentle glide toward the crown.", how: ["Set relaxed finger pads at the hairline.", "Glide slowly toward the crown.", "Lift to reset; keep hair untugged."], pressure: "Light, comfortable contact.", watch: "Scalp shifts softly; hair stays easy.", avoid: "Nails, friction, or pulling strands.", duration: 45, motion: [{ d: "M720 360 C715 325 710 288 710 248" }] },
+  { id: "small-circles", group: "scalp", title: "Small scalp circles", image: "scalp-small-circles.webp", alt: "Several relaxed fingertip pads rest on the side scalp for small, controlled circles.", how: ["Place two or three finger pads.", "Make tiny circles in one spot.", "Lift and move to a nearby area."], pressure: "Light; no digging.", watch: "Skin moves gently under the pads.", avoid: "Scratching or dragging hair.", duration: 45, motion: [{ d: "M600 430 C570 395 610 365 640 390 C670 415 645 450 615 445 C590 442 585 420 600 405", className: "motion-loop" }] },
+  { id: "crown-circles", group: "scalp", title: "Crown circles", image: "scalp-crown-circles.webp", alt: "Therapist's soft finger pads contact the top-center crown of a supported head.", how: ["Find the top-center crown.", "Use two or three finger pads for tiny circles.", "Release and shift to another point."], pressure: "Light and steady.", watch: "The head remains settled on support.", avoid: "Pressing down or pulling hair.", duration: 45, motion: [{ d: "M710 590 C680 555 715 525 748 548 C780 570 760 610 730 612 C700 614 690 588 706 567", className: "motion-loop" }] },
+  { id: "side-circles", group: "scalp", title: "Side-of-head circles", image: "scalp-side-circles.webp", alt: "Relaxed fingertips make a small circle on the side scalp above the ear.", how: ["Place finger pads above the ear.", "Make small, slow circles in place.", "Move around the side scalp gently."], pressure: "Light finger-pad contact.", watch: "The jaw and shoulders stay relaxed.", avoid: "Pressing into the ear or temple.", duration: 45, motion: [{ d: "M470 420 C440 385 480 355 510 380 C540 405 515 440 485 435 C460 432 455 410 470 395", className: "motion-loop" }] },
+  { id: "scalp-lifting", group: "scalp", title: "Scalp lifting", image: "scalp-lifting.webp", alt: "Relaxed finger pads make a tiny sideways shift on the scalp through short curls without lifting the hair.", how: ["Set soft finger pads on the scalp.", "Shift the skin a very small amount.", "Release; do not lift or grip hair."], pressure: "Very light; small movement only.", watch: "Scalp shifts without strands pulling.", avoid: "Gripping, tugging, or pinching hair.", duration: 45, motion: [{ d: "M555 455 C595 438 645 438 687 455" }, { d: "M685 488 C645 502 600 502 560 488", className: "motion-path-return" }] },
+  { id: "fingertip-tapping", group: "scalp", title: "Fingertip tapping", image: "scalp-fingertip-tapping.webp", alt: "Relaxed fingertips lightly tap across the upper scalp while the other hand hovers softly.", how: ["Let fingertips curve and soften.", "Tap lightly across one small area.", "Keep an easy, unhurried rhythm."], pressure: "Feather-light; no impact.", watch: "Taps feel soft and predictable.", avoid: "Striking with stiff fingers or nails.", duration: 45, motion: [{ d: "M585 335 C600 322 615 322 630 335", className: "motion-tap", arrow: false }, { d: "M655 335 C670 322 685 322 700 335", className: "motion-tap", arrow: false }, { d: "M725 335 C740 322 755 322 770 335", className: "motion-tap", arrow: false }] },
+  { id: "fingertip-raking", group: "scalp", title: "Gentle fingertip raking", image: "scalp-fingertip-raking.webp", alt: "Relaxed, curved finger pads move lightly through the hair toward the crown with nails lifted away from the skin.", how: ["Curve and relax the fingertips.", "Make one light pass through the hair.", "Keep nails lifted away from skin."], pressure: "Light enough to avoid scalp drag.", watch: "Hair separates easily; no snagging.", avoid: "Scratching, snagging, or pulling.", duration: 45, motion: [{ d: "M790 360 C740 340 685 345 640 380" }] },
+  { id: "forehead-gliding", group: "front", title: "Forehead gliding", image: "scalp-forehead-gliding.webp", alt: "Soft fingers glide outward across the forehead above the brows, well away from the closed eyes.", how: ["Place soft fingers above the brows.", "Glide from center outward slowly.", "Stay clear of eyelids and eyes."], pressure: "Feather-light.", watch: "Eyes remain untouched and relaxed.", avoid: "Pressing into eyes or eyelids.", duration: 45, motion: [{ d: "M500 350 C600 325 705 325 820 345" }] },
+  { id: "hairline-massage", group: "front", title: "Hairline massage", image: "scalp-hairline-massage.webp", alt: "Fingertips trace the hairline gently from the forehead toward one temple.", how: ["Set finger pads at the hairline.", "Follow the curve slowly toward one side.", "Lift and repeat on the other side."], pressure: "Light fingertip touch.", watch: "The path stays on the hairline.", avoid: "Rubbing brows or pulling hair.", duration: 45, motion: [{ d: "M590 290 C665 285 745 305 815 350" }] },
+  { id: "temple-circles", group: "front", title: "Temple circles", image: "scalp-temple-circles.webp", alt: "Two soft fingertips make a very small circle at the temple outside the eye socket.", how: ["Use two or three fingertips outside the eye.", "Make tiny, slow circles.", "Ease off immediately if sensitive."], pressure: "Very light.", watch: "The eye socket stays untouched.", avoid: "Pressure on eyes, brow, or tender spots.", duration: 45, motion: [{ d: "M370 430 C345 402 377 380 401 400 C426 420 405 448 382 446 C361 444 357 424 370 408", className: "motion-loop" }] },
+  { id: "behind-ear", group: "around", title: "Behind-the-ear massage", image: "scalp-behind-ear.webp", alt: "One or two finger pads make a tiny light circle in the soft area behind the outer ear.", how: ["Locate the soft area behind the outer ear.", "Make a tiny circle with one or two pads.", "Keep the ear opening clear."], pressure: "Very light.", watch: "The ear and head remain still.", avoid: "Pushing the ear or entering the ear canal.", duration: 45, motion: [{ d: "M620 450 C598 427 624 407 645 424 C667 441 648 465 628 464 C610 463 606 445 618 432", className: "motion-loop" }] },
+  { id: "base-of-skull", group: "around", title: "Base-of-skull circles", image: "scalp-base-skull.webp", alt: "Hands support the neutral head while soft fingertips make tiny circles at the uppermost muscles beneath the skull edge.", how: ["Keep the head resting and neutral.", "Use soft pads at the uppermost muscles below the skull.", "Make tiny circles without moving the head."], pressure: "Very light, still support.", watch: "Head stays fully supported and still.", avoid: "Pulling, lifting, twisting, or neck manipulation.", duration: 45, motion: [{ d: "M630 610 C608 588 634 568 655 585 C677 602 658 626 638 625 C620 624 616 606 628 593", className: "motion-loop" }] },
+  { id: "whole-sequence", group: "finish", title: "Whole-scalp sequence", image: "scalp-whole-sequence.webp", alt: "Both hands rest lightly at the sides of a supported head as a calm scalp sequence begins.", how: ["Move hairline → temples → sides → crown.", "Continue over the back of the scalp; keep the head still.", "Finish with two slow, light glides."], pressure: "Light and even throughout.", watch: "Check comfort between zones.", avoid: "Rushing, tugging, eyes, or neck movement.", duration: 120, motion: [{ d: "M720 365 C630 375 545 430 505 520 C470 610 500 700 575 760" }, { d: "M720 365 C810 375 895 430 935 520 C970 610 940 700 865 760" }, { d: "M575 760 C625 785 670 800 720 805 C770 800 815 785 865 760", className: "motion-path-return" }] }
+];
+
+let scalpPracticeTimer = null;
+let scalpPracticeTimerOwner = null;
+
+function formatScalpTime(seconds) {
+  return String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(seconds % 60).padStart(2, "0");
+}
+
+function stopScalpPracticeTimer(resetOwner) {
+  if (scalpPracticeTimer) window.clearInterval(scalpPracticeTimer);
+  scalpPracticeTimer = null;
+  if (resetOwner && scalpPracticeTimerOwner && scalpPracticeTimerOwner.isConnected) {
+    const owner = scalpPracticeTimerOwner;
+    const card = owner.closest(".scalp-technique-card");
+    const duration = Number(owner.dataset.duration) || 45;
+    owner.disabled = false;
+    owner.textContent = "Practice again";
+    const output = card && card.querySelector(".scalp-practice-time");
+    if (output) output.textContent = formatScalpTime(duration);
+  }
+  scalpPracticeTimerOwner = null;
+}
+
+function startScalpPracticeTimer(button) {
+  stopScalpPracticeTimer(true);
+  const duration = Number(button.dataset.duration) || 45;
+  const card = button.closest(".scalp-technique-card");
+  const output = card && card.querySelector(".scalp-practice-time");
+  let remaining = duration;
+  scalpPracticeTimerOwner = button;
+  button.disabled = true;
+  button.textContent = "Practice gently…";
+  if (output) output.textContent = formatScalpTime(remaining);
+  scalpPracticeTimer = window.setInterval(function () {
+    remaining -= 1;
+    if (output) output.textContent = formatScalpTime(Math.max(remaining, 0));
+    if (remaining <= 0) {
+      stopScalpPracticeTimer(false);
+      button.disabled = false;
+      button.textContent = "Practice again";
+      if (output) output.textContent = "Done ✓";
+    }
+  }, 1000);
+}
+
+function scalpMotionSvg(technique) {
+  const markerId = "scalp-arrow-" + technique.id;
+  const paths = technique.motion.map(function (item) {
+    return "<path class=\"motion-path " + (item.className || "") + "\" d=\"" + item.d + "\"" + (item.arrow === false ? "" : " marker-end=\"url(#" + markerId + ")\"") + "/>";
+  }).join("");
+  return "<svg class=\"scalp-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"" + markerId + "\" markerWidth=\"16\" markerHeight=\"16\" markerUnits=\"userSpaceOnUse\" refX=\"13\" refY=\"8\" orient=\"auto\"><path d=\"M1 1 15 8 1 15z\" class=\"motion-arrowhead\"/></marker></defs>" + paths + "</svg>";
+}
+
+function scalpTechniqueCard(technique, index) {
+  const done = Array.isArray(progress.scalpPracticeCompleted) && progress.scalpPracticeCompleted.includes(technique.id);
+  const steps = technique.how.map(function (step) { return "<li>" + esc(step) + "</li>"; }).join("");
+  const seconds = technique.duration;
+  const initialTime = seconds >= 60 ? String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(seconds % 60).padStart(2, "0") : "00:" + String(seconds).padStart(2, "0");
+  return "<article class=\"scalp-technique-card" + (done ? " is-technique-done" : "") + "\" id=\"technique-" + technique.id + "\" data-scalp-technique=\"" + technique.id + "\"><div class=\"scalp-card-heading\"><span class=\"scalp-card-number\">" + String(index + 1).padStart(2, "0") + "</span><div><p class=\"scalp-card-group\">" + esc(technique.group === "front" ? "Face / Front" : technique.group === "around" ? "Around the head" : technique.group === "finish" ? "Finish" : "Scalp") + "</p><h4>" + esc(technique.title) + "</h4></div><span class=\"scalp-done-label\" " + (done ? "" : "hidden") + ">Practiced</span></div><button class=\"scalp-visual-enlarge\" type=\"button\" aria-label=\"Enlarge instructional visual: " + esc(technique.title) + "\"><span class=\"scalp-visual-art\"><img src=\"assets/lessons/" + technique.image + "\" alt=\"" + esc(technique.alt) + "\" width=\"1448\" height=\"1086\" loading=\"lazy\" decoding=\"async\" />" + scalpMotionSvg(technique) + "</span><span class=\"scalp-zoom-hint\">View detailed visual</span></button><div class=\"scalp-card-body\"><h5>How</h5><ol class=\"scalp-how\">" + steps + "</ol><dl class=\"scalp-cues\"><div><dt>Pressure</dt><dd>" + esc(technique.pressure) + "</dd></div><div><dt>Watch for</dt><dd>" + esc(technique.watch) + "</dd></div><div class=\"scalp-avoid\"><dt>Avoid</dt><dd>" + esc(technique.avoid) + "</dd></div></dl><div class=\"scalp-practice-controls\"><button class=\"button primary small scalp-practice-start\" type=\"button\" data-duration=\"" + seconds + "\" aria-controls=\"timer-" + technique.id + "\">Practice " + (seconds >= 60 ? Math.floor(seconds / 60) + " min" : seconds + " sec") + "</button><output class=\"scalp-practice-time\" id=\"timer-" + technique.id + "\" aria-live=\"polite\">" + initialTime + "</output><button class=\"button subtle small scalp-practice-complete\" type=\"button\" data-technique-id=\"" + technique.id + "\" " + (done ? "disabled aria-disabled=\"true\"" : "") + ">" + (done ? "Practiced ✓" : "Mark done") + "</button></div></div></article>";
+}
+
+function headScalpQuickPractice(lesson) {
+  const techniquesDone = Array.isArray(progress.scalpPracticeCompleted) ? progress.scalpPracticeCompleted.length : 0;
+  const completedCount = (progress.practiceCompleted || []).length;
+  const sections = scalpTechniqueGroups.map(function (group) {
+    const cards = scalpTechniques.filter(function (technique) { return technique.group === group.id; }).map(scalpTechniqueCard).join("");
+    return "<section class=\"scalp-technique-group\" aria-labelledby=\"scalp-group-" + group.id + "\"><div class=\"scalp-group-heading\"><div><p class=\"eyebrow\">Technique set</p><h3 id=\"scalp-group-" + group.id + "\">" + esc(group.title) + "</h3></div><p>" + esc(group.intro) + "</p></div><div class=\"scalp-technique-grid\">" + cards + "</div></section>";
+  }).join("");
+  const done = isPracticeComplete(lesson.id);
+  return "<section class=\"quick-version scalp-module\" data-quick-practice=\"9\"><div class=\"quick-practice-path\"><div><p class=\"eyebrow\">Quick practice · Head &amp; Scalp</p><p class=\"practice-count\">Skill 09 of " + lessons.length + " · " + completedCount + " lessons checked</p></div><ol class=\"practice-progression\" aria-label=\"Practice progression\"><li>Learn</li><li aria-current=\"step\">Practice</li><li>Check</li><li>Next skill</li></ol></div><header class=\"scalp-module-header\"><h2>13 gentle techniques, one small movement at a time.</h2><p>Choose a card. Study the hand placement, then try its short practice.</p><p class=\"scalp-technique-progress\" aria-live=\"polite\"><strong>" + techniquesDone + " of " + scalpTechniques.length + " techniques practiced</strong></p></header><p class=\"scalp-safety-note\"><strong>Stay gentle.</strong> Keep the head supported and still. Scalp work is not neck manipulation—never pull, twist, crack, or force the head. Keep all pressure away from the eyes.</p>" + sections + "<div class=\"scalp-module-complete\"><div><strong>Finished your chosen practices?</strong><p>Mark this lesson practice complete when the movements feel clear.</p></div><button class=\"button primary small practice-check\" type=\"button\" data-practice-id=\"9\" " + (done ? "disabled aria-disabled=\"true\"" : "") + ">" + (done ? "Lesson practice checked ✓" : "Mark lesson practice complete") + "</button><p class=\"practice-status\" aria-live=\"polite\">" + (done ? "Practice saved on this device." : "Each technique has its own timer and completion check.") + "</p></div><dialog class=\"scalp-lightbox\" aria-label=\"Enlarged Head &amp; Scalp instructional visual\"><div class=\"scalp-lightbox-head\"><strong class=\"scalp-lightbox-title\">Instructional visual</strong><button class=\"button small scalp-lightbox-close\" type=\"button\">Close</button></div><div class=\"scalp-lightbox-frame\"><div class=\"scalp-lightbox-art\"></div></div><div class=\"practice-lightbox-actions\"><button class=\"button small scalp-lightbox-zoom\" type=\"button\">Zoom in</button><span>Inspect the hand placement and movement cue.</span></div></dialog></section>";
+}
+
 function quickVersion(lesson) {
+  if (lesson.id === 9) return headScalpQuickPractice(lesson);
   const guide = quickPracticeGuides[lesson.id];
   const artwork = lessonArtworkByType[lesson.visual[0]];
   const motion = practiceMotionByLesson[lesson.id] || "";
@@ -323,7 +418,7 @@ function bindEvents() {
   const complete = document.querySelector(".complete-button");
   if (complete) complete.addEventListener("click", function (event) { markLesson(Number(event.currentTarget.dataset.lesson)); render(); window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); });
   const reset = document.querySelector(".reset-progress");
-  if (reset) reset.addEventListener("click", function () { if (window.confirm("Reset all lesson and practice progress? This cannot be undone.")) { progress = { completed: [], current: 1, practiceCompleted: [] }; saveProgress(); render(); } });
+  if (reset) reset.addEventListener("click", function () { if (window.confirm("Reset all lesson and practice progress? This cannot be undone.")) { progress = { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [] }; saveProgress(); render(); } });
   const reveal = document.querySelector(".reveal-full");
   if (reveal) reveal.addEventListener("click", function () { const detail = document.querySelector(".full-lesson"); if (detail) { detail.open = true; detail.scrollIntoView({ behavior: "smooth", block: "start" }); } });
   const search = document.querySelector("#technique-search");
@@ -347,6 +442,7 @@ function bindEvents() {
 
 function render() {
   if (practiceTimer) { clearInterval(practiceTimer); practiceTimer = null; }
+  stopScalpPracticeTimer(false);
   const current = route();
   let html;
   if (current === "home") html = home();
@@ -391,7 +487,7 @@ function bindEvents() {
   const reset = document.querySelector(".reset-progress");
   if (reset) reset.addEventListener("click", function () {
     if (window.confirm("Reset all lesson and practice progress? This cannot be undone.")) {
-      progress = { completed: [], current: 1, practiceCompleted: [] };
+      progress = { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [] };
       saveProgress();
       render();
     }
@@ -456,6 +552,63 @@ function bindEvents() {
       if (zoomButton) zoomButton.textContent = "Zoom in";
     });
   }
+  const scalpLightbox = document.querySelector(".scalp-lightbox");
+  if (scalpLightbox) {
+    const art = scalpLightbox.querySelector(".scalp-lightbox-art");
+    const title = scalpLightbox.querySelector(".scalp-lightbox-title");
+    const close = scalpLightbox.querySelector(".scalp-lightbox-close");
+    const zoom = scalpLightbox.querySelector(".scalp-lightbox-zoom");
+    document.querySelectorAll(".scalp-visual-enlarge").forEach(function (button) {
+      button.addEventListener("click", function () {
+        const card = button.closest(".scalp-technique-card");
+        const techniqueId = card.dataset.scalpTechnique;
+        const technique = scalpTechniques.find(function (item) { return item.id === techniqueId; });
+        if (!technique || !art) return;
+        art.innerHTML = card.querySelector(".scalp-visual-art").innerHTML.replace(new RegExp("scalp-arrow-" + techniqueId, "g"), "scalp-arrow-" + techniqueId + "-modal");
+        if (title) title.textContent = technique.title;
+        if (zoom) zoom.textContent = "Zoom in";
+        scalpLightbox.showModal();
+      });
+    });
+    if (close) close.addEventListener("click", function () { scalpLightbox.close(); });
+    if (zoom) zoom.addEventListener("click", function () {
+      const zoomed = art.classList.toggle("is-zoomed");
+      zoom.textContent = zoomed ? "Reset zoom" : "Zoom in";
+    });
+    scalpLightbox.addEventListener("click", function (event) { if (event.target === scalpLightbox) scalpLightbox.close(); });
+    scalpLightbox.addEventListener("close", function () {
+      art.classList.remove("is-zoomed");
+      art.replaceChildren();
+      if (zoom) zoom.textContent = "Zoom in";
+    });
+  }
+  document.querySelectorAll(".scalp-technique-card").forEach(function (card) {
+    const timer = card.querySelector(".scalp-practice-time");
+    const heading = card.querySelector("h4");
+    if (timer && heading) timer.setAttribute("aria-label", heading.textContent + " practice timer");
+  });
+  document.querySelectorAll(".scalp-practice-start").forEach(function (button) {
+    button.addEventListener("click", function () { startScalpPracticeTimer(button); });
+  });
+  document.querySelectorAll(".scalp-practice-complete").forEach(function (button) {
+    button.addEventListener("click", function () {
+      const techniqueId = button.dataset.techniqueId;
+      if (!Array.isArray(progress.scalpPracticeCompleted)) progress.scalpPracticeCompleted = [];
+      if (!progress.scalpPracticeCompleted.includes(techniqueId)) progress.scalpPracticeCompleted.push(techniqueId);
+      saveProgress();
+      const card = button.closest(".scalp-technique-card");
+      if (scalpPracticeTimerOwner && card.contains(scalpPracticeTimerOwner)) stopScalpPracticeTimer(true);
+      card.classList.add("is-technique-done");
+      button.disabled = true;
+      button.setAttribute("aria-disabled", "true");
+      button.textContent = "Practiced ✓";
+      const badge = card.querySelector(".scalp-done-label");
+      if (badge) badge.hidden = false;
+      const count = document.querySelector(".scalp-technique-progress strong");
+      const total = scalpTechniques.filter(function (technique) { return progress.scalpPracticeCompleted.includes(technique.id); }).length;
+      if (count) count.textContent = total + " of " + scalpTechniques.length + " techniques practiced";
+    });
+  });
   const start = document.querySelector(".practice-start");
   if (start) start.addEventListener("click", function (event) { startTimer(event.currentTarget); });
   const practiceReset = document.querySelector(".practice-reset");
