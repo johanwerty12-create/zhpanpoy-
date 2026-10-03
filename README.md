@@ -1,23 +1,36 @@
-# Kindred Touch
+# The Craft
 
-Kindred Touch is a lightweight, beginner-friendly massage education guide. It is a static vanilla HTML, CSS, and JavaScript course platform with 13 guided lessons, visual movement cards, quick quizzes, and browser-local progress.
+The Craft is a lightweight, static massage-learning app for beginners. It keeps the existing 13 lessons, individual visual Quick Practices, quizzes, routines, timers, safety guidance, and private progress stored in the browser. There is no account, database, build step, or dependency installation.
 
 ## Run locally
 
-Open `index.html` in a browser, or serve the folder with any static file server:
+Install Node.js, then run this from the project folder:
 
 ```bash
-python -m http.server 8000
+node dev-server.js
 ```
 
-Then visit `http://localhost:8000`.
+Open <http://127.0.0.1:4173>. Stop the server with `Ctrl+C`. The small local server serves the static files and maps app routes back to `index.html`, so clean URLs work during development too.
 
-## Structure
+## Project layout
 
-- `index.html` — accessible app shell
-- `styles.css` — responsive visual system and reusable components
-- `app.js` — core lesson data, original app behavior, and local progress
-- `product-pass.js` — product-improvement views, quick practice, routines, body explorer, and reference hub
-- `product-pass.css` — focused UX and responsive improvements layered over the base design system
+- `index.html` — app shell, shared metadata, and stylesheet/script loading
+- `app.js` — course lesson data, local progress, path routing, metadata, and shared events
+- `product-pass.js` — page renderers, Quick Practice, technique/routine/body-area data, and interactions
+- `styles.css`, `product-pass.css` — base styles and responsive product improvements
+- `assets/` — optimized WebP instructional photos
+- `dev-server.js` — dependency-free local static server with SPA route fallback
+- `vercel.json` — static root output and clean-route rewrites for Vercel
 
-The guide is educational and does not replace professional medical care. It intentionally avoids forceful manipulation and includes safety boundaries throughout the course.
+## Deploy to Vercel
+
+1. Push this project to a GitHub repository.
+2. Sign in to [Vercel](https://vercel.com/) and choose **Add New → Project**.
+3. Import the GitHub repository and select this repository as the project root.
+4. Use **Other** as the framework preset. Leave the build and install commands empty; set the output directory to `.` (the repository root).
+5. Choose **Deploy**. Vercel serves the existing HTML, CSS, JavaScript, and image files directly; `vercel.json` rewrites app routes such as `/lessons/9` to the app shell so refreshes work.
+6. Open the generated `.vercel.app` domain to check the live site.
+
+There is no production compilation step for this architecture. Before deployment, validate the JavaScript with `node --check app.js` and `node --check product-pass.js`, then run the local server and check the routes and interactions.
+
+Progress is saved only in the current browser with `localStorage`; it does not sync between devices. The lessons are educational guidance, not medical diagnosis or treatment, and emphasize gentle pressure and stopping when comfort changes.

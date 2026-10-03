@@ -1,0 +1,18 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/course", "destination": "/index.html" },
+    { "source": "/lessons", "destination": "/index.html" },
+    { "source": "/lessons/:lesson", "destination": "/index.html" },
+    { "source": "/lesson/:lesson", "destination": "/index.html" },
+    { "source": "/quick-practice", "destination": "/index.html" },
+    { "source": "/techniques", "destination": "/index.html" },
+    { "source": "/body-areas", "destination": "/index.html" },
+    { "source": "/routines", "destination": "/index.html" },
+    { "source": "/safety", "destination": "/index.html" },
+    { "source": "/progress", "destination": "/index.html" },
+    { "source": "/reference", "destination": "/index.html" }
+  ]
+}

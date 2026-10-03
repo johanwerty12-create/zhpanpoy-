@@ -57,11 +57,12 @@ const areaInfo = [
 ];
 
 function shell(content, active) {
-  const nav = [["home", "Home"], ["course", "Course"], ["techniques", "Techniques"], ["body-areas", "Body areas"], ["routines", "Routines"], ["safety", "Safety"], ["progress", "Progress"], ["reference", "Reference"]];
+  const nav = [["home", "Home"], ["course", "Course"], ["quick-practice", "Quick practice"], ["techniques", "Techniques"], ["body-areas", "Body areas"], ["routines", "Routines"], ["safety", "Safety"], ["progress", "Progress"], ["reference", "Reference"]];
   const links = nav.map(function (item) {
-    return "<a class=\"nav-link " + (active === item[0] ? "active" : "") + "\" href=\"#/" + item[0] + "\">" + item[1] + "</a>";
+    const href = item[0] === "home" ? "/" : "/" + item[0];
+    return "<a class=\"nav-link " + (active === item[0] ? "active" : "") + "\" href=\"" + href + "\">" + item[1] + "</a>";
   }).join("");
-  return "<header class=\"shell-header\"><a class=\"brand\" href=\"#/home\" aria-label=\"Kindred Touch home\"><span class=\"brand-mark\"><span aria-hidden=\"true\">k</span></span><span class=\"brand-text\">kindred <em>touch</em></span></a><button class=\"menu-toggle\" type=\"button\" aria-label=\"Open navigation\" aria-controls=\"main-nav\" aria-expanded=\"false\">☰</button><nav class=\"main-nav\" id=\"main-nav\" aria-label=\"Main navigation\">" + links + "</nav></header><main id=\"main-content\" class=\"page-wrap\">" + content + "</main><footer class=\"footer\"><div class=\"footer-inner\"><strong>kindred touch</strong><span>Learn slowly. Listen closely. Keep it comfortable.</span></div></footer>";
+  return "<header class=\"shell-header\"><a class=\"brand\" href=\"/\" aria-label=\"The Craft home\"><span class=\"brand-mark\"><span aria-hidden=\"true\">C</span></span><span class=\"brand-text\">the <em>craft</em></span></a><button class=\"menu-toggle\" type=\"button\" aria-label=\"Open navigation\" aria-controls=\"main-nav\" aria-expanded=\"false\">☰</button><nav class=\"main-nav\" id=\"main-nav\" aria-label=\"Main navigation\">" + links + "</nav></header><main id=\"main-content\" class=\"page-wrap\">" + content + "</main><footer class=\"footer\"><div class=\"footer-inner\"><strong>The Craft</strong><span>Learn slowly. Listen closely. Keep it comfortable.</span></div></footer>";
 }
 
 function goalCard(icon, title, text, href, tone) {
@@ -71,60 +72,36 @@ function goalCard(icon, title, text, href, tone) {
 function home() {
   const started = progress.completed.length > 0 || progress.current > 1;
   const next = currentLesson();
-  const mainHref = started ? "#/lesson/" + next.id : "#/course";
+  const mainHref = started ? "/lessons/" + next.id : "/course";
   const mainLabel = started ? "Continue learning" : "Start learning";
-  const continuePanel = started ? "<section class=\"continue-panel\"><div><p class=\"eyebrow\">Your next small step</p><h2>Lesson " + String(next.id).padStart(2, "0") + " · " + esc(next.title) + "</h2><p>" + esc(next.short) + "</p>" + progressBar() + "</div><a class=\"button\" href=\"#/lesson/" + next.id + "\">Continue learning <span aria-hidden=\"true\">→</span></a></section>" : "";
+  const continuePanel = started ? "<section class=\"continue-panel home-continue\"><div><p class=\"eyebrow\">Your next lesson</p><h2>" + String(next.id).padStart(2, "0") + " · " + esc(next.title) + "</h2><p>" + esc(next.short) + "</p>" + progressBar() + "</div><a class=\"button\" href=\"/lessons/" + next.id + "\">Continue learning <span aria-hidden=\"true\">→</span></a></section>" : "";
   const goals = [
-    goalCard("01", "I’m completely new", "Start with the course map", "#/course", "sage"),
-    goalCard("◷", "I have 5 minutes", "Follow a short routine", "#/routines", "sun"),
-    goalCard("⌁", "A specific body area", "Browse the body explorer", "#/body-areas", "coral"),
-    goalCard("→", "Practice a technique", "Open the quick reference", "#/techniques", "blue"),
-    goalCard("✓", "I want to review safety", "See clear boundaries", "#/safety", "cream"),
-    goalCard("↺", "Remember yesterday’s lesson", "Check your progress", "#/progress", "sage")
+    goalCard("◷", "Start a routine", "Choose a guided 3–10 minute flow", "/routines", "sun"),
+    goalCard("→", "Explore techniques", "Find a movement and its lesson", "/techniques", "blue"),
+    goalCard("⌁", "Browse body areas", "Choose a gentle starting point", "/body-areas", "coral")
   ].join("");
   const markup = `
     <div class="page">
       <section class="hero">
         <div class="hero-copy">
-          <p class="eyebrow">A calm course in caring touch</p>
-          <h1>Learn massage with more confidence and less guesswork.</h1>
-          <p class="lede">A beginner-friendly learning path for thoughtful, comfortable massage. Learn one small skill, practice safely, and build a routine that listens.</p>
+          <p class="eyebrow">The Craft · Beginner learning</p>
+          <h1>Learn simple, safe massage techniques.</h1>
+          <p class="lede">A visual, beginner-friendly course. Learn one small skill at a time and keep every movement comfortable.</p>
           <div class="button-row">
             <a class="button primary" href="${mainHref}">${mainLabel} <span aria-hidden="true">→</span></a>
-            <a class="button" href="#/safety">Read the safety guide</a>
+            <a class="button" href="/quick-practice">Quick practice <span aria-hidden="true">→</span></a>
           </div>
-          <p class="hero-note"><span aria-hidden="true">✓</span> Educational guidance—not medical treatment.</p>
+          <p class="hero-note"><span aria-hidden="true">✓</span> Gentle educational guidance—not medical treatment.</p>
         </div>
         <div class="hero-art" aria-label="Massage lesson preview"></div>
       </section>
-      <div class="stat-strip" aria-label="Course at a glance">
-        <div class="stat"><strong>13</strong><span>guided lessons</span></div>
-        <div class="stat"><strong>~75 min</strong><span>learning path</span></div>
-        <div class="stat"><strong>Beginner</strong><span>friendly pace</span></div>
-        <div class="stat"><strong>Local</strong><span>progress saved privately</span></div>
-      </div>
+      ${continuePanel}
       <section class="today-section">
         <div class="section-heading">
-          <div><p class="eyebrow">Choose your starting point</p><h2>What do you want to learn today?</h2></div>
-          <p>Go straight to the useful part. You can always return to the guided course later.</p>
+          <div><p class="eyebrow">A few useful paths</p><h2>Go straight to what you need.</h2></div>
+          <p>Start with the course or pick a short, focused way to practice.</p>
         </div>
         <div class="goal-grid">${goals}</div>
-      </section>
-      ${continuePanel}
-      <section>
-        <div class="section-heading">
-          <div><p class="eyebrow">How it works</p><h2>Learn by doing, not by guessing.</h2></div>
-          <p>Each lesson pairs a safe setup, an instructional visual, a short practice, and a clear next step.</p>
-        </div>
-        <div class="feature-grid">
-          <article class="feature-card"><div class="feature-icon" aria-hidden="true">01</div><h3>One skill at a time</h3><p>Short lessons turn a big topic into a sequence you can remember and repeat.</p></article>
-          <article class="feature-card"><div class="feature-icon" aria-hidden="true">⌁</div><h3>See the movement</h3><p>Lesson-specific photographs show hand placement; movement cues trace the intended path.</p></article>
-          <article class="feature-card"><div class="feature-icon" aria-hidden="true">✓</div><h3>Check your confidence</h3><p>Practice for a minute, check your understanding, and mark each lesson when it feels clear.</p></article>
-        </div>
-      </section>
-      <section class="safety-callout">
-        <div class="callout-icon" aria-hidden="true">!</div>
-        <div><h3>A gentle reminder before you begin</h3><p>Stop for sharp pain, numbness, tingling, dizziness, faintness, unusual weakness, difficulty breathing, or any sudden concerning symptom. Massage should never be forceful.</p></div>
       </section>
     </div>`;
   return shell(markup, "home");
@@ -322,7 +299,7 @@ function scalpTechniqueCard(technique, index) {
   const steps = technique.how.map(function (step) { return "<li>" + esc(step) + "</li>"; }).join("");
   const seconds = technique.duration;
   const initialTime = seconds >= 60 ? String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(seconds % 60).padStart(2, "0") : "00:" + String(seconds).padStart(2, "0");
-  return "<article class=\"scalp-technique-card" + (done ? " is-technique-done" : "") + "\" id=\"technique-" + technique.id + "\" data-scalp-technique=\"" + technique.id + "\"><div class=\"scalp-card-heading\"><span class=\"scalp-card-number\">" + String(index + 1).padStart(2, "0") + "</span><div><p class=\"scalp-card-group\">" + esc(technique.group === "front" ? "Face / Front" : technique.group === "around" ? "Around the head" : technique.group === "finish" ? "Finish" : "Scalp") + "</p><h4>" + esc(technique.title) + "</h4></div><span class=\"scalp-done-label\" " + (done ? "" : "hidden") + ">Practiced</span></div><button class=\"scalp-visual-enlarge\" type=\"button\" aria-label=\"Enlarge instructional visual: " + esc(technique.title) + "\"><span class=\"scalp-visual-art\"><img src=\"assets/lessons/" + technique.image + "\" alt=\"" + esc(technique.alt) + "\" width=\"1448\" height=\"1086\" loading=\"lazy\" decoding=\"async\" />" + scalpMotionSvg(technique) + "</span><span class=\"scalp-zoom-hint\">View detailed visual</span></button><div class=\"scalp-card-body\"><h5>How</h5><ol class=\"scalp-how\">" + steps + "</ol><dl class=\"scalp-cues\"><div><dt>Pressure</dt><dd>" + esc(technique.pressure) + "</dd></div><div><dt>Watch for</dt><dd>" + esc(technique.watch) + "</dd></div><div class=\"scalp-avoid\"><dt>Avoid</dt><dd>" + esc(technique.avoid) + "</dd></div></dl><div class=\"scalp-practice-controls\"><button class=\"button primary small scalp-practice-start\" type=\"button\" data-duration=\"" + seconds + "\" aria-controls=\"timer-" + technique.id + "\">Practice " + (seconds >= 60 ? Math.floor(seconds / 60) + " min" : seconds + " sec") + "</button><output class=\"scalp-practice-time\" id=\"timer-" + technique.id + "\" aria-live=\"polite\">" + initialTime + "</output><button class=\"button subtle small scalp-practice-complete\" type=\"button\" data-technique-id=\"" + technique.id + "\" " + (done ? "disabled aria-disabled=\"true\"" : "") + ">" + (done ? "Practiced ✓" : "Mark done") + "</button></div></div></article>";
+  return "<article class=\"scalp-technique-card" + (done ? " is-technique-done" : "") + "\" id=\"technique-" + technique.id + "\" data-scalp-technique=\"" + technique.id + "\"><div class=\"scalp-card-heading\"><span class=\"scalp-card-number\">" + String(index + 1).padStart(2, "0") + "</span><div><p class=\"scalp-card-group\">" + esc(technique.group === "front" ? "Face / Front" : technique.group === "around" ? "Around the head" : technique.group === "finish" ? "Finish" : "Scalp") + "</p><h4>" + esc(technique.title) + "</h4></div><span class=\"scalp-done-label\" " + (done ? "" : "hidden") + ">Practiced</span></div><button class=\"scalp-visual-enlarge\" type=\"button\" aria-label=\"Enlarge instructional visual: " + esc(technique.title) + "\"><span class=\"scalp-visual-art\"><img src=\"/assets/lessons/" + technique.image + "\" alt=\"" + esc(technique.alt) + "\" width=\"1448\" height=\"1086\" loading=\"lazy\" decoding=\"async\" />" + scalpMotionSvg(technique) + "</span><span class=\"scalp-zoom-hint\">View detailed visual</span></button><div class=\"scalp-card-body\"><h5>How</h5><ol class=\"scalp-how\">" + steps + "</ol><dl class=\"scalp-cues\"><div><dt>Pressure</dt><dd>" + esc(technique.pressure) + "</dd></div><div><dt>Watch for</dt><dd>" + esc(technique.watch) + "</dd></div><div class=\"scalp-avoid\"><dt>Avoid</dt><dd>" + esc(technique.avoid) + "</dd></div></dl><div class=\"scalp-practice-controls\"><button class=\"button primary small scalp-practice-start\" type=\"button\" data-duration=\"" + seconds + "\" aria-controls=\"timer-" + technique.id + "\">Practice " + (seconds >= 60 ? Math.floor(seconds / 60) + " min" : seconds + " sec") + "</button><output class=\"scalp-practice-time\" id=\"timer-" + technique.id + "\" aria-live=\"polite\">" + initialTime + "</output><button class=\"button subtle small scalp-practice-complete\" type=\"button\" data-technique-id=\"" + technique.id + "\" " + (done ? "disabled aria-disabled=\"true\"" : "") + ">" + (done ? "Practiced ✓" : "Mark done") + "</button></div></div></article>";
 }
 
 function headScalpQuickPractice(lesson) {
@@ -350,7 +327,17 @@ function quickVersion(lesson) {
   const nextLink = next
     ? "<a class=\"button practice-next\" href=\"#/lesson/" + next.id + "\">Next skill <span aria-hidden=\"true\">→</span></a>"
     : "<a class=\"button practice-next\" href=\"#/progress\">Review progress <span aria-hidden=\"true\">→</span></a>";
-  return "<section class=\"quick-version\" data-quick-practice=\"" + lesson.id + "\"><div class=\"quick-practice-path\"><div><p class=\"eyebrow\">Quick practice · " + esc(guide.category) + "</p><p class=\"practice-count\">Skill " + String(lesson.id).padStart(2, "0") + " of " + lessons.length + " · " + completedCount + " checked</p></div><ol class=\"practice-progression\" aria-label=\"Practice progression\"><li>Learn</li><li aria-current=\"step\">Practice</li><li>Check</li><li>Next skill</li></ol></div><div class=\"quick-version-head\"><div><h2>" + esc(guide.title) + "</h2><p><strong class=\"practice-skill-inline\">Skill: " + esc(guide.skill) + "</strong> · See the hand placement, then practice the small action below.</p></div><div class=\"timer\" aria-live=\"polite\">01:00</div></div><div class=\"quick-practice-grid\"><figure class=\"practice-visual\"><button class=\"practice-image-enlarge\" type=\"button\" aria-label=\"Enlarge visual: " + esc(guide.skill) + "\"><img class=\"practice-image\" src=\"assets/lessons/" + artwork.image + "\" alt=\"" + esc(guide.imageAlt) + "\" width=\"1448\" height=\"1086\" loading=\"lazy\" decoding=\"async\" />" + motion + "<span class=\"practice-enlarge-hint\">View larger <span aria-hidden=\"true\">⤢</span></span></button><figcaption><span class=\"practice-visual-label\">Visual cue</span><strong>" + esc(guide.cue) + "</strong></figcaption></figure><div class=\"practice-coach\"><div class=\"practice-brief\"><div><span>Goal</span><strong>" + esc(guide.goal) + "</strong></div></div><div class=\"practice-instructions\"><h3>What to do</h3><ol>" + instructions + "</ol></div><div class=\"practice-watch\"><h3>Watch for</h3><ul>" + watchFor + "</ul></div><div class=\"practice-avoid\"><h3>Common mistake</h3><p>" + esc(guide.avoid) + "</p></div></div></div><div class=\"quick-version-bottom\"><div class=\"quick-safety\"><span aria-hidden=\"true\">!</span><span>Keep it gentle. <strong>Comfort is the goal.</strong></span></div><div class=\"button-row practice-actions\"><button class=\"button primary small practice-start\" type=\"button\">Start 1-minute practice</button><button class=\"button subtle small practice-reset\" type=\"button\" hidden>Reset timer</button><button class=\"button small practice-check\" type=\"button\" data-practice-id=\"" + lesson.id + "\" " + (complete ? "disabled\" aria-disabled=\"true\"" : "") + ">" + (complete ? "Practice checked ✓" : "Mark practice complete") + "</button>" + nextLink + "<button class=\"button small reveal-full\" type=\"button\">Full lesson ↓</button></div></div><p class=\"practice-status\" aria-live=\"polite\">" + (complete ? "Practice saved on this device." : "Start when you are ready; check it off when the movement feels clear.") + "</p><dialog class=\"practice-lightbox\" aria-label=\"Enlarged practice visual\"><div class=\"practice-lightbox-head\"><strong>" + esc(guide.skill) + "</strong><button class=\"button small practice-lightbox-close\" type=\"button\">Close</button></div><div class=\"practice-lightbox-frame\"><div class=\"practice-lightbox-art\"><img class=\"practice-lightbox-image\" src=\"assets/lessons/" + artwork.image + "\" alt=\"" + esc(guide.imageAlt) + "\" width=\"1448\" height=\"1086\" decoding=\"async\" />" + modalMotion + "</div></div><div class=\"practice-lightbox-actions\"><button class=\"button small practice-zoom\" type=\"button\">Zoom in</button><span>Use the enlarged view to inspect hand placement and movement.</span></div></dialog></section>";
+  return "<section class=\"quick-version\" data-quick-practice=\"" + lesson.id + "\"><div class=\"quick-practice-path\"><div><p class=\"eyebrow\">Quick practice · " + esc(guide.category) + "</p><p class=\"practice-count\">Skill " + String(lesson.id).padStart(2, "0") + " of " + lessons.length + " · " + completedCount + " checked</p></div><ol class=\"practice-progression\" aria-label=\"Practice progression\"><li>Learn</li><li aria-current=\"step\">Practice</li><li>Check</li><li>Next skill</li></ol></div><div class=\"quick-version-head\"><div><h2>" + esc(guide.title) + "</h2><p><strong class=\"practice-skill-inline\">Skill: " + esc(guide.skill) + "</strong> · See the hand placement, then practice the small action below.</p></div><div class=\"timer\" aria-live=\"polite\">01:00</div></div><div class=\"quick-practice-grid\"><figure class=\"practice-visual\"><button class=\"practice-image-enlarge\" type=\"button\" aria-label=\"Enlarge visual: " + esc(guide.skill) + "\"><img class=\"practice-image\" src=\"/assets/lessons/" + artwork.image + "\" alt=\"" + esc(guide.imageAlt) + "\" width=\"1448\" height=\"1086\" loading=\"lazy\" decoding=\"async\" />" + motion + "<span class=\"practice-enlarge-hint\">View larger <span aria-hidden=\"true\">⤢</span></span></button><figcaption><span class=\"practice-visual-label\">Visual cue</span><strong>" + esc(guide.cue) + "</strong></figcaption></figure><div class=\"practice-coach\"><div class=\"practice-brief\"><div><span>Goal</span><strong>" + esc(guide.goal) + "</strong></div></div><div class=\"practice-instructions\"><h3>What to do</h3><ol>" + instructions + "</ol></div><div class=\"practice-watch\"><h3>Watch for</h3><ul>" + watchFor + "</ul></div><div class=\"practice-avoid\"><h3>Common mistake</h3><p>" + esc(guide.avoid) + "</p></div></div></div><div class=\"quick-version-bottom\"><div class=\"quick-safety\"><span aria-hidden=\"true\">!</span><span>Keep it gentle. <strong>Comfort is the goal.</strong></span></div><div class=\"button-row practice-actions\"><button class=\"button primary small practice-start\" type=\"button\">Start 1-minute practice</button><button class=\"button subtle small practice-reset\" type=\"button\" hidden>Reset timer</button><button class=\"button small practice-check\" type=\"button\" data-practice-id=\"" + lesson.id + "\" " + (complete ? "disabled\" aria-disabled=\"true\"" : "") + ">" + (complete ? "Practice checked ✓" : "Mark practice complete") + "</button>" + nextLink + "<button class=\"button small reveal-full\" type=\"button\">Full lesson ↓</button></div></div><p class=\"practice-status\" aria-live=\"polite\">" + (complete ? "Practice saved on this device." : "Start when you are ready; check it off when the movement feels clear.") + "</p><dialog class=\"practice-lightbox\" aria-label=\"Enlarged practice visual\"><div class=\"practice-lightbox-head\"><strong>" + esc(guide.skill) + "</strong><button class=\"button small practice-lightbox-close\" type=\"button\">Close</button></div><div class=\"practice-lightbox-frame\"><div class=\"practice-lightbox-art\"><img class=\"practice-lightbox-image\" src=\"/assets/lessons/" + artwork.image + "\" alt=\"" + esc(guide.imageAlt) + "\" width=\"1448\" height=\"1086\" decoding=\"async\" />" + modalMotion + "</div></div><div class=\"practice-lightbox-actions\"><button class=\"button small practice-zoom\" type=\"button\">Zoom in</button><span>Use the enlarged view to inspect hand placement and movement.</span></div></dialog></section>";
+}
+
+function quickPracticePage() {
+  const requestedLesson = Number(new URLSearchParams(window.location.search).get("lesson"));
+  const selectedLesson = lessons.find(function (lesson) { return lesson.id === requestedLesson; }) || currentLesson();
+  const choices = lessons.map(function (lesson) {
+    const current = lesson.id === selectedLesson.id;
+    return "<a class=\"practice-picker-link\" href=\"/quick-practice?lesson=" + lesson.id + "\"" + (current ? " aria-current=\"page\"" : "") + "><span class=\"practice-picker-number\">" + String(lesson.id).padStart(2, "0") + "</span><span><strong>" + esc(lesson.title) + "</strong><small>" + esc(lesson.time + " min lesson") + "</small></span><span class=\"practice-picker-arrow\" aria-hidden=\"true\">→</span></a>";
+  }).join("");
+  return shell("<div class=\"page quick-practice-page\"><div class=\"reference-hero\"><div><p class=\"eyebrow\">See it · try it · keep it gentle</p><h1>Quick practice</h1><p class=\"lede\">Short, visual practice for one skill at a time. Choose a lesson below to switch the movement.</p></div><a class=\"button subtle\" href=\"/course\">Course map →</a></div>" + quickVersion(selectedLesson) + "<section class=\"practice-picker-panel\" aria-labelledby=\"practice-picker-title\"><div class=\"section-heading\"><div><p class=\"eyebrow\">13 visual practices</p><h2 id=\"practice-picker-title\">Choose another skill</h2></div><p>Every practice opens with its own detailed instructional visual and safety cues.</p></div><nav class=\"practice-picker-grid\" aria-label=\"Choose a quick practice\">" + choices + "</nav></section></div>", "quick-practice");
 }
 
 function fullLesson(lesson) {
@@ -397,7 +384,7 @@ function reference() {
 }
 
 function safety() {
-  return shell("<div class=\"page\"><section class=\"safety-hero\"><p class=\"eyebrow\" style=\"color:var(--sun)\">The safety boundary</p><h1>Comfort is the skill.</h1><p>Kindred Touch is educational guidance for gentle, non-medical massage. It does not diagnose, cure, or treat medical conditions. When in doubt, pause and ask an appropriate health professional.</p></section><section class=\"safety-at-a-glance\"><div><strong>Stop</strong><span>sharp or severe pain</span></div><div><strong>Stop</strong><span>numbness or tingling</span></div><div><strong>Stop</strong><span>dizziness or faintness</span></div><div><strong>Ask first</strong><span>injury, surgery, or a condition</span></div></section><div class=\"safety-grid\"><section class=\"safety-panel\"><h2>Stop right away for</h2><div class=\"stop-list\"><div class=\"stop-item\">Sharp or severe pain</div><div class=\"stop-item\">Numbness or tingling</div><div class=\"stop-item\">Dizziness or faintness</div><div class=\"stop-item\">Unusual weakness</div><div class=\"stop-item\">Difficulty breathing</div><div class=\"stop-item\">Any sudden concerning symptom</div></div></section><section class=\"safety-panel\"><h2>Ask for advice first</h2><ul><li>There is an injury, unexplained severe pain, or recent surgery.</li><li>A person has a medical condition, unusual swelling, or altered sensation.</li><li>The skin is broken, inflamed, bruised, or unusually hot or red.</li><li>You are unsure whether massage is appropriate or safe.</li></ul></section><section class=\"safety-panel\"><h2>Always keep out of bounds</h2><ul><li>Do not forcefully manipulate the spine, neck, joints, or injured areas.</li><li>Do not twist, crack, pull, or traction the neck.</li><li>Do not press directly on the spine, throat, open wounds, or acute pain.</li><li>Do not present massage as a cure or replacement for professional care.</li></ul></section><section class=\"safety-panel\"><h2>Good communication sounds like</h2><ul><li>“Is this pressure comfortable?”</li><li>“Would you like me to stay here, change direction, or pause?”</li><li>“Tell me if you feel anything sharp, numb, tingly, or unusual.”</li><li>“We can stop now—there is no need to push through.”</li></ul></section></div></div>", "safety");
+  return shell("<div class=\"page\"><section class=\"safety-hero\"><p class=\"eyebrow\" style=\"color:var(--sun)\">The safety boundary</p><h1>Comfort is the skill.</h1><p>The Craft is educational guidance for gentle, non-medical massage. It does not diagnose, cure, or treat medical conditions. When in doubt, pause and ask an appropriate health professional.</p></section><section class=\"safety-at-a-glance\"><div><strong>Stop</strong><span>sharp or severe pain</span></div><div><strong>Stop</strong><span>numbness or tingling</span></div><div><strong>Stop</strong><span>dizziness or faintness</span></div><div><strong>Ask first</strong><span>injury, surgery, or a condition</span></div></section><div class=\"safety-grid\"><section class=\"safety-panel\"><h2>Stop right away for</h2><div class=\"stop-list\"><div class=\"stop-item\">Sharp or severe pain</div><div class=\"stop-item\">Numbness or tingling</div><div class=\"stop-item\">Dizziness or faintness</div><div class=\"stop-item\">Unusual weakness</div><div class=\"stop-item\">Difficulty breathing</div><div class=\"stop-item\">Any sudden concerning symptom</div></div></section><section class=\"safety-panel\"><h2>Ask for advice first</h2><ul><li>There is an injury, unexplained severe pain, or recent surgery.</li><li>A person has a medical condition, unusual swelling, or altered sensation.</li><li>The skin is broken, inflamed, bruised, or unusually hot or red.</li><li>You are unsure whether massage is appropriate or safe.</li></ul></section><section class=\"safety-panel\"><h2>Always keep out of bounds</h2><ul><li>Do not forcefully manipulate the spine, neck, joints, or injured areas.</li><li>Do not twist, crack, pull, or traction the neck.</li><li>Do not press directly on the spine, throat, open wounds, or acute pain.</li><li>Do not present massage as a cure or replacement for professional care.</li></ul></section><section class=\"safety-panel\"><h2>Good communication sounds like</h2><ul><li>“Is this pressure comfortable?”</li><li>“Would you like me to stay here, change direction, or pause?”</li><li>“Tell me if you feel anything sharp, numb, tingly, or unusual.”</li><li>“We can stop now—there is no need to push through.”</li></ul></section></div></div>", "safety");
 }
 
 function progressPage() {
@@ -447,6 +434,7 @@ function render() {
   let html;
   if (current === "home") html = home();
   else if (current === "course") html = course();
+  else if (current === "quick-practice") html = quickPracticePage();
   else if (current === "techniques") html = techniques();
   else if (current === "body-areas") html = areas();
   else if (current === "routines") html = routines();
@@ -457,6 +445,8 @@ function render() {
   else html = notFound();
   const app = document.getElementById("app");
   app.innerHTML = html;
+  normalizeRouteLinks(app);
+  updatePageMetadata(current);
   if (current === "home") replaceHeroArtwork(app);
   bindEvents();
 }

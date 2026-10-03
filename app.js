@@ -225,7 +225,93 @@ function percentComplete() { return Math.round(progress.completed.length / lesso
 function currentLesson() { return lessons.find(function (item) { return item.id === progress.current; }) || lessons[0]; }
 function setCurrent(id) { progress.current = id; saveProgress(); }
 function markLesson(id) { if (!isComplete(id)) progress.completed.push(id); setCurrent(Math.min(id + 1, lessons.length)); }
-function route() { return window.location.hash.replace(/^#\/?/, "") || "home"; }
+function route() {
+  let path = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (window.location.hash.startsWith("#/")) {
+    const legacyRoute = window.location.hash.slice(2);
+    const [page, query] = legacyRoute.split("?");
+    let destination = page === "home" || !page ? "/" : "/" + page;
+    if (/^lesson\/\d+$/.test(page)) destination = "/lessons/" + page.split("/")[1];
+    if (query) destination += "?" + query;
+    window.history.replaceState(null, "", destination);
+    path = destination.split("?")[0].replace(/\/+$/, "") || "/";
+  }
+  const legacyLessonPath = path.match(/^\/lesson\/(\d+)$/);
+  if (path === "/home" || legacyLessonPath) {
+    path = legacyLessonPath ? "/lessons/" + legacyLessonPath[1] : "/";
+    window.history.replaceState(null, "", path + window.location.search);
+  }
+  if (path === "/" || path === "/home") return "home";
+  if (path === "/course" || path === "/lessons") return "course";
+  const lessonMatch = path.match(/^\/(?:lessons|lesson)\/(\d+)$/);
+  if (lessonMatch) return "lesson/" + lessonMatch[1];
+  return path.slice(1);
+}
+
+function normalizeRouteLinks(root) {
+  root.querySelectorAll('a[href^="#/"]').forEach(function (anchor) {
+    const legacyRoute = anchor.getAttribute("href").slice(2);
+    const [page, query] = legacyRoute.split("?");
+    let path = !page || page === "home" ? "/" : "/" + page;
+    if (/^lesson\/\d+$/.test(page)) path = "/lessons/" + page.split("/")[1];
+    anchor.setAttribute("href", path + (query ? "?" + query : ""));
+  });
+}
+
+function isAppPath(path) {
+  return path === "/" || path === "/home" || path === "/course" || path === "/lessons" ||
+    ["/quick-practice", "/techniques", "/body-areas", "/routines", "/safety", "/progress", "/reference"].includes(path) ||
+    /^\/(?:lessons|lesson)\/\d+$/.test(path);
+}
+
+function updatePageMetadata(current) {
+  const lessonMatch = window.location.pathname.match(/^\/(?:lessons|lesson)\/(\d+)$/);
+  const requestedPractice = current === "quick-practice" ? Number(new URLSearchParams(window.location.search).get("lesson")) : 0;
+  const lessonId = lessonMatch ? Number(lessonMatch[1]) : requestedPractice;
+  const lesson = lessonId ? lessons.find(function (item) { return item.id === lessonId; }) : null;
+  const pageDetails = {
+    home: ["Learn simple, safe massage techniques", "Visual beginner lessons, short practices, clear safety boundaries, and private progress saved on your device."],
+    course: ["Course map", "Explore 13 visual beginner massage lessons, follow your next recommended step, and keep your progress on this device."],
+    "quick-practice": [lesson ? lesson.title + " quick practice" : "Quick practice", "Choose a short, visual massage practice with clear movement cues and gentle safety guidance."],
+    techniques: ["Massage techniques", "Browse beginner massage movements with visual guidance and links back to the full lesson."],
+    "body-areas": ["Body areas", "Choose a body area to find gentle beginner guidance, a matching lesson, and concise safety notes."],
+    routines: ["Quick routines", "Follow short beginner massage routines with visual lesson links and clear comfort-first safety cues."],
+    safety: ["Massage safety", "Review simple, safety-first boundaries for gentle, non-medical massage practice."],
+    progress: ["Your learning progress", "Review lesson and practice progress saved privately in this browser. No account is needed."],
+    reference: ["Learning reference", "Return to lessons, techniques, body areas, quick routines, and safety guidance." ]
+  };
+  const details = lesson && current === "quick-practice" ? ["Quick practice · " + lesson.title, "A short, visual practice for " + lesson.title.toLowerCase() + " with clear movement cues and gentle safety guidance."] : lesson ? ["Lesson " + String(lesson.id).padStart(2, "0") + " · " + lesson.title, lesson.short + " Learn the setup, movement, pressure cues, and safety boundary."] : (pageDetails[current] || ["Page not found", "The page could not be found. Return to The Craft learning path."]);
+  const title = details[0] + " | The Craft";
+  document.title = title;
+  const description = document.querySelector('meta[name="description"]');
+  if (description) description.content = details[1];
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.content = title;
+  const ogDescription = document.querySelector('meta[property="og:description"]');
+  if (ogDescription) ogDescription.content = details[1];
+  const ogImage = document.querySelector('meta[property="og:image"]');
+  if (ogImage) ogImage.content = window.location.origin + "//assets/hero-massage.webp";
+  const canonical = document.querySelector('link[rel="canonical"]');
+  if (canonical) canonical.href = window.location.origin + (window.location.pathname === "/home" ? "/" : window.location.pathname);
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) ogUrl.content = canonical ? canonical.href : window.location.origin + window.location.pathname;
+}
+
+document.addEventListener("click", function (event) {
+  const anchor = event.target.closest("a[href]");
+  if (!anchor || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || anchor.target || anchor.hasAttribute("download")) return;
+  const destination = new URL(anchor.href, window.location.href);
+  if (destination.origin !== window.location.origin || !isAppPath(destination.pathname)) return;
+  if (destination.hash && !destination.hash.startsWith("#/")) return;
+  const nextUrl = destination.pathname + destination.search;
+  if (nextUrl === window.location.pathname + window.location.search) return;
+  event.preventDefault();
+  window.history.pushState(null, "", nextUrl);
+  render();
+  window.scrollTo({ top: 0, behavior: "instant" });
+  const main = document.getElementById("main-content");
+  if (main) { main.setAttribute("tabindex", "-1"); main.focus({ preventScroll: true }); }
+});
 function esc(value) { return String(value).replace(/[&<>'"]/g, function (char) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[char]; }); }
 function link(path, label, className) { return "<a class=\"button " + (className || "") + "\" href=\"#/" + path + "\">" + label + "</a>"; }
 
@@ -245,7 +331,7 @@ function lessonButton(lesson) {
 function shell(content, active) {
   const nav = [["home", "Home"], ["course", "Course"], ["techniques", "Techniques"], ["body-areas", "Body areas"], ["safety", "Safety"], ["progress", "Progress"]];
   const links = nav.map(function (item) { return "<a class=\"nav-link " + (active === item[0] ? "active" : "") + "\" href=\"#/" + item[0] + "\">" + item[1] + "</a>"; }).join("");
-  return "<header class=\"shell-header\"><a class=\"brand\" href=\"#/home\" aria-label=\"Kindred Touch home\"><span class=\"brand-mark\"><span>k</span></span><span class=\"brand-text\">kindred <em>touch</em></span></a><button class=\"menu-toggle\" type=\"button\" aria-label=\"Open navigation\" aria-expanded=\"false\">☰</button><nav class=\"main-nav\" aria-label=\"Main navigation\">" + links + "</nav></header><main id=\"main-content\" class=\"page-wrap\">" + content + "</main><footer class=\"footer\"><div class=\"footer-inner\"><strong>kindred touch</strong><span>Learn slowly. Listen closely. Keep it comfortable.</span></div></footer>";
+  return "<header class=\"shell-header\"><a class=\"brand\" href=\"#/home\" aria-label=\"The Craft home\"><span class=\"brand-mark\"><span>C</span></span><span class=\"brand-text\">the <em>craft</em></span></a><button class=\"menu-toggle\" type=\"button\" aria-label=\"Open navigation\" aria-expanded=\"false\">☰</button><nav class=\"main-nav\" aria-label=\"Main navigation\">" + links + "</nav></header><main id=\"main-content\" class=\"page-wrap\">" + content + "</main><footer class=\"footer\"><div class=\"footer-inner\"><strong>The Craft</strong><span>Learn slowly. Listen closely. Keep it comfortable.</span></div></footer>";
 }
 
 const lessonArtworkByType = {
@@ -266,7 +352,7 @@ const lessonArtworkByType = {
 
 function lessonVisual(lesson) {
   const artwork = lessonArtworkByType[lesson.visual[0]] || lessonArtworkByType.welcome;
-  return "<div class=\"lesson-visual\"><div class=\"visual-scene\"><img class=\"visual-image\" src=\"assets/lessons/" + artwork.image + "\" alt=\"" + esc(artwork.alt) + "\" width=\"1448\" height=\"1086\" decoding=\"async\" /></div><p class=\"visual-caption\">" + esc(artwork.caption) + "</p></div>";
+  return "<div class=\"lesson-visual\"><div class=\"visual-scene\"><img class=\"visual-image\" src=\"/assets/lessons/" + artwork.image + "\" alt=\"" + esc(artwork.alt) + "\" width=\"1448\" height=\"1086\" decoding=\"async\" /></div><p class=\"visual-caption\">" + esc(artwork.caption) + "</p></div>";
 }
 function aside(lesson) {
   return "<aside class=\"lesson-aside\"><div class=\"aside-card\"><p class=\"eyebrow\">Course progress</p><h3>" + progress.completed.length + " of " + lessons.length + " complete</h3><div class=\"progress-row\"><span>" + percentComplete() + "% learned</span><span>" + (isComplete(lesson.id) ? "Reviewed" : "In progress") + "</span></div>" + progressBar(true) + "<nav aria-label=\"Lesson list\">" + lessons.map(function (item) { return "<a class=\"lesson-link " + (isComplete(item.id) ? "done" : "") + "\" href=\"#/lesson/" + item.id + "\"><span class=\"small-num\">" + String(item.id).padStart(2, "0") + "</span><span>" + esc(item.title) + "</span>" + (isComplete(item.id) ? "<span aria-label=\"completed\">✓</span>" : "") + "</a>"; }).join("") + "</nav></div></aside>";
@@ -276,7 +362,7 @@ function home() {
   const started = progress.completed.length > 0 || progress.current > 1;
   const next = currentLesson();
   const continuePanel = started ? "<section class=\"continue-panel\"><div><p class=\"eyebrow\">Your next small step</p><h2>Continue with lesson " + String(next.id).padStart(2, "0") + " · " + esc(next.title) + "</h2><p>" + esc(next.short) + "</p>" + progressBar() + "</div><a class=\"button\" href=\"#/lesson/" + next.id + "\">" + (isComplete(next.id) ? "Review lesson" : "Continue learning") + " <span aria-hidden=\"true\">→</span></a></section>" : "";
-  return shell("<div class=\"page\"><section class=\"hero\"><div class=\"hero-copy\"><p class=\"eyebrow\">A calm course in caring touch</p><h1>Learn massage with more confidence and less guesswork.</h1><p class=\"lede\">Kindred Touch is a beginner-friendly learning path for thoughtful, comfortable massage. Learn one simple skill at a time, practice safely, and build a routine that listens.</p><div class=\"button-row\"><a class=\"button primary\" href=\"#/course\">Start learning <span aria-hidden=\"true\">→</span></a><a class=\"button\" href=\"#/safety\">Read the safety guide</a></div><p class=\"hero-note\"><span>✓</span> Educational guidance—not medical treatment.</p></div><div class=\"hero-art\"><div class=\"art-card art-main\"><svg class='hero-illustration' viewBox='0 0 440 360' preserveAspectRatio='xMidYMid meet' role='img' aria-label='Two people sharing supportive massage touch' xmlns='http://www.w3.org/2000/svg'><ellipse cx='266' cy='313' rx='147' ry='24' fill='#6f9e82' opacity='.25'/><path d='M213 160c16-27 46-39 78-31 34 9 51 39 56 77l13 91H185l10-88c2-21 5-35 18-49z' fill='#f4f0e9'/><circle cx='286' cy='92' r='39' fill='#bd8169'/><path d='M247 92c-3-34 20-58 50-54 29 3 43 26 35 59-12-12-20-27-23-46-12 16-31 27-62 32z' fill='#2c4f43'/><path d='M224 180c-35 1-65 15-91 40' fill='none' stroke='#bd8169' stroke-width='25' stroke-linecap='round'/><circle cx='130' cy='222' r='13' fill='#bd8169'/><path d='M118 221c-16-4-29-2-42 6' fill='none' stroke='#bd8169' stroke-width='9' stroke-linecap='round'/><path d='M159 191c-3-31-22-52-48-57-24-5-47 8-55 32-9 26 5 55 30 65 28 11 59-5 73-40z' fill='#d98a6e'/><circle cx='101' cy='114' r='31' fill='#bd8169'/><path d='M70 117c-2-28 15-48 39-49 25-1 40 19 34 47-11-10-18-21-21-36-12 15-27 25-52 28z' fill='#3d6855'/><path d='M80 151c23 15 50 14 68-2' fill='none' stroke='#f2c76a' stroke-width='8' stroke-linecap='round'/><path d='M244 219c-19 39-23 64-14 91' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M295 260c29 20 42 36 48 54' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M164 180c27-14 56-19 83-18' fill='none' stroke='#bd8169' stroke-width='23' stroke-linecap='round'/><path d='M263 147c16 10 26 23 30 39' fill='none' stroke='#f2c76a' stroke-width='6' stroke-linecap='round' stroke-dasharray='2 12'/></svg><div class=\"art-label\"><strong>Small steps, steady hands</strong><small>Designed for first-time learners</small></div></div><div class=\"art-card art-float one\">✦</div><div class=\"art-card art-float two\">☼</div></div></section><div class=\"stat-strip\"><div class=\"stat\"><strong>13</strong><span>guided lessons</span></div><div class=\"stat\"><strong>~75 min</strong><span>learning path</span></div><div class=\"stat\"><strong>Beginner</strong><span>friendly pace</span></div><div class=\"stat\"><strong>Local</strong><span>progress saved privately</span></div></div>" + continuePanel + "<section><div class=\"section-heading\"><div><p class=\"eyebrow\">How it works</p><h2>Learn by doing, not by guessing.</h2></div><p>Each lesson gives you a clear movement, a safe setup, a short practice, and a quick check before you move on.</p></div><div class=\"feature-grid\"><article class=\"feature-card\"><div class=\"feature-icon\">01</div><h3>One skill at a time</h3><p>Short lessons turn a big topic into a sequence you can actually remember and repeat.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">⌁</div><h3>See the movement</h3><p>Detailed, lesson-specific photos show hand placement, with subtle cues to trace each movement.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">✓</div><h3>Check your confidence</h3><p>Practice for a minute, answer two questions, and mark the lesson complete when it feels clear.</p></article></div></section><section class=\"safety-callout\"><div class=\"callout-icon\">!</div><div><h3>A gentle reminder before you begin</h3><p>Stop for sharp pain, numbness, tingling, dizziness, faintness, unusual weakness, difficulty breathing, or any sudden concerning symptom. Massage should never be forceful.</p></div></section></div>", "home");
+  return shell("<div class=\"page\"><section class=\"hero\"><div class=\"hero-copy\"><p class=\"eyebrow\">A calm course in caring touch</p><h1>Learn massage with more confidence and less guesswork.</h1><p class=\"lede\">The Craft is a beginner-friendly learning path for thoughtful, comfortable massage. Learn one simple skill at a time, practice safely, and build a routine that listens.</p><div class=\"button-row\"><a class=\"button primary\" href=\"#/course\">Start learning <span aria-hidden=\"true\">→</span></a><a class=\"button\" href=\"#/safety\">Read the safety guide</a></div><p class=\"hero-note\"><span>✓</span> Educational guidance—not medical treatment.</p></div><div class=\"hero-art\"><div class=\"art-card art-main\"><svg class='hero-illustration' viewBox='0 0 440 360' preserveAspectRatio='xMidYMid meet' role='img' aria-label='Two people sharing supportive massage touch' xmlns='http://www.w3.org/2000/svg'><ellipse cx='266' cy='313' rx='147' ry='24' fill='#6f9e82' opacity='.25'/><path d='M213 160c16-27 46-39 78-31 34 9 51 39 56 77l13 91H185l10-88c2-21 5-35 18-49z' fill='#f4f0e9'/><circle cx='286' cy='92' r='39' fill='#bd8169'/><path d='M247 92c-3-34 20-58 50-54 29 3 43 26 35 59-12-12-20-27-23-46-12 16-31 27-62 32z' fill='#2c4f43'/><path d='M224 180c-35 1-65 15-91 40' fill='none' stroke='#bd8169' stroke-width='25' stroke-linecap='round'/><circle cx='130' cy='222' r='13' fill='#bd8169'/><path d='M118 221c-16-4-29-2-42 6' fill='none' stroke='#bd8169' stroke-width='9' stroke-linecap='round'/><path d='M159 191c-3-31-22-52-48-57-24-5-47 8-55 32-9 26 5 55 30 65 28 11 59-5 73-40z' fill='#d98a6e'/><circle cx='101' cy='114' r='31' fill='#bd8169'/><path d='M70 117c-2-28 15-48 39-49 25-1 40 19 34 47-11-10-18-21-21-36-12 15-27 25-52 28z' fill='#3d6855'/><path d='M80 151c23 15 50 14 68-2' fill='none' stroke='#f2c76a' stroke-width='8' stroke-linecap='round'/><path d='M244 219c-19 39-23 64-14 91' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M295 260c29 20 42 36 48 54' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M164 180c27-14 56-19 83-18' fill='none' stroke='#bd8169' stroke-width='23' stroke-linecap='round'/><path d='M263 147c16 10 26 23 30 39' fill='none' stroke='#f2c76a' stroke-width='6' stroke-linecap='round' stroke-dasharray='2 12'/></svg><div class=\"art-label\"><strong>Small steps, steady hands</strong><small>Designed for first-time learners</small></div></div><div class=\"art-card art-float one\">✦</div><div class=\"art-card art-float two\">☼</div></div></section><div class=\"stat-strip\"><div class=\"stat\"><strong>13</strong><span>guided lessons</span></div><div class=\"stat\"><strong>~75 min</strong><span>learning path</span></div><div class=\"stat\"><strong>Beginner</strong><span>friendly pace</span></div><div class=\"stat\"><strong>Local</strong><span>progress saved privately</span></div></div>" + continuePanel + "<section><div class=\"section-heading\"><div><p class=\"eyebrow\">How it works</p><h2>Learn by doing, not by guessing.</h2></div><p>Each lesson gives you a clear movement, a safe setup, a short practice, and a quick check before you move on.</p></div><div class=\"feature-grid\"><article class=\"feature-card\"><div class=\"feature-icon\">01</div><h3>One skill at a time</h3><p>Short lessons turn a big topic into a sequence you can actually remember and repeat.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">⌁</div><h3>See the movement</h3><p>Detailed, lesson-specific photos show hand placement, with subtle cues to trace each movement.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">✓</div><h3>Check your confidence</h3><p>Practice for a minute, answer two questions, and mark the lesson complete when it feels clear.</p></article></div></section><section class=\"safety-callout\"><div class=\"callout-icon\">!</div><div><h3>A gentle reminder before you begin</h3><p>Stop for sharp pain, numbness, tingling, dizziness, faintness, unusual weakness, difficulty breathing, or any sudden concerning symptom. Massage should never be forceful.</p></div></section></div>", "home");
 }
 
 function course() {
@@ -307,7 +393,7 @@ function routines() {
   return shell("<div class=\"page\"><p class=\"eyebrow\">Short practice ideas</p><h1>Quick routines</h1><p class=\"lede\" style=\"margin-bottom:34px\">Keep a routine short enough to stay attentive. These are practice structures, not medical treatments.</p><div class=\"routine-grid\"><article class=\"routine-card\"><div class=\"routine-time\">05 MIN · RESET</div><h3>Hands & forearms</h3><p>A desk-break sequence for learning broad, light contact.</p><ul><li>1 min warm palms</li><li>2 min forearm gliding</li><li>1 min palm circles</li><li>1 min still finish</li></ul><a class=\"ref-link\" href=\"#/lesson/10\">Learn the area →</a></article><article class=\"routine-card\"><div class=\"routine-time\">07 MIN · UNWIND</div><h3>Shoulders & upper back</h3><p>A supported sequence that stays away from the spine and neck.</p><ul><li>2 min shoulder gliding</li><li>2 min upper-back path</li><li>2 min soft circles</li><li>1 min check-in</li></ul><a class=\"ref-link\" href=\"#/lesson/6\">Learn the area →</a></article><article class=\"routine-card\"><div class=\"routine-time\">10 MIN · COMPLETE</div><h3>Beginner flow</h3><p>Combine the course building blocks into one easy rhythm.</p><ul><li>2 min arrive</li><li>5 min one focus</li><li>1 check-in</li><li>2 min close</li></ul><a class=\"ref-link\" href=\"#/lesson/13\">Open final lesson →</a></article></div><section class=\"safety-callout\" style=\"margin-top:35px\"><div class=\"callout-icon\">!</div><div><h3>Shorter is always okay.</h3><p>Stop when comfort changes. A routine is successful when the person feels listened to—not when every minute is used.</p></div></section></div>", "");
 }
 function safety() {
-  return shell("<div class=\"page\"><section class=\"safety-hero\"><p class=\"eyebrow\" style=\"color:var(--sun)\">The safety boundary</p><h1>Comfort is the skill.</h1><p>Kindred Touch is educational guidance for gentle, non-medical massage. It does not diagnose, cure, or treat medical conditions. When in doubt, pause and ask an appropriate health professional.</p></section><div class=\"safety-grid\"><section class=\"safety-panel\"><h2>Stop right away for</h2><div class=\"stop-list\"><div class=\"stop-item\">Sharp or severe pain</div><div class=\"stop-item\">Numbness or tingling</div><div class=\"stop-item\">Dizziness or faintness</div><div class=\"stop-item\">Unusual weakness</div><div class=\"stop-item\">Difficulty breathing</div><div class=\"stop-item\">Any sudden concerning symptom</div></div></section><section class=\"safety-panel\"><h2>Ask for advice first</h2><ul><li>There is an injury, unexplained severe pain, or recent surgery.</li><li>A person has a medical condition, unusual swelling, or altered sensation.</li><li>The skin is broken, inflamed, bruised, or unusually hot or red.</li><li>You are unsure whether massage is appropriate or safe.</li></ul></section><section class=\"safety-panel\"><h2>Always keep out of bounds</h2><ul><li>Do not forcefully manipulate the spine, neck, joints, or injured areas.</li><li>Do not twist, crack, pull, or traction the neck.</li><li>Do not press directly on the spine, throat, open wounds, or acute pain.</li><li>Do not present massage as a cure or a replacement for professional care.</li></ul></section><section class=\"safety-panel\"><h2>Good communication sounds like</h2><ul><li>“Is this pressure comfortable?”</li><li>“Would you like me to stay here, change direction, or pause?”</li><li>“Tell me if you feel anything sharp, numb, tingly, or unusual.”</li><li>“We can stop now—there is no need to push through.”</li></ul></section></div></div>", "safety");
+  return shell("<div class=\"page\"><section class=\"safety-hero\"><p class=\"eyebrow\" style=\"color:var(--sun)\">The safety boundary</p><h1>Comfort is the skill.</h1><p>The Craft is educational guidance for gentle, non-medical massage. It does not diagnose, cure, or treat medical conditions. When in doubt, pause and ask an appropriate health professional.</p></section><div class=\"safety-grid\"><section class=\"safety-panel\"><h2>Stop right away for</h2><div class=\"stop-list\"><div class=\"stop-item\">Sharp or severe pain</div><div class=\"stop-item\">Numbness or tingling</div><div class=\"stop-item\">Dizziness or faintness</div><div class=\"stop-item\">Unusual weakness</div><div class=\"stop-item\">Difficulty breathing</div><div class=\"stop-item\">Any sudden concerning symptom</div></div></section><section class=\"safety-panel\"><h2>Ask for advice first</h2><ul><li>There is an injury, unexplained severe pain, or recent surgery.</li><li>A person has a medical condition, unusual swelling, or altered sensation.</li><li>The skin is broken, inflamed, bruised, or unusually hot or red.</li><li>You are unsure whether massage is appropriate or safe.</li></ul></section><section class=\"safety-panel\"><h2>Always keep out of bounds</h2><ul><li>Do not forcefully manipulate the spine, neck, joints, or injured areas.</li><li>Do not twist, crack, pull, or traction the neck.</li><li>Do not press directly on the spine, throat, open wounds, or acute pain.</li><li>Do not present massage as a cure or a replacement for professional care.</li></ul></section><section class=\"safety-panel\"><h2>Good communication sounds like</h2><ul><li>“Is this pressure comfortable?”</li><li>“Would you like me to stay here, change direction, or pause?”</li><li>“Tell me if you feel anything sharp, numb, tingly, or unusual.”</li><li>“We can stop now—there is no need to push through.”</li></ul></section></div></div>", "safety");
 }
 function progressPage() {
   return shell("<div class=\"page\"><div class=\"progress-hero\"><div><p class=\"eyebrow\">Your private learning record</p><h1>Progress</h1><p class=\"lede\">Your progress stays in this browser. No account, name, or sign-in is needed.</p></div><div class=\"progress-big\"><strong>" + percentComplete() + "%</strong><span>course complete</span></div></div><div class=\"progress-track\"><span style=\"width:" + percentComplete() + "%\"></span></div><div class=\"progress-caption\"><span>" + progress.completed.length + " of " + lessons.length + " lessons completed</span><span>Next: " + esc(currentLesson().title) + "</span></div><div class=\"button-row\" style=\"margin:27px 0 32px\"><a class=\"button primary\" href=\"#/lesson/" + currentLesson().id + "\">" + (progress.completed.length ? "Continue learning" : "Start learning") + " →</a><button class=\"button subtle reset-progress\" type=\"button\">Reset progress</button></div><div class=\"lesson-list\">" + lessons.map(function (lesson) { return "<article class=\"lesson-card " + (isComplete(lesson.id) ? "complete" : "") + "\"><div class=\"lesson-number\">" + String(lesson.id).padStart(2, "0") + "</div><div><h3>" + esc(lesson.title) + "</h3><p>" + (isComplete(lesson.id) ? "Completed and ready to revisit." : esc(lesson.short)) + "</p>" + statusMarkup(lesson) + "</div><div>" + lessonButton(lesson) + "</div></article>"; }).join("") + "</div></div>", "progress");
@@ -321,7 +407,7 @@ function replaceHeroArtwork(app) {
   card.className = "art-card art-main";
   const heroImage = document.createElement("img");
   heroImage.className = "hero-illustration";
-  heroImage.src = "assets/hero-massage.webp";
+  heroImage.src = "/assets/hero-massage.webp";
   heroImage.alt = "A massage therapist gently places both hands on a client's bare upper back while towels cover the lower body.";
   heroImage.width = 1448;
   heroImage.height = 1086;
@@ -410,4 +496,5 @@ function checkQuiz(form) {
 }
 
 window.addEventListener("hashchange", render);
+window.addEventListener("popstate", render);
 window.addEventListener("DOMContentLoaded", render);
