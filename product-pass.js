@@ -61,7 +61,7 @@ function shell(content, active) {
   const links = nav.map(function (item) {
     return "<a class=\"nav-link " + (active === item[0] ? "active" : "") + "\" href=\"#/" + item[0] + "\">" + item[1] + "</a>";
   }).join("");
-  return "<header class=\"shell-header\"><a class=\"brand\" href=\"#/home\" aria-label=\"Kindred Touch home\"><span class=\"brand-mark\"><span>k</span></span><span class=\"brand-text\">kindred <em>touch</em></span></a><button class=\"menu-toggle\" type=\"button\" aria-label=\"Open navigation\" aria-expanded=\"false\">☰</button><nav class=\"main-nav\" aria-label=\"Main navigation\">" + links + "</nav></header><main id=\"main-content\" class=\"page-wrap\">" + content + "</main><footer class=\"footer\"><div class=\"footer-inner\"><strong>kindred touch</strong><span>Learn slowly. Listen closely. Keep it comfortable.</span></div></footer>";
+  return "<header class=\"shell-header\"><a class=\"brand\" href=\"#/home\" aria-label=\"Kindred Touch home\"><span class=\"brand-mark\"><span aria-hidden=\"true\">k</span></span><span class=\"brand-text\">kindred <em>touch</em></span></a><button class=\"menu-toggle\" type=\"button\" aria-label=\"Open navigation\" aria-controls=\"main-nav\" aria-expanded=\"false\">☰</button><nav class=\"main-nav\" id=\"main-nav\" aria-label=\"Main navigation\">" + links + "</nav></header><main id=\"main-content\" class=\"page-wrap\">" + content + "</main><footer class=\"footer\"><div class=\"footer-inner\"><strong>kindred touch</strong><span>Learn slowly. Listen closely. Keep it comfortable.</span></div></footer>";
 }
 
 function goalCard(icon, title, text, href, tone) {
@@ -74,7 +74,60 @@ function home() {
   const mainHref = started ? "#/lesson/" + next.id : "#/course";
   const mainLabel = started ? "Continue learning" : "Start learning";
   const continuePanel = started ? "<section class=\"continue-panel\"><div><p class=\"eyebrow\">Your next small step</p><h2>Lesson " + String(next.id).padStart(2, "0") + " · " + esc(next.title) + "</h2><p>" + esc(next.short) + "</p>" + progressBar() + "</div><a class=\"button\" href=\"#/lesson/" + next.id + "\">Continue learning <span aria-hidden=\"true\">→</span></a></section>" : "";
-  return shell("<div class=\"page\"><section class=\"hero\"><div class=\"hero-copy\"><p class=\"eyebrow\">A calm course in caring touch</p><h1>Learn massage with more confidence and less guesswork.</h1><p class=\"lede\">A beginner-friendly learning path for thoughtful, comfortable massage. Learn one small skill, practice safely, and build a routine that listens.</p><div class=\"button-row\"><a class=\"button primary\" href=\"" + mainHref + "\">" + mainLabel + " <span aria-hidden=\"true\">→</span></a><a class=\"button\" href=\"#/safety\">Read the safety guide</a></div><p class=\"hero-note\"><span>✓</span> Educational guidance—not medical treatment.</p></div><div class=\"hero-art\"><div class=\"art-card art-main\"><svg class='hero-illustration' viewBox='0 0 440 360' preserveAspectRatio='xMidYMid meet' role='img' aria-label='Two people sharing supportive massage touch' xmlns='http://www.w3.org/2000/svg'><ellipse cx='266' cy='313' rx='147' ry='24' fill='#6f9e82' opacity='.25'/><path d='M213 160c16-27 46-39 78-31 34 9 51 39 56 77l13 91H185l10-88c2-21 5-35 18-49z' fill='#f4f0e9'/><circle cx='286' cy='92' r='39' fill='#bd8169'/><path d='M247 92c-3-34 20-58 50-54 29 3 43 26 35 59-12-12-20-27-23-46-12 16-31 27-62 32z' fill='#2c4f43'/><path d='M224 180c-35 1-65 15-91 40' fill='none' stroke='#bd8169' stroke-width='25' stroke-linecap='round'/><circle cx='130' cy='222' r='13' fill='#bd8169'/><path d='M118 221c-16-4-29-2-42 6' fill='none' stroke='#bd8169' stroke-width='9' stroke-linecap='round'/><path d='M159 191c-3-31-22-52-48-57-24-5-47 8-55 32-9 26 5 55 30 65 28 11 59-5 73-40z' fill='#d98a6e'/><circle cx='101' cy='114' r='31' fill='#bd8169'/><path d='M70 117c-2-28 15-48 39-49 25-1 40 19 34 47-11-10-18-21-21-36-12 15-27 25-52 28z' fill='#3d6855'/><path d='M80 151c23 15 50 14 68-2' fill='none' stroke='#f2c76a' stroke-width='8' stroke-linecap='round'/><path d='M244 219c-19 39-23 64-14 91' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M295 260c29 20 42 36 48 54' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M164 180c27-14 56-19 83-18' fill='none' stroke='#bd8169' stroke-width='23' stroke-linecap='round'/><path d='M263 147c16 10 26 23 30 39' fill='none' stroke='#f2c76a' stroke-width='6' stroke-linecap='round' stroke-dasharray='2 12'/></svg><div class=\"art-label\"><strong>Small steps, steady hands</strong><small>Designed for first-time learners</small></div></div><div class=\"art-card art-float one\">✦</div><div class=\"art-card art-float two\">☼</div></div></section><div class=\"stat-strip\"><div class=\"stat\"><strong>13</strong><span>guided lessons</span></div><div class=\"stat\"><strong>~75 min</strong><span>learning path</span></div><div class=\"stat\"><strong>Beginner</strong><span>friendly pace</span></div><div class=\"stat\"><strong>Local</strong><span>progress saved privately</span></div></div><section class=\"today-section\"><div class=\"section-heading\"><div><p class=\"eyebrow\">Choose your starting point</p><h2>What do you want to learn today?</h2></div><p>Go straight to the useful part. You can always return to the guided course later.</p></div><div class=\"goal-grid\">" + goalCard("01", "I’m completely new", "Start with the course map", "#/course", "sage") + goalCard("◷", "I have 5 minutes", "Follow a short routine", "#/routines", "sun") + goalCard("⌁", "A specific body area", "Browse the body explorer", "#/body-areas", "coral") + goalCard("→", "Practice a technique", "Open the quick reference", "#/techniques", "blue") + goalCard("✓", "I want to review safety", "See clear boundaries", "#/safety", "cream") + goalCard("↺", "Remember yesterday’s lesson", "Check your progress", "#/progress", "sage") + "</div></section>" + continuePanel + "<section><div class=\"section-heading\"><div><p class=\"eyebrow\">How it works</p><h2>Learn by doing, not by guessing.</h2></div><p>Each lesson gives you a clear movement, a safe setup, a short practice, and a quick check before you move on.</p></div><div class=\"feature-grid\"><article class=\"feature-card\"><div class=\"feature-icon\">01</div><h3>One skill at a time</h3><p>Short lessons turn a big topic into a sequence you can actually remember and repeat.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">⌁</div><h3>See the movement</h3><p>Simple diagrams show where hands go, what stays still, and how pressure should travel.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">✓</div><h3>Check your confidence</h3><p>Practice for a minute, answer two questions, and mark the lesson complete when it feels clear.</p></article></div></section><section class=\"safety-callout\"><div class=\"callout-icon\">!</div><div><h3>A gentle reminder before you begin</h3><p>Stop for sharp pain, numbness, tingling, dizziness, faintness, unusual weakness, difficulty breathing, or any sudden concerning symptom. Massage should never be forceful.</p></div></section></div>", "home");
+  const goals = [
+    goalCard("01", "I’m completely new", "Start with the course map", "#/course", "sage"),
+    goalCard("◷", "I have 5 minutes", "Follow a short routine", "#/routines", "sun"),
+    goalCard("⌁", "A specific body area", "Browse the body explorer", "#/body-areas", "coral"),
+    goalCard("→", "Practice a technique", "Open the quick reference", "#/techniques", "blue"),
+    goalCard("✓", "I want to review safety", "See clear boundaries", "#/safety", "cream"),
+    goalCard("↺", "Remember yesterday’s lesson", "Check your progress", "#/progress", "sage")
+  ].join("");
+  const markup = `
+    <div class="page">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">A calm course in caring touch</p>
+          <h1>Learn massage with more confidence and less guesswork.</h1>
+          <p class="lede">A beginner-friendly learning path for thoughtful, comfortable massage. Learn one small skill, practice safely, and build a routine that listens.</p>
+          <div class="button-row">
+            <a class="button primary" href="${mainHref}">${mainLabel} <span aria-hidden="true">→</span></a>
+            <a class="button" href="#/safety">Read the safety guide</a>
+          </div>
+          <p class="hero-note"><span aria-hidden="true">✓</span> Educational guidance—not medical treatment.</p>
+        </div>
+        <div class="hero-art" aria-label="Massage lesson preview"></div>
+      </section>
+      <div class="stat-strip" aria-label="Course at a glance">
+        <div class="stat"><strong>13</strong><span>guided lessons</span></div>
+        <div class="stat"><strong>~75 min</strong><span>learning path</span></div>
+        <div class="stat"><strong>Beginner</strong><span>friendly pace</span></div>
+        <div class="stat"><strong>Local</strong><span>progress saved privately</span></div>
+      </div>
+      <section class="today-section">
+        <div class="section-heading">
+          <div><p class="eyebrow">Choose your starting point</p><h2>What do you want to learn today?</h2></div>
+          <p>Go straight to the useful part. You can always return to the guided course later.</p>
+        </div>
+        <div class="goal-grid">${goals}</div>
+      </section>
+      ${continuePanel}
+      <section>
+        <div class="section-heading">
+          <div><p class="eyebrow">How it works</p><h2>Learn by doing, not by guessing.</h2></div>
+          <p>Each lesson pairs a safe setup, an instructional visual, a short practice, and a clear next step.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card"><div class="feature-icon" aria-hidden="true">01</div><h3>One skill at a time</h3><p>Short lessons turn a big topic into a sequence you can remember and repeat.</p></article>
+          <article class="feature-card"><div class="feature-icon" aria-hidden="true">⌁</div><h3>See the movement</h3><p>Lesson-specific photographs show hand placement; movement cues trace the intended path.</p></article>
+          <article class="feature-card"><div class="feature-icon" aria-hidden="true">✓</div><h3>Check your confidence</h3><p>Practice for a minute, check your understanding, and mark each lesson when it feels clear.</p></article>
+        </div>
+      </section>
+      <section class="safety-callout">
+        <div class="callout-icon" aria-hidden="true">!</div>
+        <div><h3>A gentle reminder before you begin</h3><p>Stop for sharp pain, numbness, tingling, dizziness, faintness, unusual weakness, difficulty breathing, or any sudden concerning symptom. Massage should never be forceful.</p></div>
+      </section>
+    </div>`;
+  return shell(markup, "home");
 }
 
 function course() {
@@ -83,15 +136,126 @@ function course() {
   return shell("<div class=\"page\"><div class=\"course-top\"><div><p class=\"eyebrow\">The guided path</p><h1>Course map</h1><p class=\"lede\">Start at the top and build a small, safe toolkit. Every lesson ends with practice and a clear next step.</p></div><div class=\"course-stat\"><strong>" + progress.completed.length + " / " + lessons.length + "</strong><span>lessons completed</span>" + progressBar(true) + "</div></div><section class=\"course-next\"><div class=\"course-next-mark\">" + String(next.id).padStart(2, "0") + "</div><div><p class=\"eyebrow\">Next recommended</p><h2>" + esc(next.title) + "</h2><p>" + nextText + "</p></div><a class=\"button primary small\" href=\"#/lesson/" + next.id + "\">" + (isComplete(next.id) ? "Review lesson" : "Continue") + " →</a></section><div class=\"lesson-list\">" + lessons.map(function (lesson) { return "<article class=\"lesson-card " + (isComplete(lesson.id) ? "complete" : "") + "\"><div class=\"lesson-number\">" + String(lesson.id).padStart(2, "0") + "</div><div><h3>" + esc(lesson.title) + "</h3><p>" + esc(lesson.short) + "</p><div class=\"lesson-meta\"><span>" + esc(lesson.level) + "</span><span>" + lesson.time + " min</span></div></div><div>" + statusMarkup(lesson) + lessonButton(lesson) + "</div></article>"; }).join("") + "</div><div class=\"button-row\" style=\"margin-top:26px\"><a class=\"button subtle\" href=\"#/progress\">View your progress</a><a class=\"button\" href=\"#/safety\">Review safety</a></div></div>", "course");
 }
 
+const quickPracticeGuides = {
+  1: {
+    category: "Foundation", title: "Start with permission", skill: "Consent & first contact", imageAlt: "A therapist and fully clothed client make eye contact during a check-in before massage.",
+    goal: "Begin with clear permission and a touch that feels easy to receive.",
+    steps: ["Ask which area and pressure feel okay.", "Wait for a clear yes, then rest one warm palm lightly.", "Pause and ask if the contact feels comfortable."],
+    watch: ["The person knows what you will do.", "Breathing stays easy and unhurried."],
+    avoid: "Touching before permission or starting with pressure.", cue: "Ask → agree → rest lightly"
+  },
+  2: {
+    category: "Hand foundations", title: "Prepare a relaxed hand", skill: "Relaxed palm & neutral wrist", imageAlt: "Relaxed palms lie flat on a towel, with soft fingers and straight wrists.",
+    goal: "Keep the palm broad while the wrist stays in line with the forearm.",
+    steps: ["Rest your palm on a towel or pillow.", "Let the fingers soften and line up your wrist.", "Shift a little weight, then release and reset."],
+    watch: ["The palm stays broad and warm.", "Fingers and shoulders remain relaxed."],
+    avoid: "Bending the wrist sharply or poking with a thumb.", cue: "Broad palm · straight wrist"
+  },
+  3: {
+    category: "Core strokes", title: "Glide and return", skill: "Gentle forearm glide", imageAlt: "A therapist's palm glides along a supported forearm while the other hand steadies the wrist.",
+    goal: "Make one smooth working stroke, then return with less pressure.",
+    steps: ["Support the forearm and place your whole palm down.", "Glide slowly toward the elbow in one steady pass.", "Soften or lift your hand on the return."],
+    watch: ["The palm stays in broad contact.", "The return feels lighter than the working stroke."],
+    avoid: "Rushing, dragging back with equal pressure, or pressing through pain.", cue: "Smooth glide → lighter return"
+  },
+  4: {
+    category: "Core strokes", title: "Circle slowly", skill: "Small shoulder circles", imageAlt: "A therapist's relaxed palm rests on the back shoulder muscle of a seated, clothed client.",
+    goal: "Move the skin gently with a small, slow circle over soft muscle.",
+    steps: ["Place your broad palm on the back of the shoulder.", "Make a small circle over soft muscle; count two seconds.", "Keep the wrist loose and ask how it feels."],
+    watch: ["The circle stays small and even.", "The shoulder stays soft; the client does not brace."],
+    avoid: "Circling on the neck, collarbone, bony tip, or a tender spot.", cue: "Small, slow circles ↻"
+  },
+  5: {
+    category: "Core strokes", title: "Lift and release", skill: "Gentle lift-and-release", imageAlt: "A therapist gently gathers soft calf muscle with a relaxed hand while the leg is supported.",
+    goal: "Move a little soft tissue without pinching or squeezing hard.",
+    steps: ["Rest your palm and finger pads on soft calf muscle.", "Gather and lift only a small amount of tissue.", "Release smoothly, then move to a nearby spot."],
+    watch: ["The movement is shallow and rhythmic.", "The skin is not pinched between fingertips."],
+    avoid: "A deep squeeze, pinching, or working over a joint or injury.", cue: "Gather → tiny lift → release"
+  },
+  6: {
+    category: "Body-area skills", title: "Warm the shoulders", skill: "Broad shoulder contact", imageAlt: "Two relaxed palms rest over the shoulder muscles of a clothed client, away from the neck.",
+    goal: "Stay on soft shoulder muscle and keep the neck and joints clear.",
+    steps: ["Invite the person to sit supported with arms resting.", "Place open palms on the upper shoulder muscles.", "Glide broadly, then pause and check comfort."],
+    watch: ["Hands stay on soft muscle behind the collarbone.", "The person can breathe and let their shoulders drop."],
+    avoid: "Pressing the neck, collarbone, spine, or shoulder joint.", cue: "Broad contact · neck stays clear"
+  },
+  7: {
+    category: "Body-area skills", title: "Follow a safe back path", skill: "Upper-back path beside the spine", imageAlt: "Two flat hands rest on broad back muscles on either side of the spine over clothing.",
+    goal: "Travel up and outward over broad muscle, never directly on the spine.",
+    steps: ["Place both broad palms beside the spine.", "Glide up and outward toward the shoulders.", "Return with a lighter touch and stay on the surface."],
+    watch: ["Both hands remain beside the bony spine.", "The path is broad, slow, and easy to follow."],
+    avoid: "Pressing on the spine or hooking under the shoulder blade.", cue: "Beside spine → outward → lighter return"
+  },
+  8: {
+    category: "Body-area skills", title: "Support the skull base", skill: "Still support at the skull base", imageAlt: "A therapist cradles the base of a reclined client's skull while the head stays neutral and supported.",
+    goal: "Offer light, still support without moving the head or pressing the throat.",
+    steps: ["Keep the head resting in a neutral position.", "Cradle below the skull with soft finger pads.", "Hold lightly, then lift your hands away slowly."],
+    watch: ["The head stays still and supported.", "Contact remains gentle at the back of the skull."],
+    avoid: "Turning, pulling, tractioning, or pressing the front or side of the throat.", cue: "Still support · no turning or pulling"
+  },
+  9: {
+    category: "Body-area skills", title: "Make gentle scalp circles", skill: "Scalp circles with finger pads", imageAlt: "Relaxed fingertips rest in the scalp of a reclined client without pulling the hair.",
+    goal: "Move the scalp gently with finger pads while the hair stays relaxed.",
+    steps: ["Set relaxed finger pads lightly into the hair.", "Make tiny circles that move the scalp, not the strands.", "Lift and reposition without tugging."],
+    watch: ["Nails stay away from the skin.", "Hair does not pull and pressure stays light."],
+    avoid: "Scratching with nails, gripping hair, or pressing hard at the temples.", cue: "Finger-pad circles ↻ · no tugging"
+  },
+  10: {
+    category: "Body-area skills", title: "Support, glide, and cup", skill: "Supported forearm and hand", imageAlt: "One hand supports a client's wrist while the other glides along the forearm toward the hand.",
+    goal: "Support the limb before moving; keep the wrist and fingers easy.",
+    steps: ["Rest the forearm and support the wrist with one hand.", "Glide your other palm along the forearm in a smooth pass.", "Cup the hand gently; let the fingers stay free."],
+    watch: ["The wrist stays neutral and supported.", "The fingers are not pulled or forced."],
+    avoid: "Pulling the hand, bending the wrist, or tugging individual fingers.", cue: "Support → glide → cup the hand"
+  },
+  11: {
+    category: "Body-area skills", title: "Glide the supported calf", skill: "Supported calf glide", imageAlt: "An open palm glides over a clothing-covered calf while the other hand supports the ankle.",
+    goal: "Use a long, light stroke over soft calf muscle while the leg is supported.",
+    steps: ["Support the leg so the calf can relax.", "Glide your open palm along the soft calf toward the knee.", "Ease pressure on the return and keep clear of joints."],
+    watch: ["The knee and ankle remain comfortable.", "The palm travels smoothly without a deep press."],
+    avoid: "Pressing behind the knee or working over swelling, heat, or acute pain.", cue: "Long calf stroke → lighter return"
+  },
+  12: {
+    category: "Body-area skills", title: "Massage the sole gently", skill: "Supported sole circles", imageAlt: "One hand supports the heel as the broad pad of the other thumb makes gentle contact across the sole; the toes stay relaxed.",
+    goal: "Anchor the heel, use a broad thumb pad on the sole, and keep the toes free.",
+    steps: ["Rest the ankle on a pillow and cup the heel.", "Use the broad thumb pad—not its tip—on the sole.", "Make a small, light circle and check sensitivity."],
+    watch: ["The heel stays supported and toes stay free.", "The thumb stays broad; pressure remains light."],
+    avoid: "Poking with the thumb tip, pulling toes, or pressing hard on a sensitive or injured foot.", cue: "Anchor heel · broad thumb pad circles · toes free"
+  },
+  13: {
+    category: "Routine integration", title: "Close a calm routine", skill: "A calm 10-minute flow", imageAlt: "A fully clothed client and therapist sit facing one another for a calm end-of-routine check-in.",
+    goal: "Join familiar skills with a clear check-in and a gentle finish.",
+    steps: ["Arrive and agree on one comfortable focus area.", "Use one familiar stroke for a few minutes; check in once.", "Slow down, release contact, and ask how they feel."],
+    watch: ["The pace stays unhurried and easy to pause.", "The routine ends with a clear check-in."],
+    avoid: "Trying to cover every body area or continuing when comfort changes.", cue: "Arrive → one focus → check in → close"
+  }
+};
+
+const practiceMotionByLesson = {
+  3: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-3\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M460 735 C600 680 760 645 930 600\" marker-end=\"url(#motion-arrow-3)\"/><path class=\"motion-path motion-path-return\" d=\"M945 650 C790 704 630 735 505 780\" marker-end=\"url(#motion-arrow-3)\"/></svg>",
+  4: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-4\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path motion-loop\" d=\"M680 490 C665 405 760 365 825 410 C890 455 875 535 810 558 C740 583 680 540 688 485\" marker-end=\"url(#motion-arrow-4)\"/></svg>",
+  5: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-5\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M500 690 C555 685 615 670 670 650\" marker-end=\"url(#motion-arrow-5)\"/><path class=\"motion-path\" d=\"M850 615 C800 625 755 642 710 655\" marker-end=\"url(#motion-arrow-5)\"/><path class=\"motion-path motion-path-return\" d=\"M685 710 C640 725 590 730 555 720\"/></svg>",
+  6: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-6\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M720 690 C640 660 550 635 450 620\" marker-end=\"url(#motion-arrow-6)\"/><path class=\"motion-path\" d=\"M735 690 C820 660 920 640 1030 620\" marker-end=\"url(#motion-arrow-6)\"/></svg>",
+  7: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-7\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M555 690 C535 615 505 545 455 465\" marker-end=\"url(#motion-arrow-7)\"/><path class=\"motion-path\" d=\"M895 690 C920 610 955 535 1005 465\" marker-end=\"url(#motion-arrow-7)\"/></svg>",
+  9: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-9\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path motion-loop\" d=\"M900 430 C865 385 910 345 950 370 C990 395 970 445 932 450 C900 454 880 432 890 405\" marker-end=\"url(#motion-arrow-9)\"/><path class=\"motion-path motion-loop motion-loop-secondary\" d=\"M1050 485 C1025 445 1065 415 1098 438 C1133 462 1113 505 1080 508\" marker-end=\"url(#motion-arrow-9)\"/></svg>",
+  10: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-10\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M910 760 C810 690 700 625 570 575\" marker-end=\"url(#motion-arrow-10)\"/><path class=\"motion-path motion-path-return\" d=\"M555 630 C670 680 780 735 870 795\" marker-end=\"url(#motion-arrow-10)\"/></svg>",
+  11: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-11\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M760 610 C665 590 555 585 455 610\" marker-end=\"url(#motion-arrow-11)\"/><path class=\"motion-path motion-path-return\" d=\"M440 665 C550 650 660 660 748 680\" marker-end=\"url(#motion-arrow-11)\"/></svg>",
+  12: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-12\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path motion-loop\" d=\"M720 450 C685 410 715 375 755 385 C790 394 790 438 760 452 C735 465 710 445 720 420\" marker-end=\"url(#motion-arrow-12)\"/></svg>"
+};
+
 function quickVersion(lesson) {
-  const quick = [
-    "Choose a supported position and relax your hands.",
-    lesson.steps[0][1],
-    lesson.steps[1][1],
-    "Check comfort before changing pressure or direction.",
-    "Stop for sharp pain, numbness, tingling, dizziness, or anything concerning."
-  ];
-  return "<section class=\"quick-version\"><div class=\"quick-version-head\"><div><p class=\"eyebrow\">Start here · 1 minute</p><h2>Quick practice</h2><p>Use this short version when you want to practice without rereading the full lesson.</p></div><div class=\"timer\" aria-live=\"polite\">01:00</div></div><ol class=\"quick-steps\">" + quick.map(function (item, index) { return "<li class=\"quick-step\"><span>" + String(index + 1).padStart(2, "0") + "</span><strong>" + esc(item) + "</strong></li>"; }).join("") + "</ol><div class=\"quick-version-bottom\"><div class=\"quick-safety\"><span>!</span><span>Keep it gentle. <strong>Comfort is the goal.</strong></span></div><div class=\"button-row\"><button class=\"button primary small practice-start\" type=\"button\">Start timer</button><button class=\"button subtle small practice-reset\" type=\"button\" hidden>Reset</button><button class=\"button small reveal-full\" type=\"button\">Open full lesson ↓</button></div></div></section>";
+  const guide = quickPracticeGuides[lesson.id];
+  const artwork = lessonArtworkByType[lesson.visual[0]];
+  const motion = practiceMotionByLesson[lesson.id] || "";
+  const modalMotion = motion.replace(new RegExp("motion-arrow-" + lesson.id, "g"), "motion-arrow-" + lesson.id + "-modal");
+  const next = lessons.find(function (item) { return item.id === lesson.id + 1; });
+  const complete = isPracticeComplete(lesson.id);
+  const completedCount = (progress.practiceCompleted || []).length;
+  const instructions = guide.steps.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("");
+  const watchFor = guide.watch.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("");
+  const nextLink = next
+    ? "<a class=\"button practice-next\" href=\"#/lesson/" + next.id + "\">Next skill <span aria-hidden=\"true\">→</span></a>"
+    : "<a class=\"button practice-next\" href=\"#/progress\">Review progress <span aria-hidden=\"true\">→</span></a>";
+  return "<section class=\"quick-version\" data-quick-practice=\"" + lesson.id + "\"><div class=\"quick-practice-path\"><div><p class=\"eyebrow\">Quick practice · " + esc(guide.category) + "</p><p class=\"practice-count\">Skill " + String(lesson.id).padStart(2, "0") + " of " + lessons.length + " · " + completedCount + " checked</p></div><ol class=\"practice-progression\" aria-label=\"Practice progression\"><li>Learn</li><li aria-current=\"step\">Practice</li><li>Check</li><li>Next skill</li></ol></div><div class=\"quick-version-head\"><div><h2>" + esc(guide.title) + "</h2><p><strong class=\"practice-skill-inline\">Skill: " + esc(guide.skill) + "</strong> · See the hand placement, then practice the small action below.</p></div><div class=\"timer\" aria-live=\"polite\">01:00</div></div><div class=\"quick-practice-grid\"><figure class=\"practice-visual\"><button class=\"practice-image-enlarge\" type=\"button\" aria-label=\"Enlarge visual: " + esc(guide.skill) + "\"><img class=\"practice-image\" src=\"assets/lessons/" + artwork.image + "\" alt=\"" + esc(guide.imageAlt) + "\" width=\"1448\" height=\"1086\" loading=\"lazy\" decoding=\"async\" />" + motion + "<span class=\"practice-enlarge-hint\">View larger <span aria-hidden=\"true\">⤢</span></span></button><figcaption><span class=\"practice-visual-label\">Visual cue</span><strong>" + esc(guide.cue) + "</strong></figcaption></figure><div class=\"practice-coach\"><div class=\"practice-brief\"><div><span>Goal</span><strong>" + esc(guide.goal) + "</strong></div></div><div class=\"practice-instructions\"><h3>What to do</h3><ol>" + instructions + "</ol></div><div class=\"practice-watch\"><h3>Watch for</h3><ul>" + watchFor + "</ul></div><div class=\"practice-avoid\"><h3>Common mistake</h3><p>" + esc(guide.avoid) + "</p></div></div></div><div class=\"quick-version-bottom\"><div class=\"quick-safety\"><span aria-hidden=\"true\">!</span><span>Keep it gentle. <strong>Comfort is the goal.</strong></span></div><div class=\"button-row practice-actions\"><button class=\"button primary small practice-start\" type=\"button\">Start 1-minute practice</button><button class=\"button subtle small practice-reset\" type=\"button\" hidden>Reset timer</button><button class=\"button small practice-check\" type=\"button\" data-practice-id=\"" + lesson.id + "\" " + (complete ? "disabled\" aria-disabled=\"true\"" : "") + ">" + (complete ? "Practice checked ✓" : "Mark practice complete") + "</button>" + nextLink + "<button class=\"button small reveal-full\" type=\"button\">Full lesson ↓</button></div></div><p class=\"practice-status\" aria-live=\"polite\">" + (complete ? "Practice saved on this device." : "Start when you are ready; check it off when the movement feels clear.") + "</p><dialog class=\"practice-lightbox\" aria-label=\"Enlarged practice visual\"><div class=\"practice-lightbox-head\"><strong>" + esc(guide.skill) + "</strong><button class=\"button small practice-lightbox-close\" type=\"button\">Close</button></div><div class=\"practice-lightbox-frame\"><div class=\"practice-lightbox-art\"><img class=\"practice-lightbox-image\" src=\"assets/lessons/" + artwork.image + "\" alt=\"" + esc(guide.imageAlt) + "\" width=\"1448\" height=\"1086\" decoding=\"async\" />" + modalMotion + "</div></div><div class=\"practice-lightbox-actions\"><button class=\"button small practice-zoom\" type=\"button\">Zoom in</button><span>Use the enlarged view to inspect hand placement and movement.</span></div></dialog></section>";
 }
 
 function fullLesson(lesson) {
@@ -159,7 +323,7 @@ function bindEvents() {
   const complete = document.querySelector(".complete-button");
   if (complete) complete.addEventListener("click", function (event) { markLesson(Number(event.currentTarget.dataset.lesson)); render(); window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); });
   const reset = document.querySelector(".reset-progress");
-  if (reset) reset.addEventListener("click", function () { if (window.confirm("Reset all completed lessons? This cannot be undone.")) { progress = { completed: [], current: 1 }; saveProgress(); render(); } });
+  if (reset) reset.addEventListener("click", function () { if (window.confirm("Reset all lesson and practice progress? This cannot be undone.")) { progress = { completed: [], current: 1, practiceCompleted: [] }; saveProgress(); render(); } });
   const reveal = document.querySelector(".reveal-full");
   if (reveal) reveal.addEventListener("click", function () { const detail = document.querySelector(".full-lesson"); if (detail) { detail.open = true; detail.scrollIntoView({ behavior: "smooth", block: "start" }); } });
   const search = document.querySelector("#technique-search");
@@ -209,12 +373,13 @@ function bindEvents() {
   if (menu) menu.addEventListener("click", function () {
     const open = nav.classList.toggle("open");
     menu.setAttribute("aria-expanded", String(open));
+    menu.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
     menu.textContent = open ? "×" : "☰";
   });
   if (nav) nav.querySelectorAll("a").forEach(function (link) {
     link.addEventListener("click", function () {
       nav.classList.remove("open");
-      if (menu) { menu.setAttribute("aria-expanded", "false"); menu.textContent = "☰"; }
+      if (menu) { menu.setAttribute("aria-expanded", "false"); menu.setAttribute("aria-label", "Open navigation"); menu.textContent = "☰"; }
     });
   });
   const complete = document.querySelector(".complete-button");
@@ -225,8 +390,8 @@ function bindEvents() {
   });
   const reset = document.querySelector(".reset-progress");
   if (reset) reset.addEventListener("click", function () {
-    if (window.confirm("Reset all completed lessons? This cannot be undone.")) {
-      progress = { completed: [], current: 1 };
+    if (window.confirm("Reset all lesson and practice progress? This cannot be undone.")) {
+      progress = { completed: [], current: 1, practiceCompleted: [] };
       saveProgress();
       render();
     }
@@ -258,6 +423,39 @@ function bindEvents() {
   }
   if (search) search.addEventListener("input", filterLibrary);
   if (filter) filter.addEventListener("change", filterLibrary);
+  const practiceCheck = document.querySelector(".practice-check");
+  if (practiceCheck) practiceCheck.addEventListener("click", function (event) {
+    const lessonId = Number(event.currentTarget.dataset.practiceId);
+    markPracticeComplete(lessonId);
+    event.currentTarget.disabled = true;
+    event.currentTarget.textContent = "Practice checked ✓";
+    const practice = event.currentTarget.closest(".quick-version");
+    practice.classList.add("is-practice-complete");
+    const status = practice.querySelector(".practice-status");
+    if (status) status.textContent = "Practice saved on this device. Move on when you feel ready.";
+    const count = practice.querySelector(".practice-count");
+    if (count) count.textContent = "Skill " + String(lessonId).padStart(2, "0") + " of " + lessons.length + " · " + progress.practiceCompleted.length + " checked";
+  });
+  const practiceLightbox = document.querySelector(".practice-lightbox");
+  if (practiceLightbox) {
+    const openLightbox = document.querySelector(".practice-image-enlarge");
+    const closeLightbox = practiceLightbox.querySelector(".practice-lightbox-close");
+    const zoomButton = practiceLightbox.querySelector(".practice-zoom");
+    const zoomImage = practiceLightbox.querySelector(".practice-lightbox-art");
+    if (openLightbox) openLightbox.addEventListener("click", function () { practiceLightbox.showModal(); });
+    if (closeLightbox) closeLightbox.addEventListener("click", function () { practiceLightbox.close(); });
+    if (zoomButton) zoomButton.addEventListener("click", function () {
+      const zoomed = zoomImage.classList.toggle("is-zoomed");
+      zoomButton.textContent = zoomed ? "Reset zoom" : "Zoom in";
+    });
+    practiceLightbox.addEventListener("click", function (event) {
+      if (event.target === practiceLightbox) practiceLightbox.close();
+    });
+    practiceLightbox.addEventListener("close", function () {
+      zoomImage.classList.remove("is-zoomed");
+      if (zoomButton) zoomButton.textContent = "Zoom in";
+    });
+  }
   const start = document.querySelector(".practice-start");
   if (start) start.addEventListener("click", function (event) { startTimer(event.currentTarget); });
   const practiceReset = document.querySelector(".practice-reset");

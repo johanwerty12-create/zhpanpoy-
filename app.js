@@ -198,14 +198,26 @@ let practiceTimer = null;
 function loadProgress() {
   try {
     const value = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1 };
-    return { completed: value.completed.filter(Number.isInteger), current: value.current || 1 };
+    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1, practiceCompleted: [] };
+    return {
+      completed: value.completed.filter(Number.isInteger),
+      current: value.current || 1,
+      practiceCompleted: Array.isArray(value.practiceCompleted)
+        ? value.practiceCompleted.filter(function (id) { return Number.isInteger(id) && id >= 1 && id <= lessons.length; })
+        : []
+    };
   } catch (error) {
-    return { completed: [], current: 1 };
+    return { completed: [], current: 1, practiceCompleted: [] };
   }
 }
 function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
 function isComplete(id) { return progress.completed.includes(id); }
+function isPracticeComplete(id) { return (progress.practiceCompleted || []).includes(id); }
+function markPracticeComplete(id) {
+  if (!progress.practiceCompleted) progress.practiceCompleted = [];
+  if (!progress.practiceCompleted.includes(id)) progress.practiceCompleted.push(id);
+  saveProgress();
+}
 function percentComplete() { return Math.round(progress.completed.length / lessons.length * 100); }
 function currentLesson() { return lessons.find(function (item) { return item.id === progress.current; }) || lessons[0]; }
 function setCurrent(id) { progress.current = id; saveProgress(); }
@@ -227,34 +239,31 @@ function lessonButton(lesson) {
   return "<a class=\"button small " + (isComplete(lesson.id) ? "subtle" : "primary") + "\" href=\"#/lesson/" + lesson.id + "\">" + label + " <span aria-hidden=\"true\">→</span></a>";
 }
 
-function visualSvg(type) {
-  const common = "fill=\"none\" stroke=\"#29513f\" stroke-width=\"3\" stroke-linecap=\"round\" stroke-linejoin=\"round\"";
-  const svg = {
-    welcome: "<circle cx=\"106\" cy=\"83\" r=\"23\" fill=\"#bd8169\"/><path d=\"M83 77c9-29 46-30 53-4\" fill=\"#2c4f43\"/><path d=\"M69 128c27-24 72-22 89 1\" " + common + "/><path d=\"M36 117c33-26 58-11 78 6\" stroke=\"#bd8169\" stroke-width=\"22\" stroke-linecap=\"round\"/><path d=\"M63 126c23-8 38-6 61 5\" " + common + "/>",
-    hands: "<path d=\"M47 112c8-33 19-56 30-56 7 0 8 9 4 24l-4 15 12-39c3-9 11-9 13 0l-4 38 9-34c3-10 11-8 12 1l-6 38 9-25c3-8 10-5 10 3l-4 27c-5 22-24 33-48 30-16-2-25-10-33-22z\" fill=\"#bd8169\"/><path d=\"M135 133c22-7 40-18 46-30\" " + common + "/>",
-    glide: "<path d=\"M52 120c13-33 38-55 81-61\" fill=\"none\" stroke=\"#bd8169\" stroke-width=\"32\" stroke-linecap=\"round\"/><path d=\"M67 88l22 27 21-22\" " + common + "/><path d=\"M49 132h119\" stroke=\"#29513f\" stroke-width=\"3\" stroke-dasharray=\"7 8\"/>",
-    circles: "<path d=\"M44 117c22-36 66-41 112-17\" fill=\"none\" stroke=\"#bd8169\" stroke-width=\"33\" stroke-linecap=\"round\"/><path d=\"M107 71c25 0 41 20 35 39-6 19-34 24-51 10-16-12-14-35 3-45 10-6 22-7 32-3\" " + common + "/><path d=\"M124 68l12 1-5 11\" " + common + "/>",
-    knead: "<path d=\"M57 112c11-33 35-45 76-38 24 4 38 20 33 35-5 17-31 20-54 16-28-4-48 8-55-13z\" fill=\"#bd8169\"/><path d=\"M85 94c7 20 19 27 34 27\" " + common + "/><path d=\"M79 81c6 9 9 18 8 27\" " + common + "/><path d=\"M126 82c-4 12-3 23 4 32\" " + common + "/>",
-    shoulders: "<path d=\"M78 49h57l24 25-13 69H56L44 74z\" fill=\"#f4f0e9\"/><path d=\"M69 76c-18 1-31 10-37 24M143 76c18 1 31 10 37 24\" stroke=\"#bd8169\" stroke-width=\"22\" stroke-linecap=\"round\"/><path d=\"M76 65c10 16 48 16 60 0\" " + common + "/><circle cx=\"63\" cy=\"93\" r=\"11\" fill=\"#f2c76a\"/><circle cx=\"148\" cy=\"93\" r=\"11\" fill=\"#f2c76a\"/>",
-    back: "<path d=\"M73 42c-15 19-19 69-13 104h91c6-35 2-85-13-104\" fill=\"#f4f0e9\"/><path d=\"M105 49v93\" stroke=\"#bd8169\" stroke-width=\"5\" stroke-dasharray=\"4 7\"/><path d=\"M82 63c-22 13-23 40-15 58M128 63c22 13 23 40 15 58\" stroke=\"#9bbda7\" stroke-width=\"19\" stroke-linecap=\"round\"/><path d=\"M53 92l26 0M157 92l-26 0\" " + common + "/>",
-    neck: "<circle cx=\"106\" cy=\"56\" r=\"22\" fill=\"#bd8169\"/><path d=\"M80 76h52l22 65H58z\" fill=\"#f4f0e9\"/><path d=\"M80 78c8 14 44 14 52 0\" fill=\"#bd8169\"/><path d=\"M85 83c7 18 6 34 1 48M127 83c-7 18-6 34-1 48\" " + common + "/><path d=\"M90 84c7-6 25-6 32 0\" stroke=\"#f2c76a\" stroke-width=\"10\" stroke-linecap=\"round\"/>",
-    scalp: "<circle cx=\"106\" cy=\"98\" r=\"43\" fill=\"#bd8169\"/><path d=\"M64 90c-3-34 23-54 49-45 25-4 39 17 35 45-13-12-19-27-22-41-11 12-28 21-56 25z\" fill=\"#2c4f43\"/><path d=\"M77 91c-11-24 8-43 24-45M103 73c2-18 16-28 30-24M130 81c7-16 13-18 19-18\" " + common + "/><circle cx=\"87\" cy=\"105\" r=\"6\" fill=\"#f2c76a\"/><circle cx=\"115\" cy=\"83\" r=\"6\" fill=\"#f2c76a\"/><circle cx=\"135\" cy=\"107\" r=\"6\" fill=\"#f2c76a\"/>",
-    arm: "<path d=\"M41 86c20-2 45-3 75 7l44 18\" stroke=\"#bd8169\" stroke-width=\"30\" stroke-linecap=\"round\"/><path d=\"M45 87l-19-11M47 91L24 88M47 96l-20 8\" stroke=\"#bd8169\" stroke-width=\"8\" stroke-linecap=\"round\"/><path d=\"M71 72l8 26 18-13M103 79l2 24 18-10\" " + common + "/>",
-    leg: "<path d=\"M76 44c-3 26-1 54 15 74l4 30\" stroke=\"#bd8169\" stroke-width=\"35\" stroke-linecap=\"round\"/><path d=\"M136 43c-3 26-4 49-17 75l-7 30\" stroke=\"#bd8169\" stroke-width=\"35\" stroke-linecap=\"round\"/><path d=\"M75 74h28M112 74h28\" stroke=\"#f2c76a\" stroke-width=\"9\" stroke-linecap=\"round\"/><path d=\"M70 122c15 10 26 8 38-1M111 121c13 9 23 9 35-1\" " + common + "/>",
-    foot: "<path d=\"M103 43c5 30 13 49 30 63 12 9 18 20 12 29-7 11-34 5-46-8-17-19-31-44-36-66\" fill=\"#bd8169\"/><path d=\"M82 82c17 3 31 12 40 26\" " + common + "/><path d=\"M116 108l21 2M113 115l24 8M110 121l18 14\" " + common + "/>",
-    routine: "<circle cx=\"106\" cy=\"95\" r=\"49\" fill=\"#f4f0e9\"/><path d=\"M106 46v19M106 125v19M57 95H38M155 95h19\" " + common + "/><path d=\"M106 66c-22 0-36 12-42 28M106 124c22 0 36-12 42-28\" " + common + "/><path d=\"M59 95l8-8M153 95l-8 8\" " + common + "/><circle cx=\"106\" cy=\"95\" r=\"9\" fill=\"#f2c76a\"/>"
-  };
-  return "<svg class=\"visual-svg\" viewBox=\"0 0 212 170\" preserveAspectRatio=\"xMidYMid meet\" role=\"img\" aria-label=\"" + esc(type) + " movement illustration\" xmlns=\"http://www.w3.org/2000/svg\">" + (svg[type] || svg.welcome) + "</svg>";
-}
-
 function shell(content, active) {
   const nav = [["home", "Home"], ["course", "Course"], ["techniques", "Techniques"], ["body-areas", "Body areas"], ["safety", "Safety"], ["progress", "Progress"]];
   const links = nav.map(function (item) { return "<a class=\"nav-link " + (active === item[0] ? "active" : "") + "\" href=\"#/" + item[0] + "\">" + item[1] + "</a>"; }).join("");
   return "<header class=\"shell-header\"><a class=\"brand\" href=\"#/home\" aria-label=\"Kindred Touch home\"><span class=\"brand-mark\"><span>k</span></span><span class=\"brand-text\">kindred <em>touch</em></span></a><button class=\"menu-toggle\" type=\"button\" aria-label=\"Open navigation\" aria-expanded=\"false\">☰</button><nav class=\"main-nav\" aria-label=\"Main navigation\">" + links + "</nav></header><main id=\"main-content\" class=\"page-wrap\">" + content + "</main><footer class=\"footer\"><div class=\"footer-inner\"><strong>kindred touch</strong><span>Learn slowly. Listen closely. Keep it comfortable.</span></div></footer>";
 }
 
+const lessonArtworkByType = {
+  welcome: { image: "lesson-01-welcome.webp", alt: "A therapist and fully clothed client calmly check in before touch.", caption: "Begin with permission, a supported position, and a calm pace." },
+  hands: { image: "lesson-02-hands.webp", alt: "Two relaxed hands rest palm-down on a towel with neutral, straight wrists.", caption: "Keep fingers relaxed and let the broad palm spread contact." },
+  glide: { image: "lesson-03-gliding.webp", alt: "A therapist's palm glides along a supported forearm while the wrist stays relaxed.", caption: "Use a smooth working stroke and ease pressure on the return." },
+  circles: { image: "lesson-04-circles.webp", alt: "A therapist places a relaxed palm on the back shoulder muscle of a seated client.", caption: "Small, slow circles belong on broad, comfortable muscle." },
+  knead: { image: "lesson-05-kneading.webp", alt: "A therapist gently gathers soft calf tissue with a relaxed hand.", caption: "Lift and release a little tissue; do not pinch or squeeze." },
+  shoulders: { image: "lesson-06-shoulders.webp", alt: "Two relaxed palms rest over a clothed client's shoulder muscles, away from the neck.", caption: "Stay on soft shoulder muscle; keep the neck and joints clear." },
+  back: { image: "lesson-07-upper-back.webp", alt: "A therapist's hands rest on either side of the spine over a clothed client's back.", caption: "Move over broad muscle beside the spine, never directly on it." },
+  neck: { image: "lesson-08-neck-support.webp", alt: "A therapist gently supports the base of a reclined client's skull while the head stays neutral.", caption: "Support the base of the skull; do not pull or rotate the head." },
+  scalp: { image: "lesson-09-scalp.webp", alt: "A therapist lightly touches a reclined client's scalp with relaxed fingertips.", caption: "Use finger pads, keep nails away, and never tug the hair." },
+  arm: { image: "lesson-10-arm-hand.webp", alt: "A therapist glides one hand along the forearm while the other supports the wrist.", caption: "Support the limb, glide smoothly, and do not pull the fingers." },
+  leg: { image: "lesson-11-leg.webp", alt: "A therapist glides an open palm over a clothing-covered calf while the other hand supports the ankle.", caption: "Glide lightly along soft calf muscle; stay clear of the knee and ankle." },
+  foot: { image: "lesson-12-foot-action.webp", alt: "One hand supports the heel as the broad pad of the other thumb gently works across the sole; toes stay free.", caption: "Anchor the heel, use a broad thumb pad on the sole, and leave toes free." },
+  routine: { image: "lesson-13-routine.webp", alt: "A fully clothed client and therapist share a calm closing check-in.", caption: "Close slowly, release contact, and ask how the person feels." }
+};
+
 function lessonVisual(lesson) {
-  return "<div class=\"lesson-visual\"><div class=\"visual-scene\">" + visualSvg(lesson.visual[0]) + "</div><p class=\"visual-caption\">" + esc(lesson.visual[1]) + "</p><span class=\"sr-only\">" + esc(lesson.visual[2]) + "</span></div>";
+  const artwork = lessonArtworkByType[lesson.visual[0]] || lessonArtworkByType.welcome;
+  return "<div class=\"lesson-visual\"><div class=\"visual-scene\"><img class=\"visual-image\" src=\"assets/lessons/" + artwork.image + "\" alt=\"" + esc(artwork.alt) + "\" width=\"1448\" height=\"1086\" decoding=\"async\" /></div><p class=\"visual-caption\">" + esc(artwork.caption) + "</p></div>";
 }
 function aside(lesson) {
   return "<aside class=\"lesson-aside\"><div class=\"aside-card\"><p class=\"eyebrow\">Course progress</p><h3>" + progress.completed.length + " of " + lessons.length + " complete</h3><div class=\"progress-row\"><span>" + percentComplete() + "% learned</span><span>" + (isComplete(lesson.id) ? "Reviewed" : "In progress") + "</span></div>" + progressBar(true) + "<nav aria-label=\"Lesson list\">" + lessons.map(function (item) { return "<a class=\"lesson-link " + (isComplete(item.id) ? "done" : "") + "\" href=\"#/lesson/" + item.id + "\"><span class=\"small-num\">" + String(item.id).padStart(2, "0") + "</span><span>" + esc(item.title) + "</span>" + (isComplete(item.id) ? "<span aria-label=\"completed\">✓</span>" : "") + "</a>"; }).join("") + "</nav></div></aside>";
@@ -264,7 +273,7 @@ function home() {
   const started = progress.completed.length > 0 || progress.current > 1;
   const next = currentLesson();
   const continuePanel = started ? "<section class=\"continue-panel\"><div><p class=\"eyebrow\">Your next small step</p><h2>Continue with lesson " + String(next.id).padStart(2, "0") + " · " + esc(next.title) + "</h2><p>" + esc(next.short) + "</p>" + progressBar() + "</div><a class=\"button\" href=\"#/lesson/" + next.id + "\">" + (isComplete(next.id) ? "Review lesson" : "Continue learning") + " <span aria-hidden=\"true\">→</span></a></section>" : "";
-  return shell("<div class=\"page\"><section class=\"hero\"><div class=\"hero-copy\"><p class=\"eyebrow\">A calm course in caring touch</p><h1>Learn massage with more confidence and less guesswork.</h1><p class=\"lede\">Kindred Touch is a beginner-friendly learning path for thoughtful, comfortable massage. Learn one simple skill at a time, practice safely, and build a routine that listens.</p><div class=\"button-row\"><a class=\"button primary\" href=\"#/course\">Start learning <span aria-hidden=\"true\">→</span></a><a class=\"button\" href=\"#/safety\">Read the safety guide</a></div><p class=\"hero-note\"><span>✓</span> Educational guidance—not medical treatment.</p></div><div class=\"hero-art\"><div class=\"art-card art-main\"><svg class='hero-illustration' viewBox='0 0 440 360' preserveAspectRatio='xMidYMid meet' role='img' aria-label='Two people sharing supportive massage touch' xmlns='http://www.w3.org/2000/svg'><ellipse cx='266' cy='313' rx='147' ry='24' fill='#6f9e82' opacity='.25'/><path d='M213 160c16-27 46-39 78-31 34 9 51 39 56 77l13 91H185l10-88c2-21 5-35 18-49z' fill='#f4f0e9'/><circle cx='286' cy='92' r='39' fill='#bd8169'/><path d='M247 92c-3-34 20-58 50-54 29 3 43 26 35 59-12-12-20-27-23-46-12 16-31 27-62 32z' fill='#2c4f43'/><path d='M224 180c-35 1-65 15-91 40' fill='none' stroke='#bd8169' stroke-width='25' stroke-linecap='round'/><circle cx='130' cy='222' r='13' fill='#bd8169'/><path d='M118 221c-16-4-29-2-42 6' fill='none' stroke='#bd8169' stroke-width='9' stroke-linecap='round'/><path d='M159 191c-3-31-22-52-48-57-24-5-47 8-55 32-9 26 5 55 30 65 28 11 59-5 73-40z' fill='#d98a6e'/><circle cx='101' cy='114' r='31' fill='#bd8169'/><path d='M70 117c-2-28 15-48 39-49 25-1 40 19 34 47-11-10-18-21-21-36-12 15-27 25-52 28z' fill='#3d6855'/><path d='M80 151c23 15 50 14 68-2' fill='none' stroke='#f2c76a' stroke-width='8' stroke-linecap='round'/><path d='M244 219c-19 39-23 64-14 91' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M295 260c29 20 42 36 48 54' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M164 180c27-14 56-19 83-18' fill='none' stroke='#bd8169' stroke-width='23' stroke-linecap='round'/><path d='M263 147c16 10 26 23 30 39' fill='none' stroke='#f2c76a' stroke-width='6' stroke-linecap='round' stroke-dasharray='2 12'/></svg><div class=\"art-label\"><strong>Small steps, steady hands</strong><small>Designed for first-time learners</small></div></div><div class=\"art-card art-float one\">✦</div><div class=\"art-card art-float two\">☼</div></div></section><div class=\"stat-strip\"><div class=\"stat\"><strong>13</strong><span>guided lessons</span></div><div class=\"stat\"><strong>~75 min</strong><span>learning path</span></div><div class=\"stat\"><strong>Beginner</strong><span>friendly pace</span></div><div class=\"stat\"><strong>Local</strong><span>progress saved privately</span></div></div>" + continuePanel + "<section><div class=\"section-heading\"><div><p class=\"eyebrow\">How it works</p><h2>Learn by doing, not by guessing.</h2></div><p>Each lesson gives you a clear movement, a safe setup, a short practice, and a quick check before you move on.</p></div><div class=\"feature-grid\"><article class=\"feature-card\"><div class=\"feature-icon\">01</div><h3>One skill at a time</h3><p>Short lessons turn a big topic into a sequence you can actually remember and repeat.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">⌁</div><h3>See the movement</h3><p>Simple reusable diagrams show where hands go, what stays still, and how pressure should travel.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">✓</div><h3>Check your confidence</h3><p>Practice for a minute, answer two questions, and mark the lesson complete when it feels clear.</p></article></div></section><section class=\"safety-callout\"><div class=\"callout-icon\">!</div><div><h3>A gentle reminder before you begin</h3><p>Stop for sharp pain, numbness, tingling, dizziness, faintness, unusual weakness, difficulty breathing, or any sudden concerning symptom. Massage should never be forceful.</p></div></section></div>", "home");
+  return shell("<div class=\"page\"><section class=\"hero\"><div class=\"hero-copy\"><p class=\"eyebrow\">A calm course in caring touch</p><h1>Learn massage with more confidence and less guesswork.</h1><p class=\"lede\">Kindred Touch is a beginner-friendly learning path for thoughtful, comfortable massage. Learn one simple skill at a time, practice safely, and build a routine that listens.</p><div class=\"button-row\"><a class=\"button primary\" href=\"#/course\">Start learning <span aria-hidden=\"true\">→</span></a><a class=\"button\" href=\"#/safety\">Read the safety guide</a></div><p class=\"hero-note\"><span>✓</span> Educational guidance—not medical treatment.</p></div><div class=\"hero-art\"><div class=\"art-card art-main\"><svg class='hero-illustration' viewBox='0 0 440 360' preserveAspectRatio='xMidYMid meet' role='img' aria-label='Two people sharing supportive massage touch' xmlns='http://www.w3.org/2000/svg'><ellipse cx='266' cy='313' rx='147' ry='24' fill='#6f9e82' opacity='.25'/><path d='M213 160c16-27 46-39 78-31 34 9 51 39 56 77l13 91H185l10-88c2-21 5-35 18-49z' fill='#f4f0e9'/><circle cx='286' cy='92' r='39' fill='#bd8169'/><path d='M247 92c-3-34 20-58 50-54 29 3 43 26 35 59-12-12-20-27-23-46-12 16-31 27-62 32z' fill='#2c4f43'/><path d='M224 180c-35 1-65 15-91 40' fill='none' stroke='#bd8169' stroke-width='25' stroke-linecap='round'/><circle cx='130' cy='222' r='13' fill='#bd8169'/><path d='M118 221c-16-4-29-2-42 6' fill='none' stroke='#bd8169' stroke-width='9' stroke-linecap='round'/><path d='M159 191c-3-31-22-52-48-57-24-5-47 8-55 32-9 26 5 55 30 65 28 11 59-5 73-40z' fill='#d98a6e'/><circle cx='101' cy='114' r='31' fill='#bd8169'/><path d='M70 117c-2-28 15-48 39-49 25-1 40 19 34 47-11-10-18-21-21-36-12 15-27 25-52 28z' fill='#3d6855'/><path d='M80 151c23 15 50 14 68-2' fill='none' stroke='#f2c76a' stroke-width='8' stroke-linecap='round'/><path d='M244 219c-19 39-23 64-14 91' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M295 260c29 20 42 36 48 54' fill='none' stroke='#bd8169' stroke-width='22' stroke-linecap='round'/><path d='M164 180c27-14 56-19 83-18' fill='none' stroke='#bd8169' stroke-width='23' stroke-linecap='round'/><path d='M263 147c16 10 26 23 30 39' fill='none' stroke='#f2c76a' stroke-width='6' stroke-linecap='round' stroke-dasharray='2 12'/></svg><div class=\"art-label\"><strong>Small steps, steady hands</strong><small>Designed for first-time learners</small></div></div><div class=\"art-card art-float one\">✦</div><div class=\"art-card art-float two\">☼</div></div></section><div class=\"stat-strip\"><div class=\"stat\"><strong>13</strong><span>guided lessons</span></div><div class=\"stat\"><strong>~75 min</strong><span>learning path</span></div><div class=\"stat\"><strong>Beginner</strong><span>friendly pace</span></div><div class=\"stat\"><strong>Local</strong><span>progress saved privately</span></div></div>" + continuePanel + "<section><div class=\"section-heading\"><div><p class=\"eyebrow\">How it works</p><h2>Learn by doing, not by guessing.</h2></div><p>Each lesson gives you a clear movement, a safe setup, a short practice, and a quick check before you move on.</p></div><div class=\"feature-grid\"><article class=\"feature-card\"><div class=\"feature-icon\">01</div><h3>One skill at a time</h3><p>Short lessons turn a big topic into a sequence you can actually remember and repeat.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">⌁</div><h3>See the movement</h3><p>Detailed, lesson-specific photos show hand placement, with subtle cues to trace each movement.</p></article><article class=\"feature-card\"><div class=\"feature-icon\">✓</div><h3>Check your confidence</h3><p>Practice for a minute, answer two questions, and mark the lesson complete when it feels clear.</p></article></div></section><section class=\"safety-callout\"><div class=\"callout-icon\">!</div><div><h3>A gentle reminder before you begin</h3><p>Stop for sharp pain, numbness, tingling, dizziness, faintness, unusual weakness, difficulty breathing, or any sudden concerning symptom. Massage should never be forceful.</p></div></section></div>", "home");
 }
 
 function course() {
@@ -303,17 +312,23 @@ function progressPage() {
 function notFound() { return shell("<div class=\"page not-found\"><p class=\"eyebrow\">A quiet detour</p><h1>That page wandered off.</h1><p class=\"lede\" style=\"margin:0 auto 25px\">Let’s take you back to the learning path.</p><a class=\"button primary\" href=\"#/home\">Return home →</a></div>", ""); }
 
 function replaceHeroArtwork(app) {
-  const oldHeroIllustration = app.querySelector(".hero-illustration");
-  if (!oldHeroIllustration) return;
+  const heroArt = app.querySelector(".hero-art");
+  if (!heroArt) return;
+  const card = document.createElement("div");
+  card.className = "art-card art-main";
   const heroImage = document.createElement("img");
   heroImage.className = "hero-illustration";
-  heroImage.src = "assets/hero-massage.png";
-  heroImage.alt = "A massage therapist gently glides both palms over a client's upper back.";
+  heroImage.src = "assets/hero-massage.webp";
+  heroImage.alt = "A massage therapist gently places both hands on a client's bare upper back while towels cover the lower body.";
   heroImage.width = 1448;
   heroImage.height = 1086;
   heroImage.decoding = "async";
   heroImage.fetchPriority = "high";
-  oldHeroIllustration.replaceWith(heroImage);
+  const label = document.createElement("div");
+  label.className = "art-label";
+  label.innerHTML = "<strong>Small steps, steady hands</strong><small>Designed for first-time learners</small>";
+  card.append(heroImage, label);
+  heroArt.replaceChildren(card);
 }
 
 function render() {
@@ -343,7 +358,7 @@ function bindEvents() {
   const complete = document.querySelector(".complete-button");
   if (complete) complete.addEventListener("click", function (event) { markLesson(Number(event.currentTarget.dataset.lesson)); render(); window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" }); });
   const reset = document.querySelector(".reset-progress");
-  if (reset) reset.addEventListener("click", function () { if (window.confirm("Reset all completed lessons? This cannot be undone.")) { progress = { completed: [], current: 1 }; saveProgress(); render(); } });
+  if (reset) reset.addEventListener("click", function () { if (window.confirm("Reset all lesson and practice progress? This cannot be undone.")) { progress = { completed: [], current: 1, practiceCompleted: [] }; saveProgress(); render(); } });
   const search = document.querySelector("#technique-search");
   if (search) search.addEventListener("input", function (event) { const query = event.target.value.toLowerCase().trim(); document.querySelectorAll(".reference-card").forEach(function (card) { card.hidden = query && !card.dataset.search.includes(query); }); });
   const start = document.querySelector(".practice-start");
