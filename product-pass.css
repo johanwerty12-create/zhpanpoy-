@@ -174,15 +174,11 @@
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
-/* Proportional hero illustration: one SVG, one viewBox, no independently stretched parts. */
-.art-main { display: grid; place-items: end center; }
-.hero-illustration { position: relative; z-index: 1; display: block; width: min(100%, 380px); height: auto; aspect-ratio: 11 / 9; margin: 0 auto; overflow: visible; }
-@media (max-width: 900px) {
-  .hero-illustration { width: min(100%, 360px); }
-}
-@media (max-width: 650px) {
-  .hero-illustration { width: min(100%, 320px); }
-}
+/* The 4:3 hero photograph fills its card without stretching; the card clips the responsive crop. */
+.art-main { display: block; padding: 0; background: #a5c8b2; }
+.art-main::before, .art-main::after { display: none; }
+.hero-illustration { position: absolute; z-index: 1; inset: 0; display: block; width: 100%; height: 100%; max-width: none; aspect-ratio: auto; margin: 0; object-fit: cover; object-position: center 48%; }
+.hero-art .art-float { display: none; }
 
 /* Readability and spacing refinement */
 :root {
@@ -326,7 +322,6 @@ h1, h2, h3 { line-height: 1.16; }
   .hero { min-height: 0; gap: 8px; }
   .hero .lede { font-size: 17px; }
   .hero-art { min-height: 310px; }
-  .hero-illustration { width: min(100%, 320px); }
   .stat-strip { margin-bottom: 40px; }
   .today-section { margin-bottom: 40px; }
   .section-heading { margin-bottom: 16px; }

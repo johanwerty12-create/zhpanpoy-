@@ -195,7 +195,9 @@ function render() {
   else if (current === "reference") html = reference();
   else if (/^lesson\/\d+$/.test(current)) html = lessonPage(Number(current.split("/")[1]));
   else html = notFound();
-  document.getElementById("app").innerHTML = html;
+  const app = document.getElementById("app");
+  app.innerHTML = html;
+  if (current === "home") replaceHeroArtwork(app);
   bindEvents();
 }
 

@@ -302,6 +302,20 @@ function progressPage() {
 }
 function notFound() { return shell("<div class=\"page not-found\"><p class=\"eyebrow\">A quiet detour</p><h1>That page wandered off.</h1><p class=\"lede\" style=\"margin:0 auto 25px\">Let’s take you back to the learning path.</p><a class=\"button primary\" href=\"#/home\">Return home →</a></div>", ""); }
 
+function replaceHeroArtwork(app) {
+  const oldHeroIllustration = app.querySelector(".hero-illustration");
+  if (!oldHeroIllustration) return;
+  const heroImage = document.createElement("img");
+  heroImage.className = "hero-illustration";
+  heroImage.src = "assets/hero-massage.png";
+  heroImage.alt = "A massage therapist gently glides both palms over a client's upper back.";
+  heroImage.width = 1448;
+  heroImage.height = 1086;
+  heroImage.decoding = "async";
+  heroImage.fetchPriority = "high";
+  oldHeroIllustration.replaceWith(heroImage);
+}
+
 function render() {
   if (practiceTimer) { clearInterval(practiceTimer); practiceTimer = null; }
   const current = route();
@@ -315,7 +329,9 @@ function render() {
   else if (current === "progress") html = progressPage();
   else if (/^lesson\/\d+$/.test(current)) html = lessonPage(Number(current.split("/")[1]));
   else html = notFound();
-  document.getElementById("app").innerHTML = html;
+  const app = document.getElementById("app");
+  app.innerHTML = html;
+  if (current === "home") replaceHeroArtwork(app);
   bindEvents();
 }
 
