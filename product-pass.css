@@ -174,3 +174,12 @@
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+/* Proportional hero illustration: one SVG, one viewBox, no independently stretched parts. */
+.art-main { display: grid; place-items: end center; }
+.hero-illustration { position: relative; z-index: 1; display: block; width: min(100%, 380px); height: auto; aspect-ratio: 11 / 9; margin: 0 auto; overflow: visible; }
+@media (max-width: 900px) {
+  .hero-illustration { width: min(100%, 360px); }
+}
+@media (max-width: 650px) {
+  .hero-illustration { width: min(100%, 320px); }
+}
