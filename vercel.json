@@ -3,6 +3,7 @@
   "framework": null,
   "outputDirectory": ".",
   "rewrites": [
+    { "source": "/home", "destination": "/index.html" },
     { "source": "/course", "destination": "/index.html" },
     { "source": "/lessons", "destination": "/index.html" },
     { "source": "/lessons/:lesson", "destination": "/index.html" },

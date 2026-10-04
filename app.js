@@ -290,7 +290,7 @@ function updatePageMetadata(current) {
   const ogDescription = document.querySelector('meta[property="og:description"]');
   if (ogDescription) ogDescription.content = details[1];
   const ogImage = document.querySelector('meta[property="og:image"]');
-  if (ogImage) ogImage.content = window.location.origin + "//assets/hero-massage.webp";
+  if (ogImage) ogImage.content = window.location.origin + "/assets/hero-massage.webp";
   const canonical = document.querySelector('link[rel="canonical"]');
   if (canonical) canonical.href = window.location.origin + (window.location.pathname === "/home" ? "/" : window.location.pathname);
   const ogUrl = document.querySelector('meta[property="og:url"]');
