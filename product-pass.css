@@ -748,6 +748,120 @@ input::placeholder { color: #53645b; opacity: 1; }
 .page .safety-hero :is(h1, h2, h3) { color: #fff; }
 .page .continue-panel :is(h2, h3) { color: #fff; }
 .page .continue-panel .eyebrow { color: #ffda7b; font-size: 15px; }
+
+/* One shared, uncropped 4:3 photo treatment across the reference screens. */
+.section-photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: contain;
+  object-position: center;
+  background: var(--cream);
+}
+.reference-photo, .area-photo, .routine-photo, .safety-hero-visual {
+  min-width: 0;
+  overflow: hidden;
+  background: var(--cream);
+  border-radius: 13px;
+}
+.reference-photo, .area-photo, .routine-photo { aspect-ratio: 4 / 3; }
+.enhanced-reference-card { justify-content: flex-start; gap: 12px; }
+.enhanced-reference-card h3 { margin: 0; }
+.enhanced-reference-card p { flex: 1; margin: 0; }
+.enhanced-reference-card .ref-link { margin-top: auto; }
+.area-photo { margin-bottom: 16px; }
+.area-explorer-top { margin-bottom: 13px; }
+.area-explorer-top > div { min-width: 0; }
+.routine-photo { margin-bottom: 16px; }
+.routine-card-enhanced:first-child {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  column-gap: 24px;
+}
+.routine-card-enhanced:first-child .routine-photo {
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  align-self: start;
+  margin: 0;
+}
+.routine-card-enhanced:first-child > :not(.routine-photo) { grid-column: 2; }
+.routine-card-enhanced:first-child > p { margin-top: 0; }
+.routine-card-enhanced:first-child .routine-step-list { margin-top: 0; }
+.reference-hub-card { justify-content: flex-start; gap: 10px; }
+.reference-hub-card > .section-photo { flex: 0 0 auto; height: auto; overflow: hidden; border-radius: 11px; }
+.reference-hub-card p { margin: 0; }
+.reference-hub-card b { margin-top: auto; }
+.safety-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, .8fr);
+  align-items: center;
+  gap: clamp(20px, 4vw, 44px);
+}
+.safety-hero-copy { min-width: 0; }
+.safety-hero-visual { margin: 0; padding: 9px; background: rgba(255,255,255,.12); }
+.safety-hero-visual .section-photo { border-radius: 9px; }
+.safety-hero-visual figcaption { padding: 9px 4px 2px; color: rgba(255,255,255,.82); font-size: 13px; }
+.lesson-card { grid-template-columns: 88px minmax(0, 1fr) auto; }
+.lesson-card-visual {
+  position: relative;
+  width: 88px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--cream);
+  border-radius: 12px;
+}
+.lesson-card-image { display: block; width: 100%; height: 100%; object-fit: contain; }
+.lesson-card-visual > span {
+  position: absolute;
+  left: 5px;
+  bottom: 5px;
+  padding: 3px 6px;
+  color: #fff;
+  background: rgba(28, 54, 44, .88);
+  border-radius: 6px;
+  font: 700 10px/1.2 "DM Mono", monospace;
+}
+.practice-picker-link { grid-template-columns: 76px minmax(0, 1fr) auto; }
+.practice-picker-thumb {
+  position: relative;
+  display: block;
+  width: 76px;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: var(--cream);
+  border-radius: 9px;
+}
+.practice-picker-image { display: block; width: 100%; height: 100%; object-fit: contain; }
+.practice-picker-thumb .practice-picker-number {
+  position: absolute;
+  left: 4px;
+  bottom: 4px;
+  width: auto;
+  height: auto;
+  padding: 2px 5px;
+  color: #fff;
+  background: rgba(28, 54, 44, .88);
+  border-radius: 5px;
+  font-size: 10px;
+}
+@media (max-width: 760px) {
+  .safety-hero { grid-template-columns: minmax(0, 1fr); }
+  .safety-hero-visual { width: min(100%, 520px); }
+  .routine-card-enhanced:first-child { grid-template-columns: minmax(0, 1fr); }
+  .routine-card-enhanced:first-child .routine-photo { grid-column: 1; grid-row: auto; margin-bottom: 16px; }
+  .routine-card-enhanced:first-child > :not(.routine-photo) { grid-column: 1; }
+  .lesson-card { grid-template-columns: 76px minmax(0, 1fr); }
+  .lesson-card-visual { width: 76px; }
+  .lesson-card > div:last-child { grid-column: 2; }
+  .practice-picker-link { grid-template-columns: 68px minmax(0, 1fr); }
+  .practice-picker-thumb { width: 68px; }
+}
+@media (max-width: 390px) {
+  .lesson-card { grid-template-columns: 64px minmax(0, 1fr); gap: 10px; }
+  .lesson-card-visual { width: 64px; border-radius: 9px; }
+  .reference-hub-card { padding: 12px; }
+}
 .page .quick-version .practice-count, .page .quick-version .practice-status { color: #f5f7f5; }
 .page .quick-version .practice-progression li { font-size: 14px; }
 .page .quick-version .practice-actions .practice-next { color: var(--color-primary-dark); background: #fff; border-color: #fff; }
