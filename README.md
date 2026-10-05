@@ -18,6 +18,8 @@ Open <http://127.0.0.1:4173>. Stop the server with `Ctrl+C`. The small local ser
 - `app.js` — course lesson data, local progress, path routing, metadata, and shared events
 - `product-pass.js` — page renderers, Quick Practice, technique/routine/body-area data, and interactions
 - `styles.css`, `product-pass.css` — base styles and responsive product improvements
+- `relaxation-coach.js` — staged follow-along practice, comfort checks, and timer controls
+- `QUALITY-AUDIT.md` — instruction/visual review scope, sources, and verification limitations
 - `assets/` — optimized WebP instructional photos
 - `dev-server.js` — dependency-free local static server with SPA route fallback
 - `vercel.json` — static root output and clean-route rewrites for Vercel
@@ -32,5 +34,7 @@ Open <http://127.0.0.1:4173>. Stop the server with `Ctrl+C`. The small local ser
 6. Open the generated `.vercel.app` domain to check the live site.
 
 There is no production compilation step for this architecture. Before deployment, validate the JavaScript with `node --check app.js` and `node --check product-pass.js`, then run the local server and check the routes and interactions.
+
+Also check `node --check relaxation-coach.js` and run `node tools/check-relaxation.cjs` for page/asset checks and timer regressions. Keep the asset version query in `index.html` updated when publishing another instruction change so previously cached scripts do not mask the release.
 
 Progress is saved only in the current browser with `localStorage`; it does not sync between devices. The lessons are educational guidance, not medical diagnosis or treatment, and emphasize gentle pressure and stopping when comfort changes.

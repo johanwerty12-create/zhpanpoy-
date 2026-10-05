@@ -6,7 +6,7 @@ const root = __dirname;
 const port = Number(process.env.PORT || 4173);
 const pageRoutes = new Set([
   "/", "/home", "/course", "/lessons", "/quick-practice", "/techniques",
-  "/body-areas", "/routines", "/safety", "/progress", "/reference"
+  "/body-areas", "/pressure-points", "/routines", "/safety", "/progress", "/reference"
 ]);
 const contentTypes = {
   ".css": "text/css; charset=utf-8",
@@ -42,7 +42,7 @@ http.createServer(function (request, response) {
     }
     response.writeHead(200, {
       "Content-Type": contentTypes[path.extname(requestedFile).toLowerCase()] || "application/octet-stream",
-      "Cache-Control": requestedFile.endsWith(".html") ? "no-store" : "public, max-age=3600"
+      "Cache-Control": "no-store"
     });
     fs.createReadStream(requestedFile).pipe(response);
   });
