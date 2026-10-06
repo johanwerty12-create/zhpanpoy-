@@ -211,7 +211,7 @@ function pressurePointCard(point) {
     ["FIND IT", point.find.join(" ")], ["POSITION", point.position], ["PRESS", point.pressure],
     ["HOLD", point.hold], ["RELEASE", point.release]
   ].map(function (item, index) { return "<li><span>" + String(index + 1).padStart(2, "0") + " · " + item[0] + "</span><p>" + esc(item[1]) + "</p></li>"; }).join("");
-  return "<article class=\"pp-point-card\" data-point-id=\"" + point.id + "\"><div class=\"pp-point-head\"><div><p class=\"pp-point-area\">" + esc(point.area) + " · " + esc(point.difficulty) + "</p><h3>" + esc(point.name) + " <span>" + esc(point.code) + "</span></h3><p class=\"pp-channel\">" + esc(point.tradition) + "</p></div><span class=\"pp-point-index\" aria-hidden=\"true\">" + esc(point.code) + "</span></div><figure class=\"pp-visual-frame\">" + pressurePointVisualMarkup(point.id) + "<figcaption>Original landmark schematic · marker is tied to the written location; not to scale.</figcaption></figure><div class=\"pp-instruction-column\"><section class=\"pp-detail\"><h4>WHERE · exact location</h4><p>" + esc(point.where) + "</p><p class=\"pp-landmarks\"><strong>Nearby landmarks:</strong> " + esc(point.landmarks) + "</p></section><details class=\"pp-show-how\"><summary><span>Show me how</span><span aria-hidden=\"true\">＋</span></summary><ol>" + stepMarkup + "</ol></details><div class=\"pp-notice-grid\"><section class=\"pp-notice pp-notice-calm\"><h4>WHAT TO NOTICE</h4><p><strong>Usually okay:</strong> " + esc(point.feel) + "</p><p><strong>Not okay:</strong> " + esc(point.notFeel) + "</p></section><section class=\"pp-notice pp-notice-tradition\"><h4>TRADITIONAL PRACTICE · NOT A MEDICAL CLAIM</h4><p>" + esc(point.traditional) + "</p><small>" + esc(point.traditionalNote) + "</small></section></div><section class=\"pp-safety-box\"><h4>SAFETY · read before trying</h4><dl><div><dt>Common mistakes</dt><dd>" + esc(point.mistakes) + "</dd></div><div><dt>Avoid when</dt><dd>" + esc(point.avoid) + "</dd></div><div><dt>Stop immediately for</dt><dd>" + esc(point.stop) + "</dd></div><div><dt>Seek professional advice</dt><dd>" + esc(point.seek) + "</dd></div></dl></section></div></article>";
+  return "<article class=\"pp-point-card\" id=\"point-" + point.id + "\" data-point-id=\"" + point.id + "\"><div class=\"pp-point-head\"><div><p class=\"pp-point-area\">" + esc(point.area) + " · " + esc(point.difficulty) + "</p><h3>" + esc(point.name) + " <span>" + esc(point.code) + "</span></h3><p class=\"pp-channel\">" + esc(point.tradition) + "</p></div><span class=\"pp-point-index\" aria-hidden=\"true\">" + esc(point.code) + "</span></div><figure class=\"pp-visual-frame\">" + pressurePointVisualMarkup(point.id) + "<figcaption>Original landmark schematic · marker is tied to the written location; not to scale.</figcaption></figure><div class=\"pp-instruction-column\"><section class=\"pp-detail\"><h4>WHERE · exact location</h4><p>" + esc(point.where) + "</p><p class=\"pp-landmarks\"><strong>Nearby landmarks:</strong> " + esc(point.landmarks) + "</p></section><details class=\"pp-show-how\"><summary><span>Show me how</span><span aria-hidden=\"true\">＋</span></summary><ol>" + stepMarkup + "</ol></details><div class=\"pp-notice-grid\"><section class=\"pp-notice pp-notice-calm\"><h4>WHAT TO NOTICE</h4><p><strong>Usually okay:</strong> " + esc(point.feel) + "</p><p><strong>Not okay:</strong> " + esc(point.notFeel) + "</p></section><section class=\"pp-notice pp-notice-tradition\"><h4>TRADITIONAL PRACTICE · NOT A MEDICAL CLAIM</h4><p>" + esc(point.traditional) + "</p><small>" + esc(point.traditionalNote) + "</small></section></div><section class=\"pp-safety-box\"><h4>SAFETY · read before trying</h4><dl><div><dt>Common mistakes</dt><dd>" + esc(point.mistakes) + "</dd></div><div><dt>Avoid when</dt><dd>" + esc(point.avoid) + "</dd></div><div><dt>Stop immediately for</dt><dd>" + esc(point.stop) + "</dd></div><div><dt>Seek professional advice</dt><dd>" + esc(point.seek) + "</dd></div></dl></section></div></article>";
 }
 
 function pressurePointsPage() {
@@ -248,7 +248,7 @@ function lessonImageMarkup(lessonId, className) {
 }
 
 function shell(content, active) {
-  const nav = [["home", "Home"], ["course", "Course"], ["quick-practice", "Quick practice"], ["techniques", "Techniques"], ["body-areas", "Body areas"], ["pressure-points", "Pressure points"], ["routines", "Routines"], ["safety", "Safety"], ["progress", "Progress"], ["reference", "Reference"]];
+  const nav = [["home", "Home"], ["course", "Course"], ["quick-practice", "Quick practice"], ["techniques", "Techniques"], ["body-areas", "Body areas"], ["hand-massage", "Hand massage"], ["pressure-points", "Pressure points"], ["routines", "Routines"], ["safety", "Safety"], ["progress", "Progress"], ["reference", "Reference"]];
   const links = nav.map(function (item) {
     const href = item[0] === "home" ? "/" : "/" + item[0];
     return "<a class=\"nav-link " + (active === item[0] ? "active" : "") + "\" href=\"" + href + "\">" + item[1] + "</a>";
@@ -269,7 +269,10 @@ function home() {
   const goals = [
     goalCard("◷", "Start a routine", "Choose a guided 3–10 minute flow", "/routines", "sun"),
     goalCard("→", "Explore techniques", "Find a movement and its lesson", "/techniques", "blue"),
-    goalCard("⌁", "Browse body areas", "Choose a gentle starting point", "/body-areas", "coral")
+    goalCard("⌁", "Browse body areas", "Choose a gentle starting point", "/body-areas", "coral"),
+    goalCard("☼", "Hand massage", "Palm circles and gentle finger strokes", "/hand-massage", "sage"),
+    goalCard("◎", "Pressure points", "Find landmarks and read safety guidance", "/pressure-points", "cream"),
+    goalCard("✓", "Comfort and safety", "Know when to pause or seek advice", "/safety", "sage")
   ].join("");
   const markup = `
     <div class="page">
@@ -855,7 +858,7 @@ function techniques() {
 
 function areas() {
   const cards = areaInfo.map(function (area) {
-    return "<article class=\"area-explorer-card\"><div class=\"area-photo\">" + lessonImageMarkup(area.lesson, "section-photo") + "</div><div class=\"area-explorer-top\"><div><h2>" + esc(area.title) + "</h2><p>" + esc(area.description) + "</p></div></div><div class=\"area-detail\"><span class=\"detail-label\">Try</span><strong>" + esc(area.techniques) + "</strong></div><div class=\"area-detail\"><span class=\"detail-label\">Routine</span><strong>" + esc(area.routine) + "</strong></div><p class=\"area-safety\"><span>!</span>" + esc(area.safety) + "</p><a class=\"button small\" href=\"#/lesson/" + area.lesson + "\">Open lesson →</a></article>";
+    return "<article class=\"area-explorer-card\"><div class=\"area-photo\">" + (area.title === "Hands" ? '<img class="section-photo" src="/assets/lessons/hand-palm-contact.webp" alt="Soft finger pads contact a supported palm-up hand." width="1448" height="1086" loading="lazy" />' : lessonImageMarkup(area.lesson, "section-photo")) + "</div><div class=\"area-explorer-top\"><div><h2>" + esc(area.title) + "</h2><p>" + esc(area.description) + "</p></div></div><div class=\"area-detail\"><span class=\"detail-label\">Try</span><strong>" + esc(area.techniques) + "</strong></div><div class=\"area-detail\"><span class=\"detail-label\">Routine</span><strong>" + esc(area.routine) + "</strong></div><p class=\"area-safety\"><span>!</span>" + esc(area.safety) + "</p><a class=\"button small\" href=\"" + (area.title === "Hands" ? "/hand-massage" : "/lessons/" + area.lesson) + "\">Open lesson →</a></article>";
   }).join("");
   return shell("<div class=\"page\"><p class=\"eyebrow\">Find a comfortable starting place</p><h1>Body areas</h1><p class=\"lede\" style=\"margin-bottom:34px\">Choose an area to see a beginner technique, a short routine, a relevant lesson, and the safety boundary in one glance.</p><div class=\"area-explorer-grid\">" + cards + "</div></div>", "body-areas");
 }
@@ -898,6 +901,7 @@ function render() {
   else if (current === "techniques") html = techniques();
   else if (current === "body-areas") html = areas();
   else if (current === "pressure-points") html = pressurePointsPage();
+  else if (current === "hand-massage") html = handMassagePage();
   else if (current === "routines") html = routines();
   else if (current === "safety") html = safety();
   else if (current === "progress") html = progressPage();
@@ -910,6 +914,10 @@ function render() {
   updatePageMetadata(current);
   if (current === "home") replaceHeroArtwork(app);
   bindEvents();
+  if (/^#[a-z][a-z0-9-]*$/i.test(window.location.hash)) {
+    const target = document.getElementById(window.location.hash.slice(1));
+    if (target) target.scrollIntoView({ block: "start" });
+  }
 }
 
 window.addEventListener("hashchange", render);

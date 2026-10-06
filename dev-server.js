@@ -6,7 +6,7 @@ const root = __dirname;
 const port = Number(process.env.PORT || 4173);
 const pageRoutes = new Set([
   "/", "/home", "/course", "/lessons", "/quick-practice", "/techniques",
-  "/body-areas", "/pressure-points", "/routines", "/safety", "/progress", "/reference"
+  "/body-areas", "/hand-massage", "/pressure-points", "/routines", "/safety", "/progress", "/reference"
 ]);
 const contentTypes = {
   ".css": "text/css; charset=utf-8",

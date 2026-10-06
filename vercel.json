@@ -12,6 +12,7 @@
     { "source": "/techniques", "destination": "/index.html" },
     { "source": "/body-areas", "destination": "/index.html" },
     { "source": "/pressure-points", "destination": "/index.html" },
+    { "source": "/hand-massage", "destination": "/index.html" },
     { "source": "/routines", "destination": "/index.html" },
     { "source": "/safety", "destination": "/index.html" },
     { "source": "/progress", "destination": "/index.html" },

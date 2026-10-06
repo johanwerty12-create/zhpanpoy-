@@ -22,7 +22,7 @@ const context = vm.createContext({
     clearInterval(id) { clock.intervals.delete(id); }
   }
 });
-for (const name of ['app.js', 'product-pass.js', 'relaxation-coach.js']) {
+for (const name of ['app.js', 'product-pass.js', 'relaxation-coach.js', 'hand-massage.js']) {
   const source = fs.readFileSync(path.join(project, name), 'utf8');
   new vm.Script(source, { filename: name }).runInContext(context);
 }
@@ -45,7 +45,7 @@ for (let id = 1; id <= lessonCount; id++) {
   }
   assert.equal(evaluate(`lessons[${id - 1}].quiz.length`), 2);
 }
-const pages = ['home()', 'course()', 'techniques()', 'areas()', 'routines()', 'safety()', 'progressPage()', 'reference()', 'pressurePointsPage()', 'quickPracticePage()', 'notFound()'];
+const pages = ['home()', 'course()', 'techniques()', 'areas()', 'routines()', 'safety()', 'progressPage()', 'reference()', 'pressurePointsPage()', 'handMassagePage()', 'quickPracticePage()', 'notFound()'];
 pages.forEach(page => { const html = evaluate(page); assert.ok(html.includes('<main'), page); checkAssets(html); });
 assert.equal(evaluate('routineData.length'), 7);
 for (let i = 0; i < 7; i++) {
@@ -57,6 +57,8 @@ for (let i = 0; i < 7; i++) {
 }
 const config = JSON.parse(fs.readFileSync(path.join(project, 'vercel.json'), 'utf8'));
 assert.ok(config.rewrites.some(rule => rule.source === '/pressure-points'));
+assert.ok(config.rewrites.some(rule => rule.source === '/hand-massage'));
+assert.equal(evaluate('handMassageStages().reduce((sum, stage) => sum + stage.seconds, 0)'), 180);
 assert.ok(fs.readFileSync(path.join(project, 'index.html'), 'utf8').includes('/relaxation-coach.js'));
 
 function element() {
@@ -114,4 +116,13 @@ click(routine, '.coach-toggle'); advance(60); click(routine, '.coach-continue');
 assert.equal(routine.querySelector('.coach-stage-visual img').src, '/assets/lessons/hand-palm-contact.webp', 'Palm stage needs its matching visual');
 assert.equal(routine.querySelector('.coach-lesson-link').href, '/lessons/10');
 evaluate('stopAllCoachedSessions()');
-console.log('PASS: 13 lesson pages + 13 practices, 11 other page renders, 13 scalp techniques, 6 pressure points, 7 routine totals, all referenced assets, and timer start/pause/resume/comfort gate/restart/early end/completion/visibility/navigation.');
+const hands = makeRoot('hand-routine', true);
+roots = [hands]; evaluate('bindGuidedPractices()');
+click(hands, '.coach-toggle'); advance(30); click(hands, '.coach-continue');
+assert.equal(hands.querySelector('.coach-stage-count').textContent, 'Stage 2 of 4');
+advance(60); click(hands, '.coach-continue');
+assert.equal(hands.querySelector('.coach-stage-visual img').src, '/assets/lessons/hand-finger-stroke.webp');
+advance(30); click(hands, '.coach-continue'); advance(60);
+assert.match(hands.querySelector('.coach-status').textContent, /Practice complete/);
+assert.equal(clock.intervals.size, 0);
+console.log('PASS: 13 lesson pages + 13 practices, 12 other page renders including Hand Massage, 13 scalp techniques, 6 pressure points, routine totals, all referenced assets, and timer start/pause/resume/comfort gate/restart/early end/completion/visibility/navigation.');

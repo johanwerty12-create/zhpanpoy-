@@ -69,6 +69,7 @@ function bindGuidedPractices() {
     let stages;
     if (key.startsWith('lesson-')) stages = lessonCoachedStages(lessons.find(function (item) { return item.id === Number(key.slice(7)); }));
     else if (key.startsWith('scalp-')) stages = scalpCoachedStages(scalpTechniques.find(function (item) { return item.id === key.slice(6); }));
+    else if (key === 'hand-routine') stages = handMassageStages();
     else stages = routineCoachedStages(routineData[Number(key.slice(8))]);
     let index = 0;
     let remaining = stages[0].seconds;

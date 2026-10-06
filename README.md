@@ -19,6 +19,8 @@ Open <http://127.0.0.1:4173>. Stop the server with `Ctrl+C`. The small local ser
 - `product-pass.js` — page renderers, Quick Practice, technique/routine/body-area data, and interactions
 - `styles.css`, `product-pass.css` — base styles and responsive product improvements
 - `relaxation-coach.js` — staged follow-along practice, comfort checks, and timer controls
+- `hand-massage.js` — dedicated palm/finger teaching, a guided hand routine, and the existing verified LI4 lesson
+- `design-polish.css` — warm, readable presentation with consistent cards and responsive layouts
 - `QUALITY-AUDIT.md` — instruction/visual review scope, sources, and verification limitations
 - `assets/` — optimized WebP instructional photos
 - `dev-server.js` — dependency-free local static server with SPA route fallback
@@ -36,5 +38,7 @@ Open <http://127.0.0.1:4173>. Stop the server with `Ctrl+C`. The small local ser
 There is no production compilation step for this architecture. Before deployment, validate the JavaScript with `node --check app.js` and `node --check product-pass.js`, then run the local server and check the routes and interactions.
 
 Also check `node --check relaxation-coach.js` and run `node tools/check-relaxation.cjs` for page/asset checks and timer regressions. Keep the asset version query in `index.html` updated when publishing another instruction change so previously cached scripts do not mask the release.
+
+The dedicated `/hand-massage` and `/pressure-points` pages are linked in navigation and on the home page. `/pressure-points#point-li4` opens the hand point directly. Check `node --check hand-massage.js` too.
 
 Progress is saved only in the current browser with `localStorage`; it does not sync between devices. The lessons are educational guidance, not medical diagnosis or treatment, and emphasize gentle pressure and stopping when comfort changes.

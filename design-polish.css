@@ -1,0 +1,242 @@
+/* Presentation layer: preserve content, photo framing, and practice behavior. */
+:root {
+  --paper: #f7f8f3;
+  --surface: #ffffff;
+  --ink: #203a30;
+  --ink-soft: #4a6055;
+  --muted: #586d61;
+  --leaf: #2f6b50;
+  --leaf-dark: #214f3a;
+  --sage: #e6efe7;
+  --cream: #f6f2e9;
+  --line: #dbe4dc;
+  --color-background: #f7f8f3;
+  --color-surface: #ffffff;
+  --color-heading: #203e30;
+  --color-text: #263f33;
+  --color-text-muted: #506458;
+  --color-border: #cbd9ce;
+  --color-primary: #2f6b50;
+  --color-primary-dark: #214f3a;
+  --shadow-small: 0 4px 16px rgba(27, 58, 39, .045);
+  --shadow: 0 14px 38px rgba(27, 58, 39, .07);
+}
+
+body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif; }
+.page { width: min(1320px, calc(100% - 48px)); padding-top: 38px; }
+.page h1 { color: var(--color-heading); font-family: Georgia, 'Times New Roman', serif; letter-spacing: -.045em; }
+.page :is(h2, h3, h4, h5) { font-family: inherit; letter-spacing: -.025em; font-weight: 700; }
+.page .lede { color: var(--ink-soft); line-height: 1.65; }
+.page .eyebrow { color: #506a58; font-size: 12px; letter-spacing: .14em; font-weight: 700; }
+
+.shell-header { padding-block: 12px; background: rgba(255, 255, 251, .96); border-bottom: 1px solid #dce5dc; box-shadow: 0 3px 14px rgba(26, 55, 38, .025); }
+.brand { gap: 11px; }
+.brand-mark { width: 40px; height: 40px; background: #2f6b50; border-radius: 13px; transform: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.16); }
+.brand-mark span { transform: none; font-size: 24px; }
+.brand-text { font-size: 21px; letter-spacing: -.045em; }
+.brand-text em { color: #925f43; }
+.main-nav { gap: 3px; }
+.nav-link { padding: 10px 11px; border-radius: 10px; color: #4a6055; font-weight: 600; }
+.nav-link.active { color: #214f3a; background: #e9f1e9; box-shadow: inset 0 -2px 0 #2f6b50; }
+.nav-link:hover { background: #f0f5ef; color: #214f3a; }
+.menu-toggle { min-width: 44px; min-height: 44px; border: 1px solid #d0dfd3; background: #edf4ee; }
+
+.page .button { border-radius: 11px; padding-inline: 18px; font-weight: 650; box-shadow: none; transition: background .15s, border-color .15s, box-shadow .15s; }
+.page .button.primary { color: #fff; background: #2f6b50; border-color: #2f6b50; box-shadow: 0 3px 8px rgba(36, 84, 55, .12); }
+.page .button.primary:hover { background: #255940; border-color: #255940; }
+.page .button.subtle { color: #2f5740; background: #f4f6f0; border-color: #cbd9ce; }
+.page .button:hover { box-shadow: 0 3px 10px rgba(27, 58, 39, .08); }
+.page :is(button, a, input, select):focus-visible { outline: 3px solid #26724c; outline-offset: 3px; }
+.page .button:disabled { box-shadow: none; opacity: .8; }
+
+.page :is(.lesson-card, .reference-card, .area-explorer-card, .routine-card-enhanced, .safety-panel, .reference-hub-card, .pp-point-card) {
+  border: 1px solid var(--color-border); border-radius: 20px; box-shadow: var(--shadow-small); background: #fff;
+}
+.page :is(.lesson-card, .reference-card, .area-explorer-card, .reference-hub-card) { transition: border-color .15s, box-shadow .15s; }
+.page :is(.lesson-card, .reference-card, .reference-hub-card):hover { border-color: #9db6a4; box-shadow: var(--shadow); }
+.page .lesson-card { padding: 18px; }
+.lesson-card-visual { border-radius: 13px; }
+.page .reference-card-meta span { font-size: 12px; border-radius: 7px; }
+.page :is(.reference-photo, .area-photo) { border-radius: 13px; border: 1px solid #e4e9e1; background: #f4f1e9; }
+.page .goal-card { border: 1px solid #d4e0d5; border-radius: 15px; box-shadow: var(--shadow-small); }
+.page .goal-card strong { font-size: 16px; }
+.page .goal-card small { font-size: 14px; color: var(--ink-soft); }
+.page .course-next { border: 1px solid #cbdccb; background: #eaf2e8; border-radius: 20px; }
+.page .continue-panel { background: #214f3a; box-shadow: var(--shadow); }
+.page .continue-panel h2 { color: #fff; }
+.page .continue-panel p { color: #f1f6ef; }
+.page .continue-panel .button { background: #fff; border-color: #fff; color: #214f3a; }
+
+.lesson-hero { padding-block: 12px 24px; gap: 28px; align-items: center; }
+.lesson-visual { padding: 10px; background: #eef3e9; border: 1px solid #d7e2d4; box-shadow: var(--shadow-small); }
+.visual-scene { background: #f4f1e9; }
+.visual-caption { color: #415d49; line-height: 1.5; }
+.page .lesson-kicker { color: #6a7152; letter-spacing: .12em; font-size: 12px; }
+.page .badge { color: #365141; background: #edf3e9; border: 1px solid #d5e2d3; border-radius: 8px; font-size: 13px; }
+.page .badge.safety { color: #793e2e; background: #fff0e8; border-color: #e9cbb8; }
+.lesson-aside .aside-card { background: #fff; border: 1px solid #d0dece; border-radius: 18px; box-shadow: var(--shadow-small); }
+.lesson-aside .lesson-link { min-height: 44px; padding: 10px 0; font-size: 14px; }
+.lesson-aside .lesson-link .small-num { color: #57775b; }
+.lesson-aside .lesson-link:hover { color: #214f3a; background: #f4f8f1; }
+.lesson-aside .lesson-link[aria-current=page] { padding-inline: 9px; margin-inline: -9px; color: #214f3a; background: #eaf3e7; border-radius: 8px; font-weight: 700; box-shadow: inset 3px 0 0 #4e8057; }
+.lesson-layout { gap: 24px; }
+.page .full-lesson { background: #fff; border: 1px solid #d0dece; border-radius: 18px; overflow: hidden; }
+.page .full-lesson summary { padding: 18px 20px; background: #f1f6ed; }
+.page .quiz-question { border-radius: 16px; border-color: #ccd9ce; background: #fff; }
+.page .quiz-option { background: #f7f9f4; border-color: #d5e0d5; border-radius: 10px; min-height: 46px; }
+.page .quiz-option.selected { background: #e7f1e7; border-color: #789e81; }
+.page .quiz-option.correct { background: #e7f3e6; border-color: #78a883; }
+.page .quiz-option.incorrect { background: #fff0e8; border-color: #cf9479; }
+
+/* Lighter lesson surfaces let the photographs and current stage stand out. */
+.page .quick-version { color: #263f33; background: #edf3e9; border: 1px solid #cbdccb; border-radius: 24px; box-shadow: var(--shadow-small); padding: clamp(18px, 2.5vw, 28px); }
+.page .quick-version :is(.eyebrow, .practice-count, .practice-status) { color: #47644e; }
+.page .quick-version :is(h2, .quick-version-head p, .quick-safety, .quick-safety strong) { color: #203e30; }
+.page .quick-version-head p { font-size: 16px; }
+.quick-practice-path { border-bottom: 1px solid #cbdccb; padding-bottom: 16px; }
+.practice-progression li { color: #4a6551; background: #f9fbf7; border-color: #cdddcf; border-radius: 8px; }
+.practice-progression li[aria-current] { color: #fff; background: #2f6b50; border-color: #2f6b50; }
+.page .practice-visual { background: #fff; border-color: #d0dece; padding: 8px; border-radius: 18px; box-shadow: var(--shadow-small); }
+.practice-image-enlarge { border-radius: 12px; }
+.page :is(.practice-brief, .practice-instructions, .practice-watch, .practice-avoid) { background: #fff; border: 1px solid #d2dfcf; border-radius: 14px; padding: 17px; }
+.page .practice-brief span { color: #4a6751; font-size: 12px; }
+.page .practice-brief strong { color: #203e30; }
+.page .practice-coach :is(h3, ol, ul, li, p) { color: #314c3b; }
+.page .practice-instructions li::marker, .page .practice-watch li::marker { color: #2f6b50; }
+.page .practice-avoid { background: #fff6ee; border-color: #e4cbb9; }
+.page .practice-avoid :is(h3, p) { color: #793e2e; }
+.page .quick-version-bottom { border-color: #cbdccb; padding-top: 20px; }
+.page .quick-version-bottom .button:not(.primary):not(.subtle) { color: #2f5740; background: #fff; border-color: #bccfbd; }
+.page .quick-safety { font-size: 15px; }
+.page .quick-safety > span:first-child { color: #704519; background: #ffe7b3; }
+
+.page .scalp-module-header h2, .page .scalp-group-heading h3 { color: #203e30; }
+.page .scalp-module-header > p:not(.scalp-technique-progress), .page .scalp-group-heading > p { color: #47614e; }
+.page .scalp-module-header .scalp-technique-progress { color: #2f6b50; }
+.page .scalp-group-heading .eyebrow { color: #526944; }
+.scalp-technique-group { margin-top: 28px; padding-top: 22px; border-top: 1px solid #ccdcca; }
+.scalp-technique-grid { gap: 20px; align-items: start; }
+.scalp-technique-card { border: 1px solid #cbd9ce; border-radius: 20px; box-shadow: var(--shadow-small); }
+.scalp-card-heading { padding: 17px 18px; }
+.scalp-card-number { background: #edf4e9; color: #2f6b50; border: 1px solid #ccdfcb; border-radius: 12px; font-variant-numeric: tabular-nums; }
+.scalp-card-group { color: #526c58; font-size: 12px; letter-spacing: .1em; }
+.scalp-zoom-hint { color: #2d4d38; border-color: #ccd9ce; box-shadow: 0 3px 9px rgba(0,0,0,.06); }
+.scalp-card-body { padding: 20px; gap: 14px; }
+.scalp-cues > div { padding-block: 10px; border-color: #dce5db; }
+.scalp-how { gap: 8px; }
+.scalp-technique-card.is-technique-done { border-color: #78a184; }
+.page .scalp-module-complete { background: #214f3a; color: #fff; box-shadow: var(--shadow-small); }
+.page .scalp-module-complete .practice-status { color: #f1f6ef; }
+
+.comfort-coach { background: #f7f9f3; border-color: #cbdccb; border-left: 3px solid #7aa07e; }
+.coached-practice { background: #fff; border-color: #becfbe; border-radius: 18px; box-shadow: 0 4px 14px rgba(27,58,39,.04); }
+.coach-stage-heading { padding-bottom: 10px; border-bottom: 1px solid #e1e8dd; margin-bottom: 12px; }
+.page .coach-stage-count, .page .quick-version .coached-practice .coach-stage-count { color: #416747; font-size: 12px; letter-spacing: .12em; }
+.page .coach-stage-title { margin-bottom: 0; font-size: 22px; }
+.coach-time { padding: 6px 11px; background: #edf4e9; border: 1px solid #d0dfca; border-radius: 10px; font-size: 24px; line-height: 1.3; }
+.coach-next { padding-top: 10px; border-top: 1px solid #e1e8dd; font-size: 15px; }
+.coach-status { color: #435c42; background: #f1f6e9; border: 1px solid #d4e0c6; border-radius: 10px; }
+.coach-finished .coach-status { background: #e7f3e7; color: #285437; border-color: #bdd8c0; }
+.coach-actions { gap: 9px; }
+.coach-time-note { font-size: 14px; }
+.comfort-stop { border-color: #dce5d8; font-size: 15px; }
+.page .routine-card-enhanced { padding: 24px; }
+.page .routine-card-enhanced:first-child { background: #f0f5eb; border-color: #c3d7bd; }
+.routine-tag { background: #e9f2e5; color: #386041; border: 1px solid #cbdcca; border-radius: 8px; }
+.routine-time-large { color: #2f5740; padding: 6px 10px; background: #eef5e8; border-radius: 9px; white-space: nowrap; }
+.routine-step-list li, .routine-card-enhanced:first-child .routine-step-list li { background: #f7f9f3; border: 1px solid #e0e7dc; padding: 14px; border-radius: 12px; }
+.routine-step-list li > span { color: #486851; }
+.routine-safety { border-radius: 12px; background: #fff5e9; color: #75482a; }
+
+.page .pp-hero { background: #edf4e7; border-color: #ccdcca; }
+.pp-hero-facts span { background: #fff; border-color: #d4e2cd; color: #36533e; }
+.pp-controls { background: #fff; border-color: #ccd9ce; box-shadow: var(--shadow-small); }
+.pp-area-chip { border-color: #c8d9c6; color: #37583f; background: #f6f9f2; }
+.pp-area-chip[aria-pressed=true] { color: #fff; background: #2f6b50; border-color: #2f6b50; }
+.pp-visual-frame { background: #f8f6ef; border-color: #dddccf; }
+.pp-point-index { color: #506242; background: #edf2e2; }
+.pp-detail, .pp-notice { border-color: #d7e1d2; border-radius: 13px; }
+.pp-safety-box { border-radius: 13px; }
+.page :is(input[type=search], select) { background: #fff; border: 1px solid #b8ccba; border-radius: 11px; min-height: 46px; }
+.footer { background: #eef3e9; border-top: 1px solid #d5e0d0; color: #46604b; }
+.footer-inner { padding-block: 24px; }
+.hand-page-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 32px; align-items: center; margin-bottom: 26px; }
+.hand-page-hero figure, .hand-technique-card figure { margin: 0; }
+.hand-page-hero img, .hand-technique-card img { display: block; width: 100%; height: auto; border-radius: 16px; }
+.hand-page-hero figcaption, .hand-technique-card figcaption { padding-top: 9px; color: #4a6055; font-size: 14px; line-height: 1.5; }
+.hand-hero-facts { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 21px; }
+.hand-hero-facts span { padding: 7px 10px; color: #36533e; background: #eaf2e5; border: 1px solid #cbdcca; border-radius: 8px; font-size: 14px; }
+.hand-safety { padding: 20px 24px; margin-block: 24px 30px; background: #fff4e8; border: 1px solid #e5c8ab; border-left: 4px solid #b77943; border-radius: 16px; }
+.page .hand-safety h2 { margin: 0 0 10px; color: #774729; font-size: 24px; }
+.hand-safety p { margin: 8px 0 0; color: #6d4b35; }
+.hand-technique-list { display: grid; gap: 24px; }
+.hand-technique-card { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 25px; padding: 23px; background: #fff; border: 1px solid #cbd9ce; border-radius: 20px; box-shadow: var(--shadow-small); align-items: start; }
+.hand-technique-copy h3 { margin-block: 5px 14px; }
+.hand-step-list { display: grid; gap: 10px; padding-left: 23px; }
+.hand-step-list p { margin: 4px 0 0; color: #425b49; }
+.hand-step-list li::marker { color: #2f6b50; font-weight: 700; }
+.hand-cues { margin-bottom: 0; }
+.hand-cues > div { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 12px; padding: 11px 0; border-top: 1px solid #dce5db; }
+.hand-cues dt { color: #2e563b; font-weight: 700; }
+.hand-cues dd { margin: 0; color: #425b49; }
+.hand-practice-panel { padding: 24px; background: #edf3e9; border: 1px solid #cbdccb; border-radius: 23px; scroll-margin-top: 95px; }
+.hand-practice-panel .coached-practice { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); grid-template-areas: "note note" "visual heading" "visual instruction" "visual next" "visual status" "visual actions" "visual link"; gap: 12px 22px; }
+.hand-practice-panel .coach-time-note { grid-area: note; margin: 0; }
+.hand-practice-panel .coach-stage-visual { grid-area: visual; margin: 0; }
+.hand-practice-panel .coach-stage-heading { grid-area: heading; margin: 0; }
+.hand-practice-panel .coach-instruction { grid-area: instruction; margin: 0; }
+.hand-practice-panel .coach-next { grid-area: next; margin: 0; }
+.hand-practice-panel .coach-status { grid-area: status; margin: 0; }
+.hand-practice-panel .coach-actions { grid-area: actions; }
+.hand-practice-panel .coach-lesson-link { grid-area: link; margin: 0; }
+.hand-point-section { scroll-margin-top: 95px; }
+.hand-point-source { color: #4a6055; font-size: 15px; }
+.hand-point-source a { color: #285f42; text-decoration: underline; }
+.pp-point-card { scroll-margin-top: 95px; }
+@media (max-width: 1200px) {
+  .main-nav { display: none; }
+  .menu-toggle { display: block; }
+  .main-nav.open { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); position: absolute; top: 100%; left: 16px; right: 16px; max-height: calc(100dvh - 90px); overflow-y: auto; padding: 14px; background: #fffffb; border: 1px solid #d0dece; border-radius: 14px; box-shadow: var(--shadow); }
+}
+@media (min-width: 1000px) {
+  .lesson-hero { grid-template-columns: minmax(0, 1fr) 350px; }
+  .comfort-coach { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 22px; }
+  .comfort-coach h3, .comfort-coach .comfort-stop { grid-column: 1 / -1; }
+  .comfort-coach h3, .comfort-coach p { margin: 0; }
+}
+
+@media (max-width: 1100px) {
+  .shell-header { padding-inline: 20px; }
+  .nav-link { padding-inline: 9px; font-size: 14px; }
+}
+@media (max-width: 760px) {
+  .page { width: calc(100% - 28px); padding-top: 24px; }
+  .shell-header { padding: 10px 15px; }
+  .main-nav.open { background: #fffffb; box-shadow: var(--shadow); border: 1px solid #d0dece; border-radius: 0 0 16px 16px; }
+  .nav-link { min-height: 46px; font-size: 16px; }
+  .page h1 { font-size: clamp(36px, 10vw, 46px); }
+  .page .quick-version { border-radius: 20px; padding: 16px; }
+  .lesson-hero { gap: 18px; padding-top: 0; }
+  .page .scalp-module-header h2 { max-width: none; font-size: 26px; }
+  .page .scalp-group-heading h3 { font-size: 24px; }
+  .scalp-technique-grid { gap: 16px; }
+  .scalp-card-body { padding: 17px; }
+  .page .routine-card-enhanced { padding: 17px; }
+  .coach-time { font-size: 21px; }
+  .page .coach-stage-title { font-size: 20px; }
+  .coach-actions .button { min-height: 46px; }
+  .hand-page-hero, .hand-technique-card { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .hand-page-hero > figure { grid-row: 1; }
+  .hand-safety, .hand-technique-card, .hand-practice-panel { padding: 17px; }
+  .hand-practice-panel .coached-practice { display: block; }
+  .hand-practice-panel .coach-stage-visual { margin-block: 12px 18px; }
+  .hand-practice-panel .coach-stage-heading, .hand-practice-panel .coach-instruction, .hand-practice-panel .coach-next, .hand-practice-panel .coach-status { margin-bottom: 14px; }
+  .hand-practice-panel .coach-lesson-link { margin-top: 14px; }
+  .main-nav.open { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 360px) {
+  body { min-width: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .page :is(.button, .lesson-card, .reference-card, .reference-hub-card, .area-explorer-card) { transition: none; }
+}

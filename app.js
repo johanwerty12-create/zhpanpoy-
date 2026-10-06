@@ -260,7 +260,7 @@ function normalizeRouteLinks(root) {
 
 function isAppPath(path) {
   return path === "/" || path === "/home" || path === "/course" || path === "/lessons" ||
-    ["/quick-practice", "/techniques", "/body-areas", "/pressure-points", "/routines", "/safety", "/progress", "/reference"].includes(path) ||
+    ["/quick-practice", "/techniques", "/body-areas", "/hand-massage", "/pressure-points", "/routines", "/safety", "/progress", "/reference"].includes(path) ||
     /^\/(?:lessons|lesson)\/\d+$/.test(path);
 }
 
@@ -276,6 +276,7 @@ function updatePageMetadata(current) {
     techniques: ["Massage techniques", "Browse beginner massage movements with visual guidance and links back to the full lesson."],
     "body-areas": ["Body areas", "Choose a body area to find gentle beginner guidance, a matching lesson, and concise safety notes."],
     "pressure-points": ["Pressure Points", "Landmark-led beginner lessons for traditional acupressure points, with original diagrams, careful safety guidance, and evidence distinctions."],
+    "hand-massage": ["Hand massage", "Gentle palm circles, optional finger strokes, a guided hand routine, and traditional hand pressure-point learning with safety guidance."],
     routines: ["Quick routines", "Follow short beginner massage routines with visual lesson links and clear comfort-first safety cues."],
     safety: ["Massage safety", "Review simple, safety-first boundaries for gentle, non-medical massage practice."],
     progress: ["Your learning progress", "Review lesson and practice progress saved privately in this browser. No account is needed."],
@@ -356,7 +357,7 @@ function lessonVisual(lesson) {
   return "<div class=\"lesson-visual\"><div class=\"visual-scene\"><img class=\"visual-image\" src=\"/assets/lessons/" + artwork.image + "\" alt=\"" + esc(artwork.alt) + "\" width=\"1448\" height=\"1086\" decoding=\"async\" /></div><p class=\"visual-caption\">" + esc(artwork.caption) + "</p></div>";
 }
 function aside(lesson) {
-  return "<aside class=\"lesson-aside\"><div class=\"aside-card\"><p class=\"eyebrow\">Course progress</p><h3>" + progress.completed.length + " of " + lessons.length + " complete</h3><div class=\"progress-row\"><span>" + percentComplete() + "% learned</span><span>" + (isComplete(lesson.id) ? "Reviewed" : "In progress") + "</span></div>" + progressBar(true) + "<nav aria-label=\"Lesson list\">" + lessons.map(function (item) { return "<a class=\"lesson-link " + (isComplete(item.id) ? "done" : "") + "\" href=\"#/lesson/" + item.id + "\"><span class=\"small-num\">" + String(item.id).padStart(2, "0") + "</span><span>" + esc(item.title) + "</span>" + (isComplete(item.id) ? "<span aria-label=\"completed\">✓</span>" : "") + "</a>"; }).join("") + "</nav></div></aside>";
+  return "<aside class=\"lesson-aside\"><div class=\"aside-card\"><p class=\"eyebrow\">Course progress</p><h3>" + progress.completed.length + " of " + lessons.length + " complete</h3><div class=\"progress-row\"><span>" + percentComplete() + "% learned</span><span>" + (isComplete(lesson.id) ? "Reviewed" : "In progress") + "</span></div>" + progressBar(true) + "<nav aria-label=\"Lesson list\">" + lessons.map(function (item) { return "<a class=\"lesson-link " + (isComplete(item.id) ? "done" : "") + "\"" + (item.id === lesson.id ? " aria-current=\"page\"" : "") + " href=\"#/lesson/" + item.id + "\"><span class=\"small-num\">" + String(item.id).padStart(2, "0") + "</span><span>" + esc(item.title) + "</span>" + (isComplete(item.id) ? "<span aria-label=\"completed\">✓</span>" : "") + "</a>"; }).join("") + "</nav></div></aside>";
 }
 
 function home() {
