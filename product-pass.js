@@ -274,7 +274,7 @@ function pressurePointCard(point, index) {
     .map(function (item, stepIndex) { return "<li><span>" + String(stepIndex + 1).padStart(2, "0") + " · " + item[0] + "</span><p>" + esc(item[1]) + "</p></li>"; }).join("");
   const previous = pointIndex > 0 ? '<button class="button small" type="button" data-sequence-previous aria-label="Previous point: ' + esc(pressurePoints[pointIndex - 1].name) + '">← Previous point</button>' : '<span></span>';
   const next = pointIndex < pressurePoints.length - 1 ? '<button class="button small" type="button" data-sequence-next aria-label="Next point: ' + esc(pressurePoints[pointIndex + 1].name) + '">Next point →</button>' : '<span></span>';
-  return '<article class="pp-point-card" id="point-' + point.id + '" data-point-id="' + point.id + '" data-sequence-item="' + point.id + '"><div class="pp-point-head"><div><p class="pp-point-area">' + esc(point.area) + ' · ' + esc(point.difficulty) + '</p><h3 tabindex="-1">' + esc(point.name) + ' <span>' + esc(point.code) + '</span></h3><p class="pp-channel">' + esc(point.tradition) + '</p></div><span class="pp-point-index" aria-hidden="true">' + esc(point.code) + '</span></div><figure class="pp-visual-frame">' + pressurePointVisualMarkup(point.id) + '<figcaption>Real body-region photograph with a separately drawn location marker. Read the named anatomical landmarks; the photo is illustrative and not a measuring scale.</figcaption></figure><div class="pp-instruction-column"><section class="pp-detail"><h4>WHERE · exact location</h4><p>' + esc(point.where) + '</p><p class="pp-landmarks"><strong>Nearby landmarks:</strong> ' + esc(point.landmarks) + '</p></section><details class="pp-show-how"><summary><span>Show me how</span><span aria-hidden="true">＋</span></summary><ol>' + stepMarkup + '</ol></details><div class="pp-notice-grid"><section class="pp-notice pp-notice-calm"><h4>WHAT TO NOTICE</h4><p><strong>Usually okay:</strong> ' + esc(point.feel) + '</p><p><strong>Not okay:</strong> ' + esc(point.notFeel) + '</p></section><section class="pp-notice pp-notice-tradition"><h4>TRADITIONAL PRACTICE · NOT A MEDICAL CLAIM</h4><p>' + esc(point.traditional) + '</p><small>' + esc(point.traditionalNote) + '</small></section></div><section class="pp-safety-box"><h4>SAFETY · read before trying</h4><dl><div><dt>Common mistakes</dt><dd>' + esc(point.mistakes) + '</dd></div><div><dt>Avoid when</dt><dd>' + esc(point.avoid) + '</dd></div><div><dt>Stop immediately for</dt><dd>' + esc(point.stop) + '</dd></div><div><dt>Seek professional advice</dt><dd>' + esc(point.seek) + '</dd></div></dl></section><nav class="point-sequence-nav" aria-label="Pressure point sequence">' + previous + next + '</nav><p class="sequence-key-hint">← Previous point <span aria-hidden="true">·</span> Next point →</p></div></article>';
+  return '<article class="pp-point-card" id="point-' + point.id + '" data-point-id="' + point.id + '" data-sequence-item="' + point.id + '"><div class="pp-point-head"><div><p class="pp-point-area">' + esc(point.area) + ' · ' + esc(point.difficulty) + '</p><h3 tabindex="-1">' + esc(point.name) + ' <span>' + esc(point.code) + '</span></h3><p class="pp-channel">' + esc(point.tradition) + '</p></div><span class="pp-point-index" aria-hidden="true">' + esc(point.code) + '</span></div><figure class="pp-visual-frame">' + pressurePointVisualMarkup(point.id) + '<figcaption>Real body-region photograph with a separately drawn location marker. Read the named anatomical landmarks; the photo is illustrative and not a measuring scale.</figcaption></figure><div class="pp-instruction-column"><section class="pp-detail"><h4>WHERE · exact location</h4><p>' + esc(point.where) + '</p><p class="pp-landmarks"><strong>Nearby landmarks:</strong> ' + esc(point.landmarks) + '</p></section><details class="pp-show-how"><summary><span>Show me how</span><span aria-hidden="true">＋</span></summary><ol>' + stepMarkup + '</ol></details><div class="pp-notice-grid"><section class="pp-notice pp-notice-calm"><h4>WHAT TO NOTICE</h4><p><strong>Usually okay:</strong> ' + esc(point.feel) + '</p><p><strong>Not okay:</strong> ' + esc(point.notFeel) + '</p></section><section class="pp-notice pp-notice-tradition"><h4>TRADITIONAL PRACTICE · NOT A MEDICAL CLAIM</h4><p>' + esc(point.traditional) + '</p><small>' + esc(point.traditionalNote) + '</small></section></div><section class="pp-safety-box"><h4>SAFETY · read before trying</h4><dl><div><dt>Common mistakes</dt><dd>' + esc(point.mistakes) + '</dd></div><div><dt>Avoid when</dt><dd>' + esc(point.avoid) + '</dd></div><div><dt>Stop immediately for</dt><dd>' + esc(point.stop) + '</dd></div><div><dt>Seek professional advice</dt><dd>' + esc(point.seek) + '</dd></div></dl></section><nav class="point-sequence-nav" aria-label="Pressure point sequence">' + previous + next + '</nav><p class="sequence-key-hint" role="status" aria-live="polite">Point ' + (pointIndex + 1) + ' of ' + pressurePoints.length + ' · ← Previous point <span aria-hidden="true">·</span> Next point →</p></div></article>';
 }
 
 function pressurePointsPage() {
@@ -850,7 +850,7 @@ function formatScalpTime(seconds) {
 function scalpTechniqueCard(technique, index) {
   const done = Array.isArray(progress.scalpPracticeCompleted) && progress.scalpPracticeCompleted.includes(technique.id);
   const steps = technique.how.map(function (step) { return "<li>" + esc(step) + "</li>"; }).join("");
-  return "<article class=\"scalp-technique-card" + (done ? " is-technique-done" : "") + "\" id=\"technique-" + technique.id + "\" data-scalp-technique=\"" + technique.id + "\"><div class=\"scalp-card-heading\"><span class=\"scalp-card-number\">" + String(index + 1).padStart(2, "0") + "</span><div><p class=\"scalp-card-group\">" + esc(technique.group === "front" ? "Face / Front" : technique.group === "around" ? "Around the head" : technique.group === "finish" ? "Finish" : "Scalp") + "</p><h4>" + esc(technique.title) + "</h4></div><span class=\"scalp-done-label\" " + (done ? "" : "hidden") + ">Practiced</span></div><button class=\"scalp-visual-enlarge\" type=\"button\" aria-label=\"Enlarge hand placement: " + esc(technique.title) + "\"><span class=\"scalp-visual-art\"><img src=\"/assets/lessons/" + technique.image + "\" alt=\"" + esc(technique.alt) + "\" width=\"1448\" height=\"1086\" loading=\"lazy\" decoding=\"async\" />" + "</span><span class=\"scalp-zoom-hint\">View detailed visual</span></button><div class=\"scalp-card-body\"><h5>How</h5><ol class=\"scalp-how\">" + steps + "</ol><dl class=\"scalp-cues\"><div><dt>Pressure</dt><dd>" + esc(technique.pressure) + "</dd></div><div><dt>Watch for</dt><dd>" + esc(technique.watch) + "</dd></div><div class=\"scalp-avoid\"><dt>Avoid</dt><dd>" + esc(technique.avoid) + "</dd></div></dl>" + coachedPracticeMarkup("scalp-" + technique.id, scalpCoachedStages(technique), false) + "<div class=\"scalp-practice-controls\"><button class=\"button subtle small scalp-practice-complete\" type=\"button\" data-technique-id=\"" + technique.id + "\" " + (done ? "disabled aria-disabled=\"true\"" : "") + ">" + (done ? "Practiced ✓" : "Mark done") + "</button></div></div></article>";
+  return "<article class=\"scalp-technique-card" + (done ? " is-technique-done" : "") + "\" id=\"technique-" + technique.id + "\" data-scalp-technique=\"" + technique.id + "\"><div class=\"scalp-card-heading\"><span class=\"scalp-card-number\">" + String(index + 1).padStart(2, "0") + "</span><div><p class=\"scalp-card-group\">" + esc(technique.group === "front" ? "Face / Front" : technique.group === "around" ? "Around the head" : technique.group === "finish" ? "Finish" : "Scalp") + "</p><h4 tabindex=\"-1\">" + esc(technique.title) + "</h4></div><span class=\"scalp-done-label\" " + (done ? "" : "hidden") + ">Practiced</span></div><button class=\"scalp-visual-enlarge\" type=\"button\" aria-label=\"Enlarge hand placement: " + esc(technique.title) + "\"><span class=\"scalp-visual-art\"><img src=\"/assets/lessons/" + technique.image + "\" alt=\"" + esc(technique.alt) + "\" width=\"1448\" height=\"1086\" loading=\"lazy\" decoding=\"async\" />" + "</span><span class=\"scalp-zoom-hint\">View detailed visual</span></button><div class=\"scalp-card-body\"><h5>How</h5><ol class=\"scalp-how\">" + steps + "</ol><dl class=\"scalp-cues\"><div><dt>Pressure</dt><dd>" + esc(technique.pressure) + "</dd></div><div><dt>Watch for</dt><dd>" + esc(technique.watch) + "</dd></div><div class=\"scalp-avoid\"><dt>Avoid</dt><dd>" + esc(technique.avoid) + "</dd></div></dl>" + coachedPracticeMarkup("scalp-" + technique.id, scalpCoachedStages(technique), false) + "<div class=\"scalp-practice-controls\"><button class=\"button subtle small scalp-practice-complete\" type=\"button\" data-technique-id=\"" + technique.id + "\" " + (done ? "disabled aria-disabled=\"true\"" : "") + ">" + (done ? "Practiced ✓" : "Mark done") + "</button></div></div></article>";
 }
 
 function headScalpQuickPractice(lesson) {
@@ -861,7 +861,7 @@ function headScalpQuickPractice(lesson) {
       const globalIndex = scalpTechniques.indexOf(technique);
       const previous = globalIndex > 0 ? '<button class="button small" type="button" data-sequence-previous aria-label="Previous scalp technique: ' + esc(scalpTechniques[globalIndex - 1].title) + '">← Previous</button>' : '<span></span>';
       const next = globalIndex < scalpTechniques.length - 1 ? '<button class="button small" type="button" data-sequence-next aria-label="Next scalp technique: ' + esc(scalpTechniques[globalIndex + 1].title) + '">Next →</button>' : '<span></span>';
-      return scalpTechniqueCard(technique, index).replace('data-scalp-technique="' + technique.id + '"', 'data-scalp-technique="' + technique.id + '" data-sequence-item="' + technique.id + '"').replace('</article>', '<nav class="hand-technique-nav" aria-label="Scalp technique sequence">' + previous + next + '</nav><p class="sequence-key-hint">← Previous <span aria-hidden="true">·</span> Next →</p></article>');
+      return scalpTechniqueCard(technique, index).replace('data-scalp-technique="' + technique.id + '"', 'data-scalp-technique="' + technique.id + '" data-sequence-item="' + technique.id + '"').replace('</article>', '<nav class="hand-technique-nav" aria-label="Scalp technique sequence">' + previous + next + '</nav><p class="sequence-key-hint" role="status" aria-live="polite">Technique ' + (globalIndex + 1) + ' of ' + scalpTechniques.length + ' · ← Previous <span aria-hidden="true">·</span> Next →</p></article>');
     }).join("");
     return "<section class=\"scalp-technique-group\" aria-labelledby=\"scalp-group-" + group.id + "\"><div class=\"scalp-group-heading\"><div><p class=\"eyebrow\">Technique set</p><h3 id=\"scalp-group-" + group.id + "\">" + esc(group.title) + "</h3></div><p>" + esc(group.intro) + "</p></div><div class=\"scalp-technique-grid\">" + cards + "</div></section>";
   }).join("") + '</div>';
@@ -896,14 +896,18 @@ function quickPracticePage() {
     const current = lesson.id === selectedLesson.id;
     return "<a class=\"practice-picker-link\" href=\"/quick-practice?lesson=" + lesson.id + "\"" + (current ? " aria-current=\"page\"" : "") + "><span class=\"practice-picker-thumb\">" + lessonImageMarkup(lesson.id, "practice-picker-image") + "<span class=\"practice-picker-number\" aria-hidden=\"true\">" + String(lesson.id).padStart(2, "0") + "</span></span><span><strong>" + esc(lesson.title) + "</strong><small>" + esc(lesson.time + " min lesson") + "</small></span><span class=\"practice-picker-arrow\" aria-hidden=\"true\">→</span></a>";
   }).join("");
-  const keyboardNavigation = '<nav class="practice-sequence-nav" aria-label="Quick Practice lessons">' + (previous ? '<a class="button small" data-sequence-previous href="/quick-practice?lesson=' + previous.id + '">← Previous skill</a>' : '<span></span>') + (next ? '<a class="button small" data-sequence-next href="/quick-practice?lesson=' + next.id + '">Next skill →</a>' : '<span></span>') + '</nav><p class="sequence-key-hint">← Previous skill <span aria-hidden="true">·</span> Next skill →</p>';
-  return shell('<div class="page quick-practice-page" data-sequence="quick-practice"><div class="reference-hero"><div><p class="eyebrow">See it · try it · keep it gentle</p><h1>Quick practice</h1><p class="lede">Short, visual practice for one skill at a time. Choose a lesson below to switch the movement. Use ←/→ outside text and form fields.</p></div><a class="button subtle" href="/course">Course map →</a></div>' + quickVersion(selectedLesson) + keyboardNavigation + '<section class="practice-picker-panel" aria-labelledby="practice-picker-title"><div class="section-heading"><div><p class="eyebrow">13 visual practices</p><h2 id="practice-picker-title">Choose another skill</h2></div><p>Every practice opens with its own detailed instructional visual and safety cues.</p></div><nav class="practice-picker-grid" aria-label="Choose a quick practice">' + choices + '</nav></section></div>', "quick-practice");
+  const keyboardNavigation = '<nav class="practice-sequence-nav" aria-label="Quick Practice lessons">' + (previous ? '<a class="button small" data-sequence-previous href="/quick-practice?lesson=' + previous.id + '">← Previous skill</a>' : '<span></span>') + (next ? '<a class="button small" data-sequence-next href="/quick-practice?lesson=' + next.id + '">Next skill →</a>' : '<span></span>') + '</nav><p class="sequence-key-hint" role="status" aria-live="polite">← Previous skill <span aria-hidden="true">·</span> Next skill →</p>';
+  return shell('<div class="page quick-practice-page" data-sequence="quick-practice"><div class="reference-hero"><div><p class="eyebrow">See it · try it · keep it gentle</p><h1>Quick practice</h1><p class="lede">Short, visual practice for one skill at a time. Choose a lesson below to switch the movement. Use ←/→ from the practice area or a sequence card; text and form fields stay untouched.</p></div><a class="button subtle" href="/course">Course map →</a></div>' + quickVersion(selectedLesson) + keyboardNavigation + '<section class="practice-picker-panel" aria-labelledby="practice-picker-title"><div class="section-heading"><div><p class="eyebrow">13 visual practices</p><h2 id="practice-picker-title">Choose another skill</h2></div><p>Every practice opens with its own detailed instructional visual and safety cues.</p></div><nav class="practice-picker-grid" aria-label="Choose a quick practice">' + choices + '</nav></section></div>', "quick-practice");
 }
 
 function fullLesson(lesson) {
   const positions = lesson.position.map(function (item, index) { return "<div class=\"position-item\"><strong>" + (index === 0 ? "A" : "B") + "</strong><div><strong>" + esc(item[0]) + "</strong><p>" + esc(item[1]) + "</p></div></div>"; }).join("");
-  const steps = lesson.steps.map(function (step) { return "<div class=\"step\"><div><h3>" + esc(step[0]) + "</h3><p>" + esc(step[1]) + "</p></div></div>"; }).join("");
-  return "<details class=\"full-lesson\" id=\"full-lesson\"><summary><span><b>Full lesson</b><small>Setup, technique, pressure, and safety details</small></span><strong>Show details</strong></summary><div class=\"full-lesson-body\"><section class=\"lesson-section\"><h2>What you will learn</h2><p class=\"section-intro\">" + esc(lesson.learn) + "</p><div class=\"two-column\"><div class=\"info-card\"><h3>Before you start</h3><ul>" + lesson.before.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("") + "</ul></div><div class=\"info-card\"><h3>Make it comfortable</h3><p>Keep checking the person’s breathing, body language, and words. A pause is always useful—not a failure.</p></div></div></section><section class=\"lesson-section\"><h2>Position</h2><div class=\"position-grid\"><div class=\"position-list\">" + positions + "</div><div class=\"info-card\"><h3>Find your neutral</h3><p>Can you breathe freely, keep your shoulders down, and move without reaching? If not, adjust the setup before your hands begin.</p></div></div></section><section class=\"lesson-section\"><h2>How to do it</h2><div class=\"step-list\">" + steps + "</div></section><section class=\"lesson-section\"><h2>Pressure guide</h2><div class=\"pressure-grid\"><div class=\"pressure gentle\"><h3>Start light</h3><p>" + esc(lesson.pressure[0]) + "</p></div><div class=\"pressure moderate\"><h3>Check before adjusting</h3><p>" + esc(lesson.pressure[1]) + "</p></div><div class=\"pressure stop\"><h3>Stop or pause</h3><p>" + esc(lesson.pressure[2]) + "</p></div></div></section><section class=\"lesson-section\"><h2>Notice the difference</h2><div class=\"feel-grid\"><div class=\"feel-card good\"><h3>What it should feel like</h3><p>" + esc(lesson.feel) + "</p></div><div class=\"feel-card mistake\"><h3>Common beginner mistakes</h3><ul class=\"mistake-list\">" + lesson.mistakes.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("") + "</ul></div></div></section><section class=\"lesson-section\"><div class=\"safety-callout\"><div class=\"callout-icon\">!</div><div><h3>Safety for this lesson</h3><p>" + esc(lesson.safety) + "</p></div></div></section></div></details>";
+  const steps = lesson.steps.map(function (step, index) {
+    const previous = index > 0 ? '<button class="button small" type="button" data-sequence-previous aria-label="Previous lesson step: ' + esc(lesson.steps[index - 1][0]) + '">← Previous step</button>' : '<span></span>';
+    const next = index < lesson.steps.length - 1 ? '<button class="button small" type="button" data-sequence-next aria-label="Next lesson step: ' + esc(lesson.steps[index + 1][0]) + '">Next step →</button>' : '<span></span>';
+    return '<div class="step" data-sequence-item="' + (index + 1) + '"><div><p class="eyebrow">Step ' + (index + 1) + ' of ' + lesson.steps.length + '</p><h3 tabindex="-1">' + esc(step[0]) + '</h3><p>' + esc(step[1]) + '</p><nav class="hand-technique-nav" aria-label="Lesson step sequence">' + previous + next + '</nav></div></div>';
+  }).join("");
+  return "<details class=\"full-lesson\" id=\"full-lesson\"><summary><span><b>Full lesson</b><small>Setup, technique, pressure, and safety details</small></span><strong>Show details</strong></summary><div class=\"full-lesson-body\"><section class=\"lesson-section\"><h2>What you will learn</h2><p class=\"section-intro\">" + esc(lesson.learn) + "</p><div class=\"two-column\"><div class=\"info-card\"><h3>Before you start</h3><ul>" + lesson.before.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("") + "</ul></div><div class=\"info-card\"><h3>Make it comfortable</h3><p>Keep checking the person’s breathing, body language, and words. A pause is always useful—not a failure.</p></div></div></section><section class=\"lesson-section\"><h2>Position</h2><div class=\"position-grid\"><div class=\"position-list\">" + positions + "</div><div class=\"info-card\"><h3>Find your neutral</h3><p>Can you breathe freely, keep your shoulders down, and move without reaching? If not, adjust the setup before your hands begin.</p></div></div></section><section class=\"lesson-section\"><h2>How to do it</h2><div class=\"step-list\" data-sequence=\"lesson-steps\">" + steps + "</div><p class=\"sequence-key-hint\" role=\"status\" aria-live=\"polite\">Step 1 of " + lesson.steps.length + " · ← Previous step · Next step →</p></section><section class=\"lesson-section\"><h2>Pressure guide</h2><div class=\"pressure-grid\"><div class=\"pressure gentle\"><h3>Start light</h3><p>" + esc(lesson.pressure[0]) + "</p></div><div class=\"pressure moderate\"><h3>Check before adjusting</h3><p>" + esc(lesson.pressure[1]) + "</p></div><div class=\"pressure stop\"><h3>Stop or pause</h3><p>" + esc(lesson.pressure[2]) + "</p></div></div></section><section class=\"lesson-section\"><h2>Notice the difference</h2><div class=\"feel-grid\"><div class=\"feel-card good\"><h3>What it should feel like</h3><p>" + esc(lesson.feel) + "</p></div><div class=\"feel-card mistake\"><h3>Common beginner mistakes</h3><ul class=\"mistake-list\">" + lesson.mistakes.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("") + "</ul></div></div></section><section class=\"lesson-section\"><div class=\"safety-callout\"><div class=\"callout-icon\">!</div><div><h3>Safety for this lesson</h3><p>" + esc(lesson.safety) + "</p></div></div></section></div></details>";
 }
 
 function lessonPage(id) {
@@ -975,64 +979,137 @@ function notFound() {
 }
 
 function stepThroughLearningSequence(sequence, current, direction) {
-  if (!sequence) return;
+  if (!sequence) return false;
   const items = Array.from(sequence.querySelectorAll("[data-sequence-item]")).filter(function (item) {
     return !item.closest("[hidden]");
   });
-  if (!items.length) return;
+  if (!items.length) return false;
   let index = current ? items.indexOf(current) : -1;
   let nextIndex = index < 0 ? (direction > 0 ? 0 : items.length - 1) : index + direction;
-  if (nextIndex < 0 || nextIndex >= items.length) return;
+  if (nextIndex < 0 || nextIndex >= items.length) return false;
   const item = items[nextIndex];
+  items.forEach(function (entry) {
+    if (entry === item) entry.setAttribute("aria-current", "step");
+    else entry.removeAttribute("aria-current");
+  });
+  const hint = item.querySelector(".sequence-key-hint");
+  if (hint) {
+    const label = sequence.dataset.sequence === "pressure-points" ? "Point" : sequence.dataset.sequence === "lesson-steps" ? "Step" : "Technique";
+    hint.textContent = label + " " + (nextIndex + 1) + " of " + items.length + " · ← Previous · Next →";
+  }
   if (typeof item.scrollIntoView === "function") item.scrollIntoView({ behavior: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   const heading = item.querySelector("h3, h4");
   if (heading && typeof heading.focus === "function") heading.focus({ preventScroll: true });
+  return true;
 }
 
 function bindLearningArrowKeys() {
   if (window.__craftArrowKeysBound) return;
   window.__craftArrowKeysBound = true;
   document.addEventListener("keydown", function (event) {
-    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.isComposing) return;
+    if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.isComposing) return;
     const target = event.target;
-    if (target && typeof target.closest === "function" && target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"]')) return;
-    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
-    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const arrowBlocked = target && typeof target.closest === "function" && target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"], [role="listbox"], [role="option"], [role="tablist"], [role="tab"], [role="grid"], [role="tree"], [role="menu"], [role="spinbutton"], [role="application"]');
+    if (arrowBlocked) return;
+    const direction = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
     const dialog = document.querySelector(".follow-along-dialog");
-    if (dialog && dialog.open && (!target || !dialog.contains || dialog.contains(target))) {
-      const control = dialog.querySelector(direction > 0 ? ".follow-next" : ".follow-previous");
-      if (control && !control.disabled) { event.preventDefault(); control.click(); }
+    const visualDialog = document.querySelector(".visual-learning-dialog");
+    function consume() { event.preventDefault(); event.stopPropagation(); }
+    if (direction && visualDialog && visualDialog.open && window.CraftVisualLearning && window.CraftVisualLearning.handleKeyboard(event)) {
+      consume();
       return;
     }
-    let sequence = target && typeof target.closest === "function" ? target.closest("[data-sequence]") : null;
-    if (!sequence) {
-      const sequences = Array.from(document.querySelectorAll("[data-sequence]"));
-      if (sequences.length === 1) sequence = sequences[0];
-      else sequence = sequences.find(function (item) { return item.dataset.sequence !== "quick-practice"; }) || null;
+    if (direction && dialog && dialog.open && target && dialog.contains(target)) {
+      const control = dialog.querySelector(direction > 0 ? ".follow-next" : ".follow-previous");
+      consume();
+      if (control && !control.disabled) {
+        control.click();
+        const heading = dialog.querySelector(".follow-technique");
+        if (heading && typeof heading.focus === "function") heading.focus({ preventScroll: true });
+      } else {
+        const status = dialog.querySelector(".follow-status");
+        if (status) status.textContent = direction < 0 ? "You are at the first routine step." : "The routine is at its final step.";
+      }
+      return;
     }
+    if (event.key === " " || event.code === "Space") {
+      const spaceBlocked = target && typeof target.closest === "function" && target.closest('button, a, input, textarea, select, summary, [contenteditable="true"], [role="button"], [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"], [role="listbox"], [role="option"], [role="tab"], [role="menuitem"]');
+      if (spaceBlocked) return;
+      let toggle = null;
+      if (dialog && dialog.open && target && dialog.contains(target)) toggle = dialog.querySelector(".follow-toggle");
+      else {
+        const practice = target && typeof target.closest === "function" ? target.closest(".coached-practice") : null;
+        toggle = practice && practice.querySelector(".coach-toggle");
+      }
+      if (toggle && !toggle.hidden && /^(Pause|Resume)$/.test(toggle.textContent.trim())) {
+        consume();
+        toggle.click();
+      }
+      return;
+    }
+    if (!direction) return;
+
+    const practice = target && typeof target.closest === "function" ? target.closest(".coached-practice") : null;
+    if (practice) {
+      const session = coachedSessions.get(practice.dataset.coachSession);
+      consume();
+      const moved = session && session.navigate ? session.navigate(direction) : false;
+      if (!moved) {
+        const status = practice.querySelector(".coach-status");
+        if (status) status.textContent = direction < 0 ? "This is the first practice stage." : "This is the final practice stage. Finish or restart when ready.";
+      }
+      return;
+    }
+
+    if (target && typeof target.closest === "function" && target.closest("dialog")) return;
+
+    const sequence = target && typeof target.closest === "function" ? target.closest("[data-sequence]") : null;
+    if (!sequence) return;
     if (sequence && sequence.dataset.sequence === "quick-practice") {
+      if (!target.closest(".quick-version, .practice-sequence-nav")) return;
       const link = sequence.querySelector(direction > 0 ? ".practice-sequence-nav [data-sequence-next]" : ".practice-sequence-nav [data-sequence-previous]");
-      if (link) { event.preventDefault(); link.click(); }
+      consume();
+      if (link) link.click();
+      else {
+        const hint = sequence.querySelector(".sequence-key-hint");
+        if (hint) hint.textContent = direction < 0 ? "This is the first Quick Practice skill." : "This is the final Quick Practice skill.";
+      }
       return;
     }
     if (sequence && sequence.dataset.sequence === "lesson-page") {
       const lessonFooter = sequence.querySelector(".lesson-footer");
       const link = lessonFooter && lessonFooter.querySelector(direction > 0 ? "a.next" : "a:not(.next)");
-      if (link) { event.preventDefault(); link.click(); }
+      consume();
+      if (link) link.click();
+      else {
+        const hint = sequence.querySelector(".sequence-key-hint");
+        if (hint) hint.textContent = direction < 0 ? "You are at the first lesson." : "You are at the final lesson.";
+      }
       return;
     }
     if (sequence) {
       const item = target && typeof target.closest === "function" ? target.closest("[data-sequence-item]") : null;
       if (item || sequence.querySelector("[data-sequence-item]")) {
-        event.preventDefault();
-        stepThroughLearningSequence(sequence, item, direction);
+        consume();
+        const moved = stepThroughLearningSequence(sequence, item, direction);
+        if (!moved && item) {
+          if (sequence.dataset.sequence === "lesson-steps") {
+            const lessonPage = sequence.closest(".lesson-page");
+            const lessonFooter = lessonPage && lessonPage.querySelector(".lesson-footer");
+            const nextLink = lessonFooter && lessonFooter.querySelector(direction > 0 ? "a.next" : "a:not(.next)");
+            if (nextLink) { nextLink.click(); return; }
+          }
+          const hint = item.querySelector(".sequence-key-hint");
+          if (hint) {
+            const label = sequence.dataset.sequence === "pressure-points" ? "point" : sequence.dataset.sequence === "lesson-steps" ? "step" : "technique";
+            const index = Array.from(sequence.querySelectorAll("[data-sequence-item]")).indexOf(item);
+            hint.textContent = direction < 0
+              ? "First " + label + " · no previous item"
+              : "Final " + label + " · no next item";
+            if (index < 0) hint.textContent = direction < 0 ? "First item · no previous step" : "Final item · no next step";
+          }
+        }
       }
-      return;
-    }
-    const lessonFooter = document.querySelector(".lesson-footer");
-    if (lessonFooter) {
-      const link = lessonFooter.querySelector(direction > 0 ? "a.next" : "a:not(.next)");
-      if (link) { event.preventDefault(); link.click(); }
     }
   });
 }
@@ -1058,7 +1135,8 @@ function render() {
   else html = notFound();
   if (/^lesson\/\d+$/.test(current)) {
     html = html.replace('<div class="page"><div class="lesson-hero">', '<div class="page lesson-page" data-sequence="lesson-page"><div class="lesson-hero">');
-    html = html.replace('<div class="lesson-footer">', '<p class="sequence-key-hint">← Previous lesson <span aria-hidden="true">·</span> Next lesson →</p><div class="lesson-footer">');
+    const lessonNumber = Number(current.split("/")[1]);
+    html = html.replace('<div class="lesson-footer">', '<p class="sequence-key-hint" role="status" aria-live="polite">Lesson ' + lessonNumber + ' of ' + lessons.length + ' · ← Previous lesson <span aria-hidden="true">·</span> Next lesson →</p><div class="lesson-footer">');
   }
   const app = document.getElementById("app");
   app.innerHTML = html + (window.CraftVisualLearning ? window.CraftVisualLearning.dialogMarkup() : "");

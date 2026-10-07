@@ -8,6 +8,8 @@ const clock = { now: 0, next: 0, intervals: new Map() };
 class ClockDate extends Date { static now() { return clock.now; } }
 let roots = [];
 let followDialog = null;
+let visualDialog = null;
+let visualRoot = null;
 let followStarts = [];
 let savedProgress = null;
 let keyboardSequences = [];
@@ -16,6 +18,7 @@ const documentHandlers = {};
 const document = {
   hidden: false,
   addEventListener(name, callback) { documentHandlers[name] = callback; },
+  getElementById(id) { return id === 'app' ? visualRoot : null; },
   querySelectorAll(selector) {
     if (selector === '[data-coach-session]') return roots;
     if (selector === '.follow-along-start') return followStarts;
@@ -24,6 +27,7 @@ const document = {
   },
   querySelector(selector) {
     if (selector === '.follow-along-dialog') return followDialog;
+    if (selector === '.visual-learning-dialog') return visualDialog;
     const match = selector.match(/^\[data-routine-progress="(\d+)"\]$/);
     return match ? routineStatusNodes[Number(match[1])] : null;
   }
@@ -70,6 +74,9 @@ for (let id = 1; id <= lessonCount; id++) {
     assert.ok(markup.includes('Start light'), 'Missing comfort guide for lesson ' + id);
     assert.ok(!markup.includes('scalp-practice-start') && !markup.includes('class="button primary small practice-start"'));
   }
+  const detailedLesson = evaluate(`fullLesson(lessons[${id - 1}])`);
+  assert.match(detailedLesson, /data-sequence="lesson-steps"/);
+  assert.equal((detailedLesson.match(/data-sequence-item=/g) || []).length, evaluate(`lessons[${id - 1}].steps.length`));
   assert.equal(evaluate(`lessons[${id - 1}].quiz.length`), 2);
 }
 const pages = ['home()', 'course()', 'techniques()', 'areas()', 'routines()', 'safety()', 'progressPage()', 'reference()', 'pressurePointsPage()', 'handMassagePage()', 'quickPracticePage()', 'notFound()'];
@@ -149,6 +156,12 @@ for (const key of visualKeys) {
   }
 }
 assert.equal(new Set(visualImages).size, 47, 'Every individual technique sequence must have its own matching source illustration');
+assert.equal(evaluate('window.CraftVisualLearning.adjacentSequenceKey("lesson:1", -1)'), null);
+assert.equal(evaluate('window.CraftVisualLearning.adjacentSequenceKey("lesson:1", 1)'), 'lesson:2');
+assert.equal(evaluate('window.CraftVisualLearning.adjacentSequenceKey("scalp:" + scalpTechniques[0].id, 1)'), 'scalp:' + evaluate('scalpTechniques[1].id'));
+assert.equal(evaluate('window.CraftVisualLearning.adjacentSequenceKey("hand:" + handMassageTechniques[14].id, 1)'), null);
+assert.equal(evaluate('window.CraftVisualLearning.adjacentSequenceKey("point:" + pressurePoints[5].id, -1)'), 'point:' + evaluate('pressurePoints[4].id'));
+assert.deepEqual({ ...evaluate('window.CraftVisualLearning.sequencePosition("hand:" + handMassageTechniques[2].id)') }, { index: 3, total: 15, label: 'technique' });
 for (let index = 0; index < 9; index++) {
   const stages = evaluate(`routineCoachedStages(routineData[${index}])`);
   stages.forEach((stage, stageIndex) => {
@@ -173,11 +186,12 @@ assert.ok(fs.readFileSync(path.join(project, 'index.html'), 'utf8').includes('/v
 assert.match(evaluate('followAlongDialogMarkup()'), /follow-visual-steps/);
 
 function element() {
-  return { hidden: false, textContent: '', dataset: {}, listeners: {}, addEventListener(name, callback) { this.listeners[name] = callback; } };
+  return { hidden: false, disabled: false, textContent: '', dataset: {}, listeners: {}, attributes: {}, addEventListener(name, callback) { this.listeners[name] = callback; }, click() { if (this.listeners.click) this.listeners.click({ target: this }); }, focus() {}, setAttribute(name, value) { this.attributes[name] = value; }, removeAttribute(name) { delete this.attributes[name]; } };
 }
 function makeRoot(key, withImage = false) {
   const elements = new Map();
   return { dataset: { coachSession: key }, classList: { add() {}, remove() {} },
+    closest(selector) { return selector === '.coached-practice' ? this : null; },
     querySelector(selector) {
       if (!withImage && (selector === '.coach-stage-visual img' || selector === '.coach-lesson-link')) return null;
       if (!elements.has(selector)) elements.set(selector, element());
@@ -262,6 +276,7 @@ function makeFollowDialog() {
       return elements.get(selector);
     },
     querySelectorAll(selector) { return selector === '.follow-exit' ? exits : []; },
+    contains(target) { return Boolean(target && target.inFollowDialog); },
     addEventListener(name, callback) { this.listeners[name] = callback; },
     showModal() { this.open = true; }, close() { this.open = false; },
     exitButtons: exits
@@ -404,10 +419,14 @@ assert.deepEqual(Array.from(upgradedProgress.visualSequencesCompleted), ['hand:p
 evaluate('bindLearningArrowKeys()');
 let focusedSequenceItem = null;
 function makeSequenceItem(id) {
+  const attributes = {};
   return {
     id,
     closest(selector) { return selector === '[hidden]' ? null : null; },
     scrollIntoView() {},
+    setAttribute(name, value) { attributes[name] = value; },
+    removeAttribute(name) { delete attributes[name]; },
+    getAttribute(name) { return attributes[name] || null; },
     querySelector() { return { focus() { focusedSequenceItem = id; } }; }
   };
 }
@@ -428,14 +447,168 @@ function makeSequenceTarget(item) {
 function sendArrow(key, target, options = {}) {
   let prevented = false;
   documentHandlers.keydown({ key, target, defaultPrevented: false, altKey: false, ctrlKey: false, metaKey: false,
-    shiftKey: Boolean(options.shiftKey), isComposing: false, preventDefault() { prevented = true; } });
+    shiftKey: Boolean(options.shiftKey), repeat: Boolean(options.repeat), isComposing: false, preventDefault() { prevented = true; }, stopPropagation() {} });
   return prevented;
 }
 assert.equal(sendArrow('ArrowRight', makeSequenceTarget(sequenceItems[0])), true);
 assert.equal(focusedSequenceItem, 'hand-2', 'Right arrow advances hand techniques');
 assert.equal(sendArrow('ArrowLeft', makeSequenceTarget(sequenceItems[1])), true);
 assert.equal(focusedSequenceItem, 'hand-1', 'Left arrow goes back to the prior hand technique');
+assert.equal(sequenceItems[0].getAttribute('aria-current'), 'step', 'The active sequence card is announced as current');
+assert.equal(sendArrow('ArrowLeft', makeSequenceTarget(sequenceItems[0])), true, 'Boundary arrows are consumed instead of scrolling the page');
+assert.equal(focusedSequenceItem, 'hand-1', 'Left arrow at the first step does not wrap');
+assert.equal(sendArrow('ArrowRight', makeSequenceTarget(sequenceItems[0]), { repeat: true }), false, 'Held keys do not auto-advance multiple steps');
 const searchTarget = { closest(selector) { return selector.indexOf('input') >= 0 ? this : null; } };
 assert.equal(sendArrow('ArrowRight', searchTarget), false, 'Search inputs retain normal arrow-key behavior');
+const nativeControlTarget = { closest(selector) { return selector.includes('[role="radio"]') ? this : null; } };
+assert.equal(sendArrow('ArrowRight', nativeControlTarget), false, 'Arrow keys remain available to other keyboard-controlled widgets');
 assert.equal(sendArrow('ArrowRight', makeSequenceTarget(sequenceItems[0]), { shiftKey: true }), false, 'Modified arrow shortcuts are ignored');
-console.log('PASS: all 47 ten-step guides and 470 step frames; 47 unique technique visuals; all routine-stage mappings and image assets; timer start/pause/resume/complete; all 9 Follow Along routines; navigation, exit, repeat, and local progress preservation.');
+assert.equal(sendArrow('ArrowRight', { closest() { return null; } }), false, 'Arrow keys outside a learning sequence do not jump to unrelated content');
+
+// Quick Practice and lesson navigation use only their own controls and announce boundaries.
+let quickClicks = 0;
+const quickHint = element();
+const quickLink = { click() { quickClicks += 1; } };
+const quickSequence = { dataset: { sequence: 'quick-practice' }, querySelector(selector) { return selector.includes('data-sequence-next') ? quickLink : selector === '.sequence-key-hint' ? quickHint : null; } };
+const quickTarget = { closest(selector) { return selector === '[data-sequence]' ? quickSequence : selector === '.quick-version, .practice-sequence-nav' ? {} : null; } };
+assert.equal(sendArrow('ArrowRight', quickTarget), true);
+assert.equal(quickClicks, 1, 'Right arrow follows the next Quick Practice skill');
+assert.equal(sendArrow('ArrowLeft', quickTarget), true);
+assert.match(quickHint.textContent, /first Quick Practice skill/);
+const lightboxTarget = { closest(selector) {
+  if (selector.includes('input')) return null;
+  if (selector === 'dialog') return {};
+  if (selector === '[data-sequence]') return quickSequence;
+  if (selector === '.quick-version, .practice-sequence-nav') return {};
+  return null;
+} };
+assert.equal(sendArrow('ArrowRight', lightboxTarget), false, 'Image lightboxes do not accidentally switch the underlying practice');
+assert.equal(quickClicks, 1);
+
+let lessonNextClicks = 0;
+const lessonHint = element();
+const lessonFooter = { querySelector() { return { click() { lessonNextClicks += 1; } }; } };
+const lessonSequence = { dataset: { sequence: 'lesson-page' }, querySelector(selector) { return selector === '.lesson-footer' ? lessonFooter : selector === '.sequence-key-hint' ? lessonHint : null; } };
+const lessonTarget = { closest(selector) { return selector === '[data-sequence]' ? lessonSequence : null; } };
+assert.equal(sendArrow('ArrowRight', lessonTarget), true);
+assert.equal(lessonNextClicks, 1, 'Right arrow follows the next lesson');
+
+let lessonBoundaryPrevious = 0;
+let lessonBoundaryNext = 0;
+let focusedLessonStep = null;
+const lessonStepHints = [element(), element()];
+const lessonStepItems = [0, 1].map(index => ({
+  closest(selector) { return selector === '[hidden]' ? null : null; },
+  scrollIntoView() {}, setAttribute() {}, removeAttribute() {},
+  querySelector(selector) {
+    if (selector === '.sequence-key-hint') return lessonStepHints[index];
+    return { focus() { focusedLessonStep = index; } };
+  }
+}));
+const lessonStepFooter = { querySelector(selector) { return { click() { if (selector === 'a.next') lessonBoundaryNext += 1; else lessonBoundaryPrevious += 1; } }; } };
+const lessonStepPage = { querySelector() { return lessonStepFooter; } };
+const lessonSteps = {
+  dataset: { sequence: 'lesson-steps' },
+  closest(selector) { return selector === '.lesson-page' ? lessonStepPage : null; },
+  querySelectorAll() { return lessonStepItems; },
+  querySelector(selector) { return selector === '[data-sequence-item]' ? lessonStepItems[0] : null; }
+};
+const lessonStepTarget = index => ({ closest(selector) {
+  if (selector === '[data-sequence]') return lessonSteps;
+  if (selector === '[data-sequence-item]') return lessonStepItems[index];
+  return null;
+} });
+assert.equal(sendArrow('ArrowRight', lessonStepTarget(0)), true);
+assert.equal(focusedLessonStep, 1, 'Lesson step cards advance in their natural order');
+assert.match(lessonStepHints[1].textContent, /Step 2 of 2/);
+assert.equal(sendArrow('ArrowRight', lessonStepTarget(1)), true);
+assert.equal(lessonBoundaryNext, 1, 'The final lesson step continues to the next lesson when available');
+assert.equal(sendArrow('ArrowLeft', lessonStepTarget(0)), true);
+assert.equal(lessonBoundaryPrevious, 1, 'The first lesson step can return to the previous lesson');
+
+// Guided stages pause/reset cleanly; Space toggles only an already-running or paused stage.
+const guided = makeRoot('lesson-3');
+roots = [guided]; evaluate('bindGuidedPractices()');
+const guidedTarget = { closest(selector) { return selector === '.coached-practice' ? guided : null; } };
+click(guided, '.coach-toggle');
+assert.equal(sendArrow('ArrowRight', guidedTarget), true);
+assert.equal(guided.querySelector('.coach-stage-count').textContent, 'Stage 2 of 3', 'Arrow navigation advances guided practice stages');
+assert.equal(clock.intervals.size, 0, 'Changing stages clears the old countdown');
+click(guided, '.coach-toggle');
+let spacePrevented = false;
+documentHandlers.keydown({ key: ' ', code: 'Space', target: guidedTarget, defaultPrevented: false, altKey: false, ctrlKey: false, metaKey: false, shiftKey: false, isComposing: false,
+  preventDefault() { spacePrevented = true; }, stopPropagation() {} });
+assert.equal(spacePrevented, true, 'Space pauses guided practice from its non-control content');
+assert.equal(guided.querySelector('.coach-toggle').textContent, 'Resume');
+documentHandlers.keydown({ key: ' ', code: 'Space', target: guidedTarget, defaultPrevented: false, altKey: false, ctrlKey: false, metaKey: false, shiftKey: false, isComposing: false,
+  preventDefault() {}, stopPropagation() {} });
+assert.equal(guided.querySelector('.coach-toggle').textContent, 'Pause', 'Space resumes paused guided practice');
+evaluate('stopAllCoachedSessions()');
+
+// Full-screen Follow Along receives arrows only while focus is inside its dialog.
+followStarts[0].click();
+const followTarget = { inFollowDialog: true, closest() { return null; } };
+assert.equal(sendArrow('ArrowRight', followTarget), true);
+assert.match(followDialog.querySelector('.follow-step-count').textContent, /Step 2 of 3 · get ready/);
+assert.match(followDialog.querySelector('.follow-transition').textContent, /reposition your hands/);
+const followTransitionIntervals = clock.intervals.size;
+assert.equal(sendArrow('ArrowRight', followTarget, { repeat: true }), false, 'Held Right does not skip or duplicate a Follow Along transition');
+assert.match(followDialog.querySelector('.follow-step-count').textContent, /Step 2 of 3 · get ready/);
+assert.equal(clock.intervals.size, followTransitionIntervals, 'Arrow-repeat does not create another routine timer');
+let cancelPrevented = false;
+followDialog.listeners.cancel({ preventDefault() { cancelPrevented = true; } });
+assert.equal(cancelPrevented, true, 'Escape exits Follow Along through the native dialog cancel event');
+assert.equal(followDialog.open, false);
+assert.equal(clock.intervals.size, 0, 'Escape stops the active routine timer');
+
+// Exercise the actual visual dialog's slide and next-technique keyboard transitions.
+function makeVisualDialog() {
+  const elements = new Map();
+  const phases = Array.from({ length: 4 }, () => element());
+  return {
+    open: false, listeners: {},
+    querySelector(selector) { if (!elements.has(selector)) elements.set(selector, element()); return elements.get(selector); },
+    querySelectorAll(selector) { return selector === '.visual-phase-track li' ? phases : []; },
+    contains(target) { return Boolean(target && target.inVisualDialog); },
+    addEventListener(name, callback) { this.listeners[name] = callback; },
+    showModal() { this.open = true; },
+    close() { this.open = false; if (this.listeners.close) this.listeners.close(); }
+  };
+}
+visualDialog = makeVisualDialog();
+visualRoot = { querySelector(selector) { return selector === '.visual-learning-dialog' ? visualDialog : null; }, querySelectorAll() { return []; } };
+evaluate('window.CraftVisualLearning.bind()');
+const visualTrigger = Object.assign(element(), { isConnected: true, focus() { this.focused = true; } });
+visualTrigger.dataset.visualLearning = 'hand:' + evaluate('handMassageTechniques[0].id');
+visualTrigger.closest = selector => selector === '[data-visual-learning]' ? visualTrigger : null;
+documentHandlers.click({ target: visualTrigger });
+const visualTarget = { inVisualDialog: true, closest() { return null; } };
+assert.equal(sendArrow('ArrowRight', visualTarget), true);
+assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /TECHNIQUE 1 OF 15 · STEP 2 OF 10/);
+assert.match(visualDialog.querySelector('.visual-learning-art').innerHTML, /data-visual-step="2"/);
+for (let step = 2; step < 10; step++) assert.equal(sendArrow('ArrowRight', visualTarget), true);
+assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /STEP 10 OF 10/);
+assert.equal(visualDialog.querySelector('.visual-learning-next').textContent, 'Next technique →');
+assert.equal(sendArrow('ArrowRight', visualTarget), true);
+assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /TECHNIQUE 2 OF 15 · STEP 1 OF 10/);
+assert.equal(visualDialog.querySelector('.visual-learning-previous').disabled, false, 'The previous technique button works at a guide boundary');
+assert.ok(evaluate('progress.visualSequencesCompleted.includes("hand:" + handMassageTechniques[0].id)'), 'Moving beyond a guide marks the finished technique');
+assert.match(visualDialog.querySelector('.visual-learning-art').innerHTML, /hand-palm-circles/);
+assert.equal(sendArrow('ArrowLeft', visualTarget), true);
+assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /TECHNIQUE 1 OF 15 · STEP 10 OF 10/);
+evaluate('window.CraftVisualLearning.close()');
+assert.equal(visualDialog.open, false);
+assert.equal(visualTrigger.focused, true, 'Closing the visual guide returns focus to its opener');
+
+const finalHandKey = 'hand:' + evaluate('handMassageTechniques[14].id');
+const finalHandTrigger = Object.assign(element(), { isConnected: true, focus() { this.focused = true; } });
+finalHandTrigger.dataset.visualLearning = finalHandKey;
+finalHandTrigger.closest = selector => selector === '[data-visual-learning]' ? finalHandTrigger : null;
+documentHandlers.click({ target: finalHandTrigger });
+for (let step = 1; step < 10; step++) assert.equal(sendArrow('ArrowRight', visualTarget), true);
+assert.equal(visualDialog.querySelector('.visual-learning-next').textContent, 'Finish', 'The final guide has a clear finish boundary');
+assert.equal(sendArrow('ArrowRight', visualTarget), true);
+assert.equal(visualDialog.open, false, 'The final guide closes instead of jumping into an unrelated group');
+assert.ok(evaluate('progress.visualSequencesCompleted.includes("hand:" + handMassageTechniques[14].id)'));
+
+console.log('PASS: all 47 ten-step guides and 470 step frames; 47 unique technique visuals; cross-guide slide navigation and progress; all routine-stage mappings and image assets; timer start/pause/resume/complete; all 9 Follow Along routines; keyboard boundaries, repeat protection, input protection, guided stages, Space pause/resume, modal priority, exit, repeat, and local progress preservation.');

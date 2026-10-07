@@ -96,9 +96,9 @@ function coachedPracticeMarkup(key, stages, withImage) {
   const first = stages[0];
   return '<section class="coached-practice" data-coach-session="' + esc(key) + '"><p class="coach-time-note">Suggested practice time: ' + formatScalpTime(total) + '. Each stage pauses for a comfort check. Finish earlier whenever needed.</p>' +
     (withImage ? '<figure class="coach-stage-visual"><div class="coach-stage-photo-wrap"><img src="/assets/lessons/' + esc(first.image) + '" alt="' + esc(first.alt) + '" width="1448" height="1086" loading="lazy" /><svg class="coach-motion-cue" viewBox="0 0 1000 750" aria-hidden="true" hidden></svg></div><figcaption>Hand placement for the current stage · use comfortable, light contact.</figcaption></figure>' : '') +
-    '<div class="coach-stage-heading"><div><p class="eyebrow coach-stage-count">Stage 1 of ' + stages.length + '</p><h3 class="coach-stage-title">' + esc(first.title) + '</h3></div><output class="coach-time" aria-live="off" aria-label="Suggested time left in current stage">' + formatScalpTime(first.seconds) + '</output></div>' +
+    '<div class="coach-stage-heading"><div><p class="eyebrow coach-stage-count" aria-live="polite" aria-atomic="true">Stage 1 of ' + stages.length + '</p><h3 class="coach-stage-title" tabindex="-1" aria-live="polite" aria-atomic="true">' + esc(first.title) + '</h3></div><output class="coach-time" aria-live="off" aria-label="Suggested time left in current stage">' + formatScalpTime(first.seconds) + '</output></div>' +
     '<p class="coach-instruction">' + esc(first.instruction) + '</p><p class="coach-next">Next: ' + esc(stages[1] ? stages[1].title : 'Finish and check comfort') + '</p>' +
-    '<p class="coach-status" role="status">Ready when you are. These times are guides; keep an easy rhythm.</p><div class="coach-actions"><button class="button primary small coach-toggle" type="button">Start guided practice</button><button class="button small coach-continue" type="button" hidden>Comfort checked · continue</button><button class="button subtle small coach-restart" type="button">Restart</button><button class="button subtle small coach-end" type="button" hidden>End practice</button></div>' +
+    '<p class="coach-status" role="status" aria-live="polite">Ready when you are. These times are guides; keep an easy rhythm.</p><p class="sequence-key-hint coach-key-hint">← Previous stage · → Next stage · Space pause / resume</p><div class="coach-actions"><button class="button small coach-stage-previous" type="button" aria-label="Previous practice stage">← Previous stage</button><button class="button primary small coach-toggle" type="button">Start guided practice</button><button class="button small coach-continue" type="button" hidden>Comfort checked · continue</button><button class="button small coach-stage-forward" type="button" aria-label="Next practice stage">Next stage →</button><button class="button subtle small coach-restart" type="button">Restart</button><button class="button subtle small coach-end" type="button" hidden>End practice</button></div>' +
     (withImage ? '<a class="coach-lesson-link" href="/lessons/' + first.lesson + '">Review this stage’s lesson →</a>' : '') + '</section>';
 }
 
@@ -111,7 +111,7 @@ function routineTimelineMarkup(routine) {
 }
 
 function followAlongDialogMarkup() {
-  return '<dialog class="follow-along-dialog" aria-labelledby="follow-technique-title"><div class="follow-along-shell"><header class="follow-along-header"><div><p class="eyebrow follow-routine-name">Follow Along</p><p class="follow-step-count"></p></div><button class="button subtle follow-exit" type="button">Exit routine</button></header><div class="follow-along-layout"><figure class="follow-along-visual"><img class="follow-along-image" src="/assets/lessons/lesson-10-arm-hand.webp" alt="" width="1448" height="1086" decoding="async" /><figcaption>Let the visual guide your hand placement.</figcaption></figure><section class="follow-along-guide"><div class="follow-live-details"><p class="follow-area"></p><h2 id="follow-technique-title" class="follow-technique" tabindex="-1"></h2><p class="follow-instruction"></p><dl class="follow-cues"><div><dt>MOVE</dt><dd class="follow-direction"></dd></div><div><dt>PRESSURE</dt><dd class="follow-pressure"></dd></div></dl><button class="button small follow-visual-steps" type="button" data-visual-learning="lesson:3">Open 10-step visual guide</button></div><p class="follow-transition" role="status" aria-live="polite" hidden></p><div class="follow-clock"><span class="follow-phase-label"></span><output class="follow-time" role="timer" aria-live="off"></output></div><p class="follow-status" role="status" aria-live="polite"></p><div class="follow-controls"><button class="button follow-previous" type="button">Previous</button><button class="button primary follow-toggle" type="button">Pause</button><button class="button follow-next" type="button">Next</button></div><section class="follow-finish" hidden><p class="eyebrow">ROUTINE COMPLETE</p><h2>Take a moment before getting up.</h2><p>Your routine is saved on this device. Repeat it whenever you like.</p><div class="follow-finish-actions"><button class="button primary follow-repeat" type="button">Repeat routine</button><button class="button subtle follow-exit" type="button">Exit routine</button></div></section><p class="follow-safety">Keep touch comfortable. Stop for pain, numbness, tingling, dizziness, or anything unusual. Exit at any time.</p></section></div></div></dialog>';
+  return '<dialog class="follow-along-dialog" aria-labelledby="follow-technique-title"><div class="follow-along-shell"><header class="follow-along-header"><div><p class="eyebrow follow-routine-name">Follow Along</p><p class="follow-step-count" aria-live="polite" aria-atomic="true"></p><p class="sequence-key-hint">← Previous · → Next · Space pause / resume · Esc exit</p></div><button class="button subtle follow-exit" type="button">Exit routine</button></header><div class="follow-along-layout"><figure class="follow-along-visual"><img class="follow-along-image" src="/assets/lessons/lesson-10-arm-hand.webp" alt="" width="1448" height="1086" decoding="async" /><figcaption>Let the visual guide your hand placement.</figcaption></figure><section class="follow-along-guide"><div class="follow-live-details"><p class="follow-area"></p><h2 id="follow-technique-title" class="follow-technique" tabindex="-1" aria-live="polite" aria-atomic="true"></h2><p class="follow-instruction"></p><dl class="follow-cues"><div><dt>MOVE</dt><dd class="follow-direction"></dd></div><div><dt>PRESSURE</dt><dd class="follow-pressure"></dd></div></dl><button class="button small follow-visual-steps" type="button" data-visual-learning="lesson:3">Open 10-step visual guide</button></div><p class="follow-transition" role="status" aria-live="polite" hidden></p><div class="follow-clock"><span class="follow-phase-label"></span><output class="follow-time" role="timer" aria-live="off"></output></div><p class="follow-status" role="status" aria-live="polite"></p><div class="follow-controls"><button class="button follow-previous" type="button">Previous</button><button class="button primary follow-toggle" type="button">Pause</button><button class="button follow-next" type="button">Next</button></div><section class="follow-finish" hidden><p class="eyebrow">ROUTINE COMPLETE</p><h2>Take a moment before getting up.</h2><p>Your routine is saved on this device. Repeat it whenever you like.</p><div class="follow-finish-actions"><button class="button primary follow-repeat" type="button">Repeat routine</button><button class="button subtle follow-exit" type="button">Exit routine</button></div></section><p class="follow-safety">Keep touch comfortable. Stop for pain, numbness, tingling, dizziness, or anything unusual. Exit at any time.</p></section></div></div></dialog>';
 }
 
 function relaxationEvidenceMarkup() {
@@ -140,6 +140,8 @@ function bindGuidedPractices() {
     const toggle = root.querySelector('.coach-toggle');
     const onward = root.querySelector('.coach-continue');
     const end = root.querySelector('.coach-end');
+    const previous = root.querySelector('.coach-stage-previous');
+    const forward = root.querySelector('.coach-stage-forward');
     const status = root.querySelector('.coach-status');
     const time = root.querySelector('.coach-time');
     const motionCue = root.querySelector('.coach-motion-cue');
@@ -148,6 +150,8 @@ function bindGuidedPractices() {
       const stage = stages[index];
       root.querySelector('.coach-stage-count').textContent = 'Stage ' + (index + 1) + ' of ' + stages.length;
       root.querySelector('.coach-stage-title').textContent = stage.title;
+      previous.disabled = index === 0;
+      forward.disabled = index === stages.length - 1;
       root.querySelector('.coach-instruction').textContent = stage.instruction;
       root.querySelector('.coach-next').textContent = 'Next: ' + (stages[index + 1] ? stages[index + 1].title : 'Finish and check comfort');
       time.textContent = formatScalpTime(remaining);
@@ -162,7 +166,7 @@ function bindGuidedPractices() {
       if (link) link.href = '/lessons/' + stage.lesson;
     }
     function finish(early) {
-      clear(); mode = 'finished'; toggle.hidden = true; onward.hidden = true; end.hidden = true;
+      clear(); mode = 'finished'; toggle.hidden = true; onward.hidden = true; end.hidden = true; previous.hidden = true; forward.hidden = true;
       if (early) time.textContent = 'Ended';
       root.classList.add('coach-finished');
       status.textContent = early ? 'Practice ended. Ease contact to zero, release gently, and check how the person feels. Stopping early is fine.' : 'Practice complete. Finish the lighter contact, ease away gradually, and ask how it felt.';
@@ -174,32 +178,53 @@ function bindGuidedPractices() {
       if (remaining > 0) return;
       clear();
       if (index === stages.length - 1) { finish(false); return; }
-      mode = 'waiting'; toggle.hidden = true; onward.hidden = false;
+      mode = 'waiting'; toggle.hidden = true; onward.hidden = false; previous.hidden = false; forward.hidden = true;
       status.textContent = 'Ease the movement into light resting contact, without holding pressure. Ask “Does this still feel comfortable?” Continue when ready, or end now.';
     }
     function pause(message) {
       if (mode !== 'running') return;
       remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
       clear(); mode = 'paused'; toggle.textContent = 'Resume'; time.textContent = formatScalpTime(remaining);
+      forward.hidden = false;
       status.textContent = message || 'Paused. Ease pressure off and rest your hands; resume only when both people are comfortable.';
     }
     function run() {
       coachedSessions.forEach(function (session) { if (session.key !== key) session.pause('Paused while another practice is open. Ease pressure off and rest.'); });
+      clear();
       updateStage();
-      mode = 'running'; toggle.hidden = false; toggle.textContent = 'Pause'; onward.hidden = true; end.hidden = false;
+      mode = 'running'; toggle.hidden = false; toggle.textContent = 'Pause'; onward.hidden = true; end.hidden = false; previous.hidden = true; forward.hidden = true;
       status.textContent = stages[index].title + '. Slow down, keep your hand relaxed, and check comfort. Finish earlier if needed.';
       deadline = Date.now() + remaining * 1000;
       interval = window.setInterval(tick, 250);
     }
+    function navigate(direction) {
+      if (direction > 0 && mode === 'waiting') { onward.click(); return true; }
+      const nextIndex = index + direction;
+      if (nextIndex < 0 || nextIndex >= stages.length || mode === 'finished') return false;
+      clear();
+      index = nextIndex;
+      remaining = stages[index].seconds;
+      mode = 'ready';
+      updateStage();
+      toggle.hidden = false; toggle.textContent = 'Start guided practice';
+      onward.hidden = true; end.hidden = true; previous.hidden = false; forward.hidden = false;
+      root.classList.remove('coach-finished');
+      status.textContent = 'Stage changed. Ease pressure off, reposition your hands, then start when both people are ready.';
+      const heading = root.querySelector('.coach-stage-title');
+      if (heading && typeof heading.focus === 'function') heading.focus({ preventScroll: true });
+      return true;
+    }
     toggle.addEventListener('click', function () { if (mode === 'running') pause(); else if (mode === 'ready' || mode === 'paused') run(); });
     onward.addEventListener('click', function () { index += 1; remaining = stages[index].seconds; updateStage(); run(); });
+    previous.addEventListener('click', function () { navigate(-1); });
+    forward.addEventListener('click', function () { navigate(1); });
     root.querySelector('.coach-restart').addEventListener('click', function () {
       clear(); index = 0; remaining = stages[0].seconds; mode = 'ready'; updateStage();
-      toggle.hidden = false; toggle.textContent = 'Start guided practice'; onward.hidden = true; end.hidden = true; root.classList.remove('coach-finished');
+      toggle.hidden = false; toggle.textContent = 'Start guided practice'; onward.hidden = true; end.hidden = true; previous.hidden = false; forward.hidden = false; root.classList.remove('coach-finished');
       status.textContent = 'Restarted. Ease pressure off before resetting your position; start when both people are ready.';
     });
     end.addEventListener('click', function () { finish(true); });
-    coachedSessions.set(key, { key, pause, dispose: clear });
+    coachedSessions.set(key, { key, pause, navigate, dispose: clear });
   });
 }
 

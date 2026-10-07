@@ -244,6 +244,29 @@
     return null;
   }
 
+  function sequenceGroup(kind) {
+    if (kind === 'lesson') return lessons.map(function (item) { return { key: 'lesson:' + item.id, label: 'lesson' }; });
+    if (kind === 'scalp') return scalpTechniques.map(function (item) { return { key: 'scalp:' + item.id, label: 'technique' }; });
+    if (kind === 'hand') return handMassageTechniques.map(function (item) { return { key: 'hand:' + item.id, label: 'technique' }; });
+    if (kind === 'point') return pressurePoints.map(function (item) { return { key: 'point:' + item.id, label: 'point' }; });
+    return [];
+  }
+
+  function adjacentSequenceKey(key, direction) {
+    const kind = key.slice(0, key.indexOf(':'));
+    const group = sequenceGroup(kind);
+    const index = group.findIndex(function (item) { return item.key === key; });
+    const adjacent = group[index + direction];
+    return adjacent ? adjacent.key : null;
+  }
+
+  function sequencePosition(key) {
+    const kind = key.slice(0, key.indexOf(':'));
+    const group = sequenceGroup(kind);
+    const index = group.findIndex(function (item) { return item.key === key; });
+    return index < 0 ? null : { index: index + 1, total: group.length, label: group[index].label };
+  }
+
   function visualKeyForRoutineStage(stage) {
     if (!stage) return 'lesson:3';
     if (stage.pointId) return 'point:' + stage.pointId;
@@ -310,7 +333,7 @@
   }
 
   function dialogMarkup() {
-    return '<dialog class="visual-learning-dialog" aria-labelledby="visual-learning-title"><div class="visual-learning-shell"><header class="visual-learning-header"><div><p class="eyebrow">10-step visual lesson</p><p class="visual-learning-count" aria-live="polite"></p></div><button class="button subtle visual-learning-close" type="button">Exit guide</button></header><div class="visual-learning-layout"><figure class="visual-learning-figure"><div class="visual-learning-art"></div><figcaption class="visual-learning-caption">Technique-specific photo and location marker · the slide framing and action cue change at each step.</figcaption><ol class="visual-phase-track" aria-label="Learning phases"><li>SET UP</li><li>MOVE</li><li>RELEASE</li><li>CHECK</li></ol></figure><section class="visual-learning-guide"><p class="visual-learning-area"></p><h2 id="visual-learning-title" tabindex="-1"></h2><h3 class="visual-learning-step-title" aria-live="polite"></h3><p class="visual-learning-instruction"></p><div class="visual-learning-what"><strong>WHAT AM I DOING?</strong><p></p></div><dl class="visual-learning-cues"><div><dt>BODY AREA</dt><dd class="visual-learning-body"></dd></div><div><dt>HAND POSITION</dt><dd class="visual-learning-hand"></dd></div><div><dt>MOVEMENT</dt><dd class="visual-learning-direction"></dd></div><div><dt>PRESSURE</dt><dd class="visual-learning-pressure"></dd></div></dl><p class="visual-learning-avoid"><strong>AVOID:</strong> <span></span></p><p class="visual-learning-safety">If this feels sharp, painful, numb, tingly, or unusually uncomfortable, stop. Reposition only if comfortable; stop if symptoms continue. Do not push through.</p><p class="visual-learning-tradition" hidden>Traditional point-location practice only; not a medical treatment or cure.</p><div class="visual-learning-timer"><div><span class="eyebrow">OPTIONAL STEP TIMER</span><output class="visual-learning-time" aria-live="off">—:—</output></div><button class="button small visual-learning-timer-toggle" type="button">Start timer</button><span class="visual-learning-timer-note"></span></div><p class="visual-learning-status" role="status" aria-live="polite">Move at your own pace. Timer is a guide—not a pressure dose.</p><div class="visual-learning-controls"><button class="button visual-learning-previous" type="button">← Previous</button><button class="button subtle visual-learning-restart" type="button">Restart</button><button class="button primary visual-learning-next" type="button">Next →</button></div><p class="visual-learning-completed" hidden>Sequence complete · saved on this device.</p></section></div></div></dialog>';
+    return '<dialog class="visual-learning-dialog" aria-labelledby="visual-learning-title"><div class="visual-learning-shell"><header class="visual-learning-header"><div><p class="eyebrow">10-step visual lesson</p><p class="visual-learning-count" aria-live="polite" aria-atomic="true"></p><p class="sequence-key-hint visual-learning-key-hint">← Previous slide · → Next slide · Esc to close</p></div><button class="button subtle visual-learning-close" type="button">Exit guide</button></header><div class="visual-learning-layout"><figure class="visual-learning-figure"><div class="visual-learning-art"></div><figcaption class="visual-learning-caption">Technique-specific photo and location marker · the slide framing and action cue change at each step.</figcaption><ol class="visual-phase-track" aria-label="Learning phases"><li>SET UP</li><li>MOVE</li><li>RELEASE</li><li>CHECK</li></ol></figure><section class="visual-learning-guide"><p class="visual-learning-area"></p><h2 id="visual-learning-title" tabindex="-1"></h2><h3 class="visual-learning-step-title" aria-live="polite" aria-atomic="true"></h3><p class="visual-learning-instruction"></p><div class="visual-learning-what"><strong>WHAT AM I DOING?</strong><p></p></div><dl class="visual-learning-cues"><div><dt>BODY AREA</dt><dd class="visual-learning-body"></dd></div><div><dt>HAND POSITION</dt><dd class="visual-learning-hand"></dd></div><div><dt>MOVEMENT</dt><dd class="visual-learning-direction"></dd></div><div><dt>PRESSURE</dt><dd class="visual-learning-pressure"></dd></div></dl><p class="visual-learning-avoid"><strong>AVOID:</strong> <span></span></p><p class="visual-learning-safety">If this feels sharp, painful, numb, tingly, or unusually uncomfortable, stop. Reposition only if comfortable; stop if symptoms continue. Do not push through.</p><p class="visual-learning-tradition" hidden>Traditional point-location practice only; not a medical treatment or cure.</p><div class="visual-learning-timer"><div><span class="eyebrow">OPTIONAL STEP TIMER</span><output class="visual-learning-time" aria-live="off">—:—</output></div><button class="button small visual-learning-timer-toggle" type="button">Start timer</button><span class="visual-learning-timer-note"></span></div><p class="visual-learning-status" role="status" aria-live="polite">Move at your own pace. Timer is a guide—not a pressure dose.</p><div class="visual-learning-controls"><button class="button visual-learning-previous" type="button">← Previous</button><button class="button subtle visual-learning-restart" type="button">Restart</button><button class="button primary visual-learning-next" type="button">Next →</button></div><p class="visual-learning-completed" hidden>Sequence complete · saved on this device.</p></section></div></div></dialog>';
   }
 
   function triggerMarkup(key, completed) {
@@ -398,10 +421,10 @@
   }
 
   function canHandleArrow(event) {
-    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.isComposing) return false;
+    if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.isComposing) return false;
     if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return false;
     const target = event.target;
-    return !(target && typeof target.closest === 'function' && target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"]'));
+    return !(target && typeof target.closest === 'function' && target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"], [role="listbox"], [role="option"], [role="tablist"], [role="tab"], [role="grid"], [role="tree"], [role="menu"], [role="spinbutton"], [role="application"]'));
   }
 
   function bind() {
@@ -411,7 +434,7 @@
     if (!dialog) return;
     mountLaunchers(root);
     const ui = {
-      count: dialog.querySelector('.visual-learning-count'), image: dialog.querySelector('.visual-learning-art'),
+      count: dialog.querySelector('.visual-learning-count'), keyHint: dialog.querySelector('.visual-learning-key-hint'), image: dialog.querySelector('.visual-learning-art'),
       area: dialog.querySelector('.visual-learning-area'), title: dialog.querySelector('#visual-learning-title'),
       stepTitle: dialog.querySelector('.visual-learning-step-title'), instruction: dialog.querySelector('.visual-learning-instruction'),
       what: dialog.querySelector('.visual-learning-what p'), body: dialog.querySelector('.visual-learning-body'),
@@ -437,7 +460,8 @@
     function renderSlide() {
       if (!current) return;
       const step = current.steps[index];
-      ui.count.textContent = 'STEP ' + step.number + ' OF 10';
+      const position = sequencePosition(current.key);
+      ui.count.textContent = (position ? position.label.toUpperCase() + ' ' + position.index + ' OF ' + position.total + ' · ' : '') + 'STEP ' + step.number + ' OF 10';
       ui.area.textContent = current.area.toUpperCase();
       ui.title.textContent = current.title;
       ui.stepTitle.textContent = step.title.toUpperCase();
@@ -457,8 +481,18 @@
         if (phaseIndex === step.phase) phase.setAttribute('aria-current', 'step');
         else phase.removeAttribute('aria-current');
       });
-      ui.previous.disabled = index === 0;
-      ui.next.textContent = index === current.steps.length - 1 ? 'Finish' : 'Next →';
+      const previousKey = adjacentSequenceKey(current.key, -1);
+      const previousSequence = previousKey && getSequence(previousKey);
+      ui.previous.disabled = index === 0 && !previousSequence;
+      ui.previous.textContent = index === 0 && previousSequence
+        ? (previousSequence.kind === 'lesson' ? 'Previous lesson ←' : previousSequence.kind === 'point' ? 'Previous point ←' : 'Previous technique ←')
+        : '← Previous';
+      if (index === current.steps.length - 1) {
+        const nextKey = adjacentSequenceKey(current.key, 1);
+        const nextSequence = nextKey && getSequence(nextKey);
+        ui.next.textContent = nextSequence ? (nextSequence.kind === 'lesson' ? 'Next lesson →' : nextSequence.kind === 'point' ? 'Next point →' : 'Next technique →') : 'Finish';
+      } else ui.next.textContent = 'Next →';
+      if (ui.keyHint) ui.keyHint.textContent = '← Previous slide · → Next slide' + (adjacentSequenceKey(current.key, -1) || adjacentSequenceKey(current.key, 1) ? ' · at guide ends, arrows switch guides' : '') + ' · Esc to close';
       ui.completed.hidden = !sequenceIsComplete(current.key);
       ui.timerNote.textContent = step.seconds
         ? (current.kind === 'point' ? 'Brief point hold only · timer is not a treatment dose.' : 'Optional pace cue · stop earlier if comfort changes.')
@@ -470,21 +504,44 @@
     }
 
     function move(direction) {
-      if (!current) return;
+      if (!current) return false;
       const next = index + direction;
-      if (next < 0 || next >= current.steps.length) return;
+      if (next < 0 || next >= current.steps.length) return false;
       clock.reset(); index = next; renderSlide();
+      return true;
     }
 
-    function finish() {
-      if (!current || index !== current.steps.length - 1) return;
+    function completeCurrent() {
+      if (!current) return;
       if (!Array.isArray(progress.visualSequencesCompleted)) progress.visualSequencesCompleted = [];
       if (!progress.visualSequencesCompleted.includes(current.key)) progress.visualSequencesCompleted.push(current.key);
       saveProgress();
       ui.completed.hidden = false;
       if (opener && opener.isConnected) opener.textContent = 'Review 10 visual steps';
+    }
+
+    function finish() {
+      if (!current || index !== current.steps.length - 1) return;
+      completeCurrent();
       clock.dispose();
       dialog.close();
+    }
+
+    function switchSequence(direction) {
+      const nextKey = current && adjacentSequenceKey(current.key, direction);
+      const nextSequence = nextKey && getSequence(nextKey);
+      if (!nextSequence) return false;
+      if (direction > 0) completeCurrent();
+      current = nextSequence;
+      index = direction > 0 ? 0 : nextSequence.steps.length - 1;
+      opener = Array.from(document.querySelectorAll('[data-visual-learning]')).find(function (trigger) {
+        return trigger.dataset.visualLearning === nextKey;
+      }) || opener;
+      clock.reset();
+      renderSlide();
+      ui.status.textContent = (direction > 0 ? 'Guide complete. Next: ' : 'Previous guide: ') + current.title + '. Continue at your own pace.';
+      ui.title.focus({ preventScroll: true });
+      return true;
     }
 
     function open(key, trigger) {
@@ -500,31 +557,43 @@
       ui.title.focus({ preventScroll: true });
     }
 
+    function handleKeyboard(event) {
+      if (!dialog.open || !dialog.contains(event.target) || !canHandleArrow(event)) return false;
+      const direction = event.key === 'ArrowRight' ? 1 : -1;
+      if (direction > 0 && current && index === current.steps.length - 1) {
+        if (!switchSequence(1)) finish();
+      } else if (direction < 0 && index === 0) {
+        if (!switchSequence(-1)) ui.status.textContent = 'You are at the first slide and first guide in this sequence.';
+      } else if (!move(direction)) {
+        ui.status.textContent = direction < 0 ? 'You are at the first slide.' : 'You are at the final slide.';
+      }
+      return true;
+    }
+
     function closeGuide() {
       clock.dispose();
       current = null;
       if (dialog.open) dialog.close();
     }
 
-    activeController = { open, move, close: closeGuide, dialog };
+    activeController = { open, move, handleKeyboard, close: closeGuide, dialog };
     if (!window.__craftVisualLearningBound) {
       window.__craftVisualLearningBound = true;
       document.addEventListener('click', function (event) {
         const trigger = event.target && event.target.closest ? event.target.closest('[data-visual-learning]') : null;
         if (trigger && activeController) activeController.open(trigger.dataset.visualLearning, trigger);
       });
-      document.addEventListener('keydown', function (event) {
-        if (!activeController || !activeController.dialog.open || !canHandleArrow(event)) return;
-        event.preventDefault(); event.stopPropagation();
-        if (event.key === 'ArrowLeft') activeController.move(-1);
-        else activeController.move(1);
-      }, true);
     }
 
     dialog.querySelector('.visual-learning-close').addEventListener('click', function () { dialog.close(); });
-    ui.previous.addEventListener('click', function () { move(-1); });
+    ui.previous.addEventListener('click', function () {
+      if (index === 0) switchSequence(-1);
+      else move(-1);
+    });
     ui.next.addEventListener('click', function () {
-      if (index === current.steps.length - 1) finish();
+      if (index === current.steps.length - 1) {
+        if (!switchSequence(1)) finish();
+      }
       else move(1);
     });
     ui.restart.addEventListener('click', function () { clock.reset(); index = 0; renderSlide(); });
@@ -543,11 +612,14 @@
 
   window.CraftVisualLearning = {
     getSequence,
+    adjacentSequenceKey,
+    sequencePosition,
     visualKeyForRoutineStage,
     dialogMarkup,
     stageVisualMarkup,
     createTimer,
     canHandleArrow,
+    handleKeyboard: function (event) { return !!(activeController && activeController.handleKeyboard(event)); },
     bind,
     close: function () { if (activeController) activeController.close(); }
   };
