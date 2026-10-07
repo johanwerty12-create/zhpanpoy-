@@ -162,7 +162,12 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
 .footer-inner { padding-block: 24px; }
 .hand-page-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 32px; align-items: center; margin-bottom: 26px; }
 .hand-page-hero figure, .hand-technique-card figure { margin: 0; }
+.hand-visual-wrap, .coach-stage-photo-wrap { position: relative; }
 .hand-page-hero img, .hand-technique-card img { display: block; width: 100%; height: auto; border-radius: 16px; }
+.hand-visual-wrap > img, .coach-stage-photo-wrap > img { display: block; width: 100%; height: auto; }
+.hand-motion-cue, .coach-motion-cue, .follow-motion-cue { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hand-motion-cue[hidden], .coach-motion-cue[hidden], .follow-motion-cue[hidden] { display: none; }
+.hand-motion-cue path, .coach-motion-cue path, .follow-motion-cue path { fill: none; stroke: #fff; stroke-width: 10; stroke-linecap: round; filter: drop-shadow(0 1px 3px #31251e); }
 .hand-page-hero figcaption, .hand-technique-card figcaption { padding-top: 9px; color: #4a6055; font-size: 14px; line-height: 1.5; }
 .hand-hero-facts { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 21px; }
 .hand-hero-facts span { padding: 7px 10px; color: #36533e; background: #eaf2e5; border: 1px solid #cbdcca; border-radius: 8px; font-size: 14px; }
@@ -193,6 +198,49 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
 .hand-point-source { color: #4a6055; font-size: 15px; }
 .hand-point-source a { color: #285f42; text-decoration: underline; }
 .pp-point-card { scroll-margin-top: 95px; }
+.routine-card-progress { margin: 8px 0 11px; color: #405f4d; font-size: 14px; font-weight: 750; }
+.follow-along-start { min-height: 50px; padding-inline: 22px; letter-spacing: .045em; }
+.progress-routine-summary { display: grid; grid-template-columns: minmax(240px, .8fr) minmax(0, 1.2fr); gap: 20px 28px; align-items: center; padding: 24px; margin: 22px 0; background: #edf3e9; border: 1px solid #cbdccb; border-radius: 18px; }
+.progress-routine-summary h2 { margin: 0 0 5px; color: #234433; font-family: Georgia, serif; font-size: 27px; }
+.progress-routine-summary p:not(.eyebrow) { margin: 0 0 12px; color: #405b49; }
+.progress-routine-summary ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px 18px; margin: 0; padding: 0; list-style: none; }
+.progress-routine-summary li { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px solid #d2dfd3; color: #304c3b; font-size: 14px; }
+.progress-routine-summary li strong { flex: 0 0 auto; color: #29513f; }
+.follow-along-dialog { width: min(1120px, calc(100vw - 28px)); max-width: none; max-height: calc(100dvh - 24px); padding: 0; overflow: auto; color: #273b30; background: #fbfaf6; border: 1px solid #bacbbd; border-radius: 24px; box-shadow: 0 26px 100px rgba(15, 35, 23, .38); }
+.follow-along-dialog::backdrop { background: rgba(18, 34, 25, .68); backdrop-filter: blur(4px); }
+.follow-along-shell { padding: 20px 24px 22px; }
+.follow-along-header { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding-bottom: 14px; border-bottom: 1px solid #dbe3dc; }
+.follow-along-header .eyebrow { margin: 0 0 3px; color: #2d6448; }
+.follow-step-count { margin: 0; color: #596c60; font-size: 14px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase; }
+.follow-exit { min-height: 44px; }
+.follow-along-layout { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(320px, .88fr); gap: 24px; align-items: start; padding-top: 18px; }
+.follow-along-visual { min-width: 0; margin: 0; padding: 9px; background: #f1efe8; border: 1px solid #d5ddd5; border-radius: 18px; }
+.follow-along-image { display: block; width: 100%; aspect-ratio: 4 / 3; max-height: 61dvh; object-fit: contain; background: #f8f6f0; border-radius: 12px; }
+.follow-along-visual figcaption { padding: 8px 5px 1px; color: #52655a; font-size: 13px; }
+.follow-along-guide { display: grid; gap: 11px; min-width: 0; }
+.follow-live-details { display: grid; gap: 9px; }
+.follow-area { margin: 0; color: #873f2c; font-size: 13px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.follow-technique { margin: 0; color: #234433; font-family: Georgia, serif; font-size: clamp(28px, 3vw, 38px); line-height: 1.12; }
+.follow-instruction { margin: 0; color: #344b3b; font-size: 18px; font-weight: 700; line-height: 1.45; }
+.follow-cues { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; margin: 3px 0 0; }
+.follow-cues > div { min-width: 0; padding: 11px 12px; background: #f0f4ee; border: 1px solid #d3dfd3; border-radius: 12px; }
+.follow-cues dt { margin-bottom: 3px; color: #356044; font-size: 12px; font-weight: 900; letter-spacing: .08em; }
+.follow-cues dd { margin: 0; color: #304a39; font-size: 15px; line-height: 1.42; }
+.follow-transition { margin: 0; padding: 10px 12px; color: #34553e; background: #e7f0e5; border-left: 4px solid #4d7c5b; border-radius: 8px; font-size: 15px; font-weight: 800; }
+.follow-clock { display: flex; justify-content: space-between; align-items: end; gap: 12px; padding: 6px 2px 0; }
+.follow-phase-label { color: #52665a; font-size: 13px; font-weight: 800; }
+.follow-time { color: #214d36; font-size: clamp(44px, 6vw, 62px); font-weight: 850; font-variant-numeric: tabular-nums; line-height: 1; }
+.follow-status { margin: 0; color: #52655a; font-size: 14px; }
+.follow-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 9px; }
+.follow-controls .button, .follow-finish-actions .button { min-width: 0; min-height: 48px; padding-inline: 10px; font-size: 15px; white-space: normal; }
+.follow-safety { margin: 4px 0 0; padding: 9px 11px; color: #70452b; background: #fbf0e4; border: 1px solid #e5cdb0; border-radius: 10px; font-size: 13px; line-height: 1.45; }
+.follow-finish { padding: 16px; background: #edf4eb; border: 1px solid #c9dac9; border-radius: 14px; }
+.follow-finish .eyebrow { margin-bottom: 5px; color: #2e6043; font-weight: 900; }
+.follow-finish h2 { margin: 0 0 6px; color: #234433; font-family: Georgia, serif; font-size: 25px; }
+.follow-finish p:not(.eyebrow) { margin: 0 0 12px; color: #405b49; font-size: 15px; }
+.follow-finish-actions { display: flex; flex-wrap: wrap; gap: 9px; }
+.follow-finish-actions .button { flex: 1 1 145px; }
+[hidden] { display: none !important; }
 @media (max-width: 1200px) {
   .main-nav { display: none; }
   .menu-toggle { display: block; }
@@ -233,9 +281,81 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
   .hand-practice-panel .coach-stage-heading, .hand-practice-panel .coach-instruction, .hand-practice-panel .coach-next, .hand-practice-panel .coach-status { margin-bottom: 14px; }
   .hand-practice-panel .coach-lesson-link { margin-top: 14px; }
   .main-nav.open { grid-template-columns: minmax(0, 1fr); }
+  .progress-routine-summary { grid-template-columns: minmax(0, 1fr); }
+  .follow-along-dialog { width: calc(100vw - 16px); max-height: calc(100dvh - 16px); border-radius: 17px; }
+  .follow-along-shell { padding: 13px; }
+  .follow-along-layout { grid-template-columns: minmax(0, 1fr); gap: 13px; padding-top: 12px; }
+  .follow-along-image { max-height: 24dvh; }
+  .follow-along-visual { padding: 6px; }
+  .follow-along-visual figcaption { display: none; }
+  .follow-along-guide { gap: 9px; }
+  .follow-technique { font-size: 29px; }
+  .follow-instruction { font-size: 16px; }
+  .follow-cues { gap: 7px; }
+  .follow-cues dd { font-size: 14px; }
+  .follow-time { font-size: 48px; }
+  .follow-controls .button { min-height: 50px; }
+  .progress-routine-summary ul { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 380px) {
+  .follow-along-dialog { width: calc(100vw - 10px); }
+  .follow-along-shell { padding: 10px; }
+  .follow-along-header { gap: 8px; }
+  .follow-exit { padding-inline: 9px; }
+  .follow-cues > div { padding: 8px; }
+  .follow-cues dd { font-size: 12.5px; }
 }
 @media (max-width: 360px) {
   body { min-width: 0; }
+}
+/* Hand curriculum, unique photo steps, and keyboard sequence affordances. */
+.hand-technique-card:focus-within,
+.hand-quick-card:focus-within,
+.pp-point-card:focus-within,
+.scalp-technique-card:focus-within { outline: 2px solid #55745e; outline-offset: 4px; }
+.hand-technique-nav,
+.point-sequence-nav,
+.practice-sequence-nav { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 18px; }
+.hand-technique-nav .button,
+.point-sequence-nav .button,
+.practice-sequence-nav .button { min-height: 44px; }
+.sequence-key-hint { margin: 8px 0 0; color: #43594b; font-size: 13px !important; font-weight: 700; letter-spacing: .01em; }
+.hand-quick-heading { margin: 22px 0 16px; }
+.hand-quick-heading h2 { margin: 0 0 7px; }
+.hand-quick-heading p { margin: 0; }
+.hand-quick-list { display: grid; gap: 18px; margin-top: 18px; }
+.hand-quick-card { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 20px; align-items: start; padding: 19px; background: #fff; border: 1px solid #cbd9ce; border-radius: 18px; }
+.hand-quick-card figure { min-width: 0; margin: 0; }
+.hand-quick-card img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: contain; background: #f5f1e9; border-radius: 13px; }
+.hand-quick-card figcaption { margin-top: 7px; color: #43594b; font-size: 14px; line-height: 1.45; }
+.hand-quick-card .eyebrow { margin: 0 0 7px; color: #285b40; font-weight: 850; }
+.hand-quick-card dl { display: grid; gap: 8px; margin: 12px 0; }
+.hand-quick-card dl > div { padding-top: 8px; border-top: 1px solid #dce5db; }
+.hand-quick-card dt { color: #285b40; font-size: 14px; font-weight: 850; }
+.hand-quick-card dd { margin: 2px 0 0; color: #344b3d; font-size: 15px; line-height: 1.5; }
+.hand-practice-panel > .coached-practice { margin-top: 18px; }
+.reference-card[data-category="hand-massage"] .reference-photo { aspect-ratio: 4 / 3; }
+.reference-card[data-category="hand-massage"] .reference-photo img { width: 100%; height: 100%; object-fit: cover; }
+.pp-photo-visual { position: relative; overflow: hidden; aspect-ratio: 4 / 3; background: #eee8df; border-radius: 12px; }
+.pp-photo-visual > img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.pp-photo-marker { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.pp-photo-direction { fill: none; stroke: #fff; stroke-width: 9; stroke-linecap: round; filter: drop-shadow(0 1px 2px #31251e); }
+.pp-photo-target { fill: #fff; stroke: #8c3b2e; stroke-width: 8; filter: drop-shadow(0 1px 2px #31251e); }
+.pp-photo-target-core { fill: #8c3b2e; }
+.pp-photo-marker-label { position: absolute; right: 9px; bottom: 9px; padding: 6px 9px; color: #fff; background: rgb(35 48 40 / 92%); border-radius: 999px; font-size: 12px; font-weight: 800; line-height: 1.25; }
+.pp-point-card:target { scroll-margin-top: 18px; }
+.follow-along-photo-wrap { position: relative; width: 100%; aspect-ratio: 4 / 3; max-height: 61dvh; overflow: hidden; border-radius: 12px; background: #f8f6f0; }
+.follow-along-photo-wrap .follow-along-image { width: 100%; height: 100%; max-height: none; object-fit: contain; }
+.follow-point-marker { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.follow-point-marker[hidden] { display: none; }
+@media (max-width: 760px) {
+  .hand-quick-card { grid-template-columns: minmax(0, 1fr); gap: 12px; padding: 14px; }
+  .hand-quick-card img { max-height: 52vh; }
+  .hand-technique-nav, .point-sequence-nav, .practice-sequence-nav { flex-wrap: wrap; }
+  .hand-technique-nav .button, .point-sequence-nav .button, .practice-sequence-nav .button { flex: 1 1 132px; }
+}
+@media (max-width: 520px) {
+  .follow-along-photo-wrap { max-height: 24dvh; }
 }
 @media (prefers-reduced-motion: reduce) {
   .page :is(.button, .lesson-card, .reference-card, .reference-hub-card, .area-explorer-card) { transition: none; }

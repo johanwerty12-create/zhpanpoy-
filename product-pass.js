@@ -16,12 +16,12 @@ const routineData = [
   },
   {
     title: "Head & Scalp Routine", time: "5 min", tag: "Head", description: "A light, quiet rhythm for the scalp without tugging hair.", lesson: 9, visualLesson: 9,
-    steps: [["1 min", "Settle with soft finger pads", 9, "Support the head independently. Ask about hair and scalp sensitivity, then rest soft pads without pulling strands."], ["2 min", "Small circles and gentle zone changes", 9, "Try a few tiny circles. Ease pressure to zero before shifting zones; check hair comfort and avoid grinding on one spot."], ["1 min", "Return to the preferred contact", 9, "Ask which contact felt best and repeat it softly. Temple work, tapping, and raking can all be skipped."], ["1 min", "Still contact and slow release", 9, "Let movement become smaller and quieter, then rest softly and ease away. Keep the head still."]],
+    steps: [["1 min", "Settle with soft finger pads", 9, "Support the head independently. Ask about hair and scalp sensitivity, then rest soft pads without pulling strands."], ["2 min", "Small circles and gentle zone changes", 9, "Try a few tiny circles. Ease pressure to zero before shifting zones; check hair comfort and avoid grinding on one spot."], ["1 min", "Gentle scalp gliding", 9, "Ask which contact felt best and use feather-light gliding only if the scalp and hair are comfortable. Temple work, tapping, and raking can all be skipped."], ["1 min", "Still contact and slow release", 9, "Let movement become smaller and quieter, then rest softly and ease away. Keep the head still."]],
     safety: "Keep nails out of the way. Stop for a new or unusual headache, nausea, dizziness, or scalp pain."
   },
   {
     title: "Hands & Arms Routine", time: "5 min", tag: "Hands", description: "A practical desk-break flow that supports the arm before it moves.", lesson: 10, visualLesson: 10,
-    steps: [["1 min", "Support and settle", 10, "Rest elbow and wrist on cushions. Ask permission and lower a broad palm; keep the wrist in its comfortable position."], ["2 min", "Warm the forearm slowly", 10, "Glide toward the elbow, stopping before the joint. Soften the return and ask about comfort."], ["1 min", "Optional palm and finger contact", 10, "Ask the person to turn the palm up only if comfortable. Support it and offer tiny finger-pad circles; optional finger strokes ease off before the tip without tugging.", "hand-palm-contact.webp", "Soft finger pads contact a supported palm-up hand without squeezing or pulling."], ["1 min", "Return to a quiet finish", 10, "Ease back into lighter forearm strokes, then still contact. Keep the limb supported as you gradually release."]],
+    steps: [["1 min", "Support and settle", 10, "Rest elbow and wrist on cushions. Ask permission and lower a broad palm; keep the wrist in its comfortable position."], ["2 min", "Warm the forearm slowly", 10, "Glide toward the elbow, stopping before the joint. Soften the return and ask about comfort."], ["30 sec", "Optional palm circles", 10, "If palm contact is welcome, keep the hand supported and make a few tiny finger-pad circles on the fleshy palm. Skip if unwanted.", "hand-palm-contact.webp", "Soft finger pads rest on the fleshy palm while the wrist is supported."], ["30 sec", "Optional finger strokes", 10, "Only if wanted, lay soft pads along one relaxed finger and stroke toward its tip. Lift before the tip; never pinch, bend, or pull.", "hand-finger-stroke.webp", "Soft flat finger pads contact the palm-facing side of one relaxed finger near its base."], ["1 min", "Return to a quiet finish", 10, "Ease back into lighter forearm strokes, then still contact. Keep the limb supported as you gradually release."]],
     safety: "Do not force the wrist or fingers. Stop for tingling, numbness, or sharp pain."
   },
   {
@@ -51,16 +51,16 @@ const areaInfo = [
   { title: "Shoulders", icon: "⌁", description: "Broad strokes and small circles over soft shoulder muscle.", techniques: "Gliding · circles · kneading", routine: "Shoulders · 6 min", lesson: 6, safety: "Keep the spine, collarbone, shoulder joint, and neck clear." },
   { title: "Back", icon: "▱", description: "A broad path beside the spine, never directly on it.", techniques: "Gliding · circles", routine: "10-Minute Relaxation · 10 min", lesson: 7, safety: "Avoid injury, swelling, unexplained pain, and direct spine pressure." },
   { title: "Arms", icon: "↗", description: "Support the limb before tracing the forearm with broad contact.", techniques: "Gliding · palm support", routine: "Hands & Arms · 5 min", lesson: 10, safety: "Stop for tingling, numbness, or sharp pain." },
-  { title: "Hands", icon: "☼", description: "Rest the palm, soften the fingers, and keep the wrist neutral.", techniques: "Palm support · relaxed wrist", routine: "Hands & Arms · 5 min", lesson: 2, safety: "Keep the wrist neutral and never force a finger joint." },
+  { title: "Hands", icon: "☼", description: "Study 15 distinct palm, thumb, finger, web-space, back-of-hand, and wrist movements.", techniques: "15 illustrated hand techniques", routine: "Hand & Fingers · 8 min", lesson: 10, safety: "Support the hand; never force, pull, or manipulate a finger or wrist joint." },
   { title: "Legs", icon: "↕", description: "Long strokes on soft muscle while the knee and ankle stay supported.", techniques: "Gliding · circles", routine: "Legs lesson · 7 min", lesson: 11, safety: "Do not massage hot, red, swollen, or acutely painful areas." },
   { title: "Feet", icon: "⌂", description: "Small, easy-to-adjust movements across the sole and heel.", techniques: "Broad thumb-pad circles · light strokes", routine: "Feet lesson · 6 min", lesson: 12, safety: "Avoid broken skin, reduced sensation, and forceful toe movement." }
 ];
 
-const pressurePointAreas = ["Head", "Face", "Neck", "Shoulders", "Arms", "Hands", "Back", "Legs", "Feet"];
+const pressurePointAreas = ["Head & Scalp", "Face", "Neck", "Shoulders", "Upper Back", "Mid Back", "Lower Back", "Chest", "Arms", "Elbow / Forearm", "Hands", "Abdomen", "Hips / Gluteal Area", "Thighs", "Knees", "Lower Legs", "Ankles", "Feet"];
 
 const pressurePoints = [
   {
-    id: "gv20", name: "Baihui", code: "GV20", area: "Head", tradition: "Governing Vessel (Du Mai)", difficulty: "Beginner · very light touch",
+    id: "gv20", name: "Baihui", code: "GV20", area: "Head & Scalp", tradition: "Governing Vessel (Du Mai)", difficulty: "Beginner · very light touch",
     where: "On the scalp midline at the crown. The WHO location is 5 proportional bone-cun (B-cun) above the front hairline; a cross-check is the midpoint between the ear apices when the ears are folded forward. A B-cun is a body-proportional measure, not a fixed number of centimetres.",
     landmarks: "Front hairline, the centre line running from forehead to back of head, and the highest points of the folded outer ears (auricular apices). Hair whorls and the apparent top of the skull are not reliable substitutes.",
     find: ["Sit or lie with your head supported and scalp comfortable.", "Find the centre of your front hairline, then trace the centre line over the scalp toward the back of your head.", "Use the WHO proportional measurement (5 B-cun from the front hairline) or gently fold each outer ear forward and identify the midpoint between the ear apices on the scalp midline.", "The two methods are cross-checks; if they do not agree clearly, skip the point rather than guessing. The drawing is relational, not to scale."],
@@ -96,7 +96,7 @@ const pressurePoints = [
     traditionalNote: "The point name/location are traditional terminology; they are not proof of a medical mechanism or treatment effect."
   },
   {
-    id: "pc6", name: "Neiguan", code: "PC6", area: "Arms", tradition: "Pericardium channel", difficulty: "Beginner · gentle surface pressure",
+    id: "pc6", name: "Neiguan", code: "PC6", area: "Elbow / Forearm", tradition: "Pericardium channel", difficulty: "Beginner · gentle surface pressure",
     where: "On the palm-facing (anterior) forearm, between the palmaris longus and flexor carpi radialis tendons, 2 proportional bone-cun proximal (toward the elbow) from the palmar wrist crease. If the palmaris longus tendon is absent, WHO places the point medial to the flexor carpi radialis tendon.",
     landmarks: "The palmar wrist crease and the two cord-like tendons that become easier to see when the fist is gently clenched, wrist turned palm-up, and elbow slightly bent. Palmaris longus is not present in everyone.",
     find: ["Rest the forearm palm-up on a table or cushion; keep the wrist relaxed.", "Gently make a fist for a moment to bring the tendons into view, then relax the hand.", "Identify the palmar wrist crease and the palmaris longus and flexor carpi radialis tendons. If one tendon is not easy to identify, do not probe or squeeze to find it.", "Measure 2 B-cun up the forearm from the wrist crease, between the tendons. If palmaris longus is absent, the standardized location is just medial to the flexor carpi radialis tendon. The proportional measure is not a fixed centimetre value."],
@@ -132,7 +132,7 @@ const pressurePoints = [
     traditionalNote: "LI4 has varied traditional descriptions. The exact marker here follows the WHO standardized landmark; pressure is only gentle surface contact."
   },
   {
-    id: "st36", name: "Zusanli", code: "ST36", area: "Legs", tradition: "Stomach channel", difficulty: "Beginner · gentle surface pressure",
+    id: "st36", name: "Zusanli", code: "ST36", area: "Lower Legs", tradition: "Stomach channel", difficulty: "Beginner · gentle surface pressure",
     where: "On the anterior aspect of the lower leg, on the line connecting ST35 to ST41, 3 proportional bone-cun below ST35. WHO notes it lies on the tibialis anterior muscle—the soft muscle just to the outside of the front shin bone.",
     landmarks: "ST35 is the small hollow just below and outside the kneecap; ST41 is at the front ankle crease. The hard front edge of the tibia (shin bone) and the softer tibialis anterior muscle are the key references.",
     find: ["Sit with the knee bent and the leg supported; let the foot rest.", "Find the kneecap, then the small hollow just below and to its outside (ST35). Find the front ankle crease (ST41).", "Follow the surface line between those landmarks. Measure 3 B-cun down from ST35 using proportional body measurement—not a fixed centimetre guess.", "Gently lift the toes toward the shin: the tibialis anterior muscle firms just outside the front shin bone. The standardized point is on that muscle at the described level, not on the hard tibial crest. If the landmarks do not line up clearly, skip it."],
@@ -233,6 +233,65 @@ function pressurePointsPage() {
     .replace("New, severe, persistent, or worsening symptoms need professional assessment.", "New, severe, persistent, or worsening symptoms need professional assessment; emergency symptoms such as chest pain, trouble breathing, fainting, sudden severe headache, or sudden weakness need urgent care.")
     .replace("— study-level evidence context; results vary and do not justify cure claims.", "— included study details and risk-of-bias context, not a manual-pressure treatment recommendation.");
   return shell(accessibleBody, "pressure-points");
+}
+
+Object.assign(pressureAreaNotes, {
+  Neck: { title: "No focused neck point taught here", text: "The front and sides of the neck contain vulnerable structures. Do not press the throat or side of the neck, and never twist, pull, crack, or traction the head. This beginner reference intentionally gives no neck marker." },
+  Shoulders: { title: "No shoulder point marker taught here", text: "A guessed marker could sit near the neck, collarbone, or joint. Use only broad, comfortable shoulder massage from the existing lesson; do not dig into a tender spot." },
+  "Upper Back": { title: "No upper-back point marker taught here", text: "The shoulder blade, ribs, and spine are close together. This reference does not guess a focused point. Keep any gentle massage broad and beside—not on—the spine." },
+  "Mid Back": { title: "No mid-back point marker taught here", text: "No beginner-safe marker is provided here. Avoid focused pressure over the spine or ribs; seek qualified instruction for hands-on work in this region." },
+  "Lower Back": { title: "No lower-back point marker taught here", text: "This page does not teach a guessed low-back location or pressure dose. Avoid direct spinal pressure and do not use point pressure to self-manage new, severe, or unexplained back pain." },
+  Chest: { title: "No chest point lesson", text: "The chest includes sensitive structures and requires appropriate training, consent, and context. This guide teaches no focused chest pressure. Chest pain or breathing difficulty needs urgent medical attention, not massage." },
+  Arms: { title: "No upper-arm point taught here", text: "This guide offers no guessed upper-arm marker. For the forearm landmark, see PC6 in the separate Elbow / Forearm section. Avoid pressing into bruising, swelling, nerves, or blood-vessel paths." },
+  Abdomen: { title: "No abdominal point lesson", text: "The abdomen contains sensitive internal structures, and pain may need medical assessment. This beginner guide does not teach focused abdominal pressure or a point marker." },
+  "Hips / Gluteal Area": { title: "No hip or gluteal point taught here", text: "This region needs clear consent, draping, and supervised training. Deep structures are not reliably identified by touch in a beginner lesson; no focused marker is provided." },
+  Thighs: { title: "No thigh point marker taught here", text: "This guide does not mark a guessed thigh point or encourage deep pressure. Avoid any painful, swollen, hot, red, bruised, or numb area; unexplained symptoms need professional assessment." },
+  Knees: { title: "No knee point lesson", text: "The knee is a joint, not a place for forceful point pressure. Keep the joint still and avoid pressing into a painful, swollen, injured, or recently operated knee." },
+  Ankles: { title: "No ankle point marker taught here", text: "Tendons and joints are close to the skin here. This page does not guess an ankle marker; do not press or rotate a painful, swollen, injured, or recently operated ankle." }
+});
+
+const pressurePointVisualSpecs = {
+    gv20: { image: "pressure-point-gv20.webp", x: 50, y: 53, alt: "Overhead head context; the marker is on the scalp midline at the level of the ear apices. Use the written hairline and ear landmarks to cross-check." },
+    yintang: { image: "pressure-point-yintang.webp", x: 50, y: 35, alt: "Frontal brow context; the marker is between the inner eyebrow ends, immediately above the nose bridge and clear of the eyes." },
+    pc6: { image: "pressure-point-pc6.webp", x: 54, y: 45, alt: "Palm-up forearm context; the marker sits about two proportional body-cun above the wrist crease in the visible tendon interval." },
+    li4: { image: "pressure-point-li4.webp", x: 50, y: 46, alt: "Back-of-hand context; the marker is on the thumb-side edge of the second metacarpal midpoint, not in the web." },
+    st36: { image: "pressure-point-st36.webp", x: 44, y: 45, alt: "Front lower-leg context; the marker is on soft muscle outside the shin, just below the knee at the described proportional level." },
+    ki1: { image: "pressure-point-ki1.webp", x: 52, y: 48, alt: "Sole-of-foot context; the marker is on the sole landmark around the junction of the anterior one-third and posterior two-thirds." }
+};
+
+function pressurePointVisualMarkup(id) {
+  const visual = pressurePointVisualSpecs[id];
+  if (!visual) return "";
+  const markerId = "point-photo-arrow-" + id;
+  const px = visual.x * 10;
+  const py = visual.y * 7.5;
+  return '<div class="pp-photo-visual"><img src="/assets/lessons/' + visual.image + '" alt="' + esc(visual.alt) + '" width="1448" height="1086" loading="lazy" decoding="async" /><svg class="pp-photo-marker" viewBox="0 0 1000 750" role="img" aria-label="' + esc(id.toUpperCase() + ' location marker; finger pad presses gently toward the body surface') + '"><defs><marker id="' + markerId + '" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8c3b2e"/></marker></defs><path d="M' + px + ' ' + (py - 76) + 'V' + (py - 29) + '" class="pp-photo-direction" marker-end="url(#' + markerId + ')"/><circle cx="' + px + '" cy="' + py + '" r="18" class="pp-photo-target"/><circle cx="' + px + '" cy="' + py + '" r="5" class="pp-photo-target-core"/></svg><span class="pp-photo-marker-label">' + esc(id.toUpperCase()) + ' · gentle inward contact</span></div>';
+}
+
+function pressurePointCard(point, index) {
+  const pointIndex = pressurePoints.indexOf(point);
+  const stepMarkup = [["FIND IT", point.find.join(" ")], ["POSITION", point.position], ["PRESS", point.pressure], ["HOLD", point.hold], ["RELEASE", point.release]]
+    .map(function (item, stepIndex) { return "<li><span>" + String(stepIndex + 1).padStart(2, "0") + " · " + item[0] + "</span><p>" + esc(item[1]) + "</p></li>"; }).join("");
+  const previous = pointIndex > 0 ? '<button class="button small" type="button" data-sequence-previous aria-label="Previous point: ' + esc(pressurePoints[pointIndex - 1].name) + '">← Previous point</button>' : '<span></span>';
+  const next = pointIndex < pressurePoints.length - 1 ? '<button class="button small" type="button" data-sequence-next aria-label="Next point: ' + esc(pressurePoints[pointIndex + 1].name) + '">Next point →</button>' : '<span></span>';
+  return '<article class="pp-point-card" id="point-' + point.id + '" data-point-id="' + point.id + '" data-sequence-item="' + point.id + '"><div class="pp-point-head"><div><p class="pp-point-area">' + esc(point.area) + ' · ' + esc(point.difficulty) + '</p><h3 tabindex="-1">' + esc(point.name) + ' <span>' + esc(point.code) + '</span></h3><p class="pp-channel">' + esc(point.tradition) + '</p></div><span class="pp-point-index" aria-hidden="true">' + esc(point.code) + '</span></div><figure class="pp-visual-frame">' + pressurePointVisualMarkup(point.id) + '<figcaption>Real body-region photograph with a separately drawn location marker. Read the named anatomical landmarks; the photo is illustrative and not a measuring scale.</figcaption></figure><div class="pp-instruction-column"><section class="pp-detail"><h4>WHERE · exact location</h4><p>' + esc(point.where) + '</p><p class="pp-landmarks"><strong>Nearby landmarks:</strong> ' + esc(point.landmarks) + '</p></section><details class="pp-show-how"><summary><span>Show me how</span><span aria-hidden="true">＋</span></summary><ol>' + stepMarkup + '</ol></details><div class="pp-notice-grid"><section class="pp-notice pp-notice-calm"><h4>WHAT TO NOTICE</h4><p><strong>Usually okay:</strong> ' + esc(point.feel) + '</p><p><strong>Not okay:</strong> ' + esc(point.notFeel) + '</p></section><section class="pp-notice pp-notice-tradition"><h4>TRADITIONAL PRACTICE · NOT A MEDICAL CLAIM</h4><p>' + esc(point.traditional) + '</p><small>' + esc(point.traditionalNote) + '</small></section></div><section class="pp-safety-box"><h4>SAFETY · read before trying</h4><dl><div><dt>Common mistakes</dt><dd>' + esc(point.mistakes) + '</dd></div><div><dt>Avoid when</dt><dd>' + esc(point.avoid) + '</dd></div><div><dt>Stop immediately for</dt><dd>' + esc(point.stop) + '</dd></div><div><dt>Seek professional advice</dt><dd>' + esc(point.seek) + '</dd></div></dl></section><nav class="point-sequence-nav" aria-label="Pressure point sequence">' + previous + next + '</nav><p class="sequence-key-hint">← Previous point <span aria-hidden="true">·</span> Next point →</p></div></article>';
+}
+
+function pressurePointsPage() {
+  const areaKey = function (area) { return area.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); };
+  const areaButtons = ["All areas"].concat(pressurePointAreas).map(function (area) {
+    const key = area === "All areas" ? "all" : areaKey(area);
+    return '<button class="pp-area-chip" type="button" data-pressure-area="' + key + '" aria-pressed="' + (key === "all" ? "true" : "false") + '">' + esc(area) + '</button>';
+  }).join("");
+  const grouped = pressurePointAreas.map(function (area) {
+    const key = areaKey(area);
+    const points = pressurePoints.filter(function (point) { return point.area === area; });
+    const note = pressureAreaNotes[area];
+    const content = points.length ? points.map(pressurePointCard).join("") : '<article class="pp-region-note"><div class="pp-region-label">Beginner boundary · no point marker</div><h3>' + esc(note.title) + '</h3><p>' + esc(note.text) + '</p></article>';
+    return '<section class="pp-area-section" data-pressure-section="' + key + '" id="pressure-' + key + '"><div class="pp-area-heading"><p class="eyebrow">BODY AREA</p><h2>' + esc(area) + '</h2><span>' + (points.length ? points.length + (points.length === 1 ? ' named point lesson' : ' named point lessons') : 'No focused point instruction') + '</span></div>' + content + '</section>';
+  }).join("");
+  const body = '<div class="page pressure-page"><section class="pp-hero"><p class="eyebrow">Landmark-led · beginner-safe · traditional reference</p><h1>Pressure Points</h1><p class="lede">A conservative body-area index of six named traditional landmarks with WHO-standard locations where available. Areas without an appropriate beginner lesson are shown plainly—no guessed markers are added.</p><div class="pp-hero-facts"><span><strong>6</strong> named point lessons</span><span><strong>18</strong> body areas reviewed</span><span><strong>0</strong> cure claims</span></div></section><section class="pp-safety-banner" aria-labelledby="pp-safety-title"><div class="pp-safety-symbol" aria-hidden="true">!</div><div><h2 id="pp-safety-title">Comfort only. This is not treatment.</h2><p>Acupoint names and locations belong to traditional systems; they are not proof of a special anatomical structure or medical effect. Evidence for acupuncture, electrical stimulation, or wrist bands does not automatically prove that manual pressure works. Do not delay diagnosis or care, change medication, or press through symptoms.</p><ul><li>Ask permission; begin with gentle surface contact. The short holds below are cautious practice cues, not validated medical doses.</li><li>Avoid broken, injured, bruised, swollen, inflamed, numb, infected, or recently operated areas. Ask a clinician first if sensation or circulation is reduced.</li><li>Stop for pain, tingling, numbness, weakness, dizziness, faintness, skin colour change, or any unusual/worsening symptom.</li><li>Do not press the throat, sides of the neck, eyes, spine, joints, open wounds, or acute pain. Sudden chest pain, breathing difficulty, fainting, sudden severe headache, or new weakness needs urgent care.</li></ul></div></section><section class="pp-controls" aria-label="Find a pressure point"><div class="pp-control-copy"><h2>Browse body areas</h2><p>Search a point name, landmark, or body area.</p></div><label class="pp-search-label" for="pressure-search">Search points<input id="pressure-search" type="search" placeholder="Try “wrist crease” or “foot”" autocomplete="off" /></label><div class="pp-area-filter" role="group" aria-label="Filter by body area">' + areaButtons + '</div><p id="pressure-results-status" class="pp-results-status" aria-live="polite">Showing 18 body areas · 6 point lessons</p></section><p id="pressure-no-results" class="pp-no-results" hidden>No areas or point lessons match. Try a point name or a nearby landmark.</p><div class="pp-area-list" data-sequence="pressure-points">' + grouped + '</div><section class="pp-sources"><h2>Location and evidence notes</h2><p>GV20, PC6, LI4, ST36, and KI1 follow WHO’s Western Pacific location standard, including proportional bone-cun measurements; those are body-relative, not fixed centimetres. Yintang is identified separately as an extra point. The photographed body views are instructional context only; exact location comes from the written landmarks and standardized descriptions. Traditional uses below are not established medical claims, and manual pressure should not be conflated with acupuncture evidence.</p><ul><li><a href="https://iris.who.int/bitstream/handle/10665/353407/9789290613831-eng.pdf?sequence=1" target="_blank" rel="noopener noreferrer">WHO · Standard Acupuncture Point Locations in the Western Pacific Region</a> — standardized location references for GV20, PC6, LI4, ST36, and KI1.</li><li><a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC5908420/" target="_blank" rel="noopener noreferrer">Review of Yintang (EX-HN3)</a> — traditional point description and evidence context.</li><li><a href="https://www.nccih.nih.gov/health/acupuncture-effectiveness-and-safety" target="_blank" rel="noopener noreferrer">U.S. National Center for Complementary and Integrative Health · Acupuncture: Effectiveness and Safety</a> — acupuncture evidence and safety, not direct proof for manual acupressure.</li><li><a href="https://www.mskcc.org/cancer-care/patient-education/acupressure-pain-and-headaches" target="_blank" rel="noopener noreferrer">Memorial Sloan Kettering · Acupressure for Pain and Headaches</a> — practical LI4 safety guidance, including pregnancy precaution.</li><li><a href="https://medlineplus.gov/ency/article/002117.htm" target="_blank" rel="noopener noreferrer">MedlinePlus · Nausea and acupressure</a> — contextual information for PC6; not a substitute for medical evaluation.</li><li><a href="https://www.nccih.nih.gov/health/massage-therapy-what-you-need-to-know" target="_blank" rel="noopener noreferrer">NCCIH · Massage Therapy: What You Need To Know</a> — massage safety and limitations of evidence.</li></ul><p class="pp-disclaimer">Educational information only; not medical advice, diagnosis, or treatment. Do not use pressure points to manage urgent or unexplained symptoms.</p></section></div>';
+  return shell(body, "pressure-points");
 }
 
 function lessonArtworkForId(lessonId) {
@@ -797,16 +856,22 @@ function scalpTechniqueCard(technique, index) {
 function headScalpQuickPractice(lesson) {
   const techniquesDone = Array.isArray(progress.scalpPracticeCompleted) ? progress.scalpPracticeCompleted.length : 0;
   const completedCount = (progress.practiceCompleted || []).length;
-  const sections = scalpTechniqueGroups.map(function (group) {
-    const cards = scalpTechniques.filter(function (technique) { return technique.group === group.id; }).map(scalpTechniqueCard).join("");
+  const sections = '<div data-sequence="scalp-techniques">' + scalpTechniqueGroups.map(function (group) {
+    const cards = scalpTechniques.filter(function (technique) { return technique.group === group.id; }).map(function (technique, index) {
+      const globalIndex = scalpTechniques.indexOf(technique);
+      const previous = globalIndex > 0 ? '<button class="button small" type="button" data-sequence-previous aria-label="Previous scalp technique: ' + esc(scalpTechniques[globalIndex - 1].title) + '">← Previous</button>' : '<span></span>';
+      const next = globalIndex < scalpTechniques.length - 1 ? '<button class="button small" type="button" data-sequence-next aria-label="Next scalp technique: ' + esc(scalpTechniques[globalIndex + 1].title) + '">Next →</button>' : '<span></span>';
+      return scalpTechniqueCard(technique, index).replace('data-scalp-technique="' + technique.id + '"', 'data-scalp-technique="' + technique.id + '" data-sequence-item="' + technique.id + '"').replace('</article>', '<nav class="hand-technique-nav" aria-label="Scalp technique sequence">' + previous + next + '</nav><p class="sequence-key-hint">← Previous <span aria-hidden="true">·</span> Next →</p></article>');
+    }).join("");
     return "<section class=\"scalp-technique-group\" aria-labelledby=\"scalp-group-" + group.id + "\"><div class=\"scalp-group-heading\"><div><p class=\"eyebrow\">Technique set</p><h3 id=\"scalp-group-" + group.id + "\">" + esc(group.title) + "</h3></div><p>" + esc(group.intro) + "</p></div><div class=\"scalp-technique-grid\">" + cards + "</div></section>";
-  }).join("");
+  }).join("") + '</div>';
   const done = isPracticeComplete(lesson.id);
   return "<section class=\"quick-version scalp-module\" data-quick-practice=\"9\"><div class=\"quick-practice-path\"><div><p class=\"eyebrow\">Quick practice · Head &amp; Scalp</p><p class=\"practice-count\">Skill 09 of " + lessons.length + " · " + completedCount + " lessons checked</p></div><ol class=\"practice-progression\" aria-label=\"Practice progression\"><li>Learn</li><li aria-current=\"step\">Practice</li><li>Check</li><li>Next skill</li></ol></div><header class=\"scalp-module-header\"><h2>13 gentle techniques, one small movement at a time.</h2><p>Choose a card. Study the hand placement, then try its short practice.</p><p class=\"scalp-technique-progress\" aria-live=\"polite\"><strong>" + techniquesDone + " of " + scalpTechniques.length + " techniques practiced</strong></p></header><p class=\"scalp-safety-note\"><strong>Stay gentle.</strong> Keep the head supported and still. Scalp work is not neck manipulation—never pull, twist, crack, or force the head. Keep all pressure away from the eyes.</p>" + comfortCoachMarkup(lesson) + sections + "<div class=\"scalp-module-complete\"><div><strong>Finished your chosen practices?</strong><p>Mark this lesson practice complete when the movements feel clear.</p></div><button class=\"button primary small practice-check\" type=\"button\" data-practice-id=\"9\" " + (done ? "disabled aria-disabled=\"true\"" : "") + ">" + (done ? "Lesson practice checked ✓" : "Mark lesson practice complete") + "</button><p class=\"practice-status\" aria-live=\"polite\">" + (done ? "Practice saved on this device." : "Each technique has its own timer and completion check.") + "</p></div><dialog class=\"scalp-lightbox\" aria-label=\"Enlarged Head &amp; Scalp instructional visual\"><div class=\"scalp-lightbox-head\"><strong class=\"scalp-lightbox-title\">Instructional visual</strong><button class=\"button small scalp-lightbox-close\" type=\"button\">Close</button></div><div class=\"scalp-lightbox-frame\"><div class=\"scalp-lightbox-art\"></div></div><div class=\"practice-lightbox-actions\"><button class=\"button small scalp-lightbox-zoom\" type=\"button\">Zoom in</button><span>Inspect the hand placement; follow the short movement instructions.</span></div></dialog></section>";
 }
 
 function quickVersion(lesson) {
   if (lesson.id === 9) return headScalpQuickPractice(lesson);
+  if (lesson.id === 10 && typeof handMassageQuickPracticeMarkup === "function") return handMassageQuickPracticeMarkup(lesson);
   const guide = quickPracticeGuides[lesson.id];
   const artwork = lessonArtworkForId(lesson.id === 13 ? 10 : lesson.id);
   const motion = [4, 5, 6, 12].includes(lesson.id) ? "" : (practiceMotionByLesson[lesson.id] || "");
@@ -825,11 +890,14 @@ function quickVersion(lesson) {
 function quickPracticePage() {
   const requestedLesson = Number(new URLSearchParams(window.location.search).get("lesson"));
   const selectedLesson = lessons.find(function (lesson) { return lesson.id === requestedLesson; }) || currentLesson();
+  const previous = lessons.find(function (lesson) { return lesson.id === selectedLesson.id - 1; });
+  const next = lessons.find(function (lesson) { return lesson.id === selectedLesson.id + 1; });
   const choices = lessons.map(function (lesson) {
     const current = lesson.id === selectedLesson.id;
     return "<a class=\"practice-picker-link\" href=\"/quick-practice?lesson=" + lesson.id + "\"" + (current ? " aria-current=\"page\"" : "") + "><span class=\"practice-picker-thumb\">" + lessonImageMarkup(lesson.id, "practice-picker-image") + "<span class=\"practice-picker-number\" aria-hidden=\"true\">" + String(lesson.id).padStart(2, "0") + "</span></span><span><strong>" + esc(lesson.title) + "</strong><small>" + esc(lesson.time + " min lesson") + "</small></span><span class=\"practice-picker-arrow\" aria-hidden=\"true\">→</span></a>";
   }).join("");
-  return shell("<div class=\"page quick-practice-page\"><div class=\"reference-hero\"><div><p class=\"eyebrow\">See it · try it · keep it gentle</p><h1>Quick practice</h1><p class=\"lede\">Short, visual practice for one skill at a time. Choose a lesson below to switch the movement.</p></div><a class=\"button subtle\" href=\"/course\">Course map →</a></div>" + quickVersion(selectedLesson) + "<section class=\"practice-picker-panel\" aria-labelledby=\"practice-picker-title\"><div class=\"section-heading\"><div><p class=\"eyebrow\">13 visual practices</p><h2 id=\"practice-picker-title\">Choose another skill</h2></div><p>Every practice opens with its own detailed instructional visual and safety cues.</p></div><nav class=\"practice-picker-grid\" aria-label=\"Choose a quick practice\">" + choices + "</nav></section></div>", "quick-practice");
+  const keyboardNavigation = '<nav class="practice-sequence-nav" aria-label="Quick Practice lessons">' + (previous ? '<a class="button small" data-sequence-previous href="/quick-practice?lesson=' + previous.id + '">← Previous skill</a>' : '<span></span>') + (next ? '<a class="button small" data-sequence-next href="/quick-practice?lesson=' + next.id + '">Next skill →</a>' : '<span></span>') + '</nav><p class="sequence-key-hint">← Previous skill <span aria-hidden="true">·</span> Next skill →</p>';
+  return shell('<div class="page quick-practice-page" data-sequence="quick-practice"><div class="reference-hero"><div><p class="eyebrow">See it · try it · keep it gentle</p><h1>Quick practice</h1><p class="lede">Short, visual practice for one skill at a time. Choose a lesson below to switch the movement. Use ←/→ outside text and form fields.</p></div><a class="button subtle" href="/course">Course map →</a></div>' + quickVersion(selectedLesson) + keyboardNavigation + '<section class="practice-picker-panel" aria-labelledby="practice-picker-title"><div class="section-heading"><div><p class="eyebrow">13 visual practices</p><h2 id="practice-picker-title">Choose another skill</h2></div><p>Every practice opens with its own detailed instructional visual and safety cues.</p></div><nav class="practice-picker-grid" aria-label="Choose a quick practice">' + choices + '</nav></section></div>', "quick-practice");
 }
 
 function fullLesson(lesson) {
@@ -851,9 +919,13 @@ function lessonPage(id) {
 
 function techniques() {
   const cards = libraryItems.map(function (item) {
-    return "<article class=\"reference-card enhanced-reference-card\" data-category=\"" + item[4] + "\" data-search=\"" + esc((item[0] + " " + item[1] + " " + item[5]).toLowerCase()) + "\"><div class=\"reference-photo\">" + lessonImageMarkup(item[3], "section-photo") + "</div><div class=\"reference-card-meta\"><span>" + item[6] + "</span><span>" + item[5] + "</span></div><h3>" + esc(item[0]) + "</h3><p>" + esc(item[1]) + "</p><a class=\"ref-link\" href=\"#/lesson/" + item[3] + "\">Open lesson →</a></article>";
+    const image = item[7]
+      ? '<img class="section-photo" src="/assets/lessons/' + item[7] + '" alt="' + esc(item[8]) + '" width="1448" height="1086" loading="lazy" decoding="async" />'
+      : lessonImageMarkup(item[3], "section-photo");
+    const destination = item[4] === "hand-massage" ? "/hand-massage#hand-technique-" + item[9] : "#/lesson/" + item[3];
+    return '<article class="reference-card enhanced-reference-card" data-category="' + item[4] + '" data-search="' + esc((item[0] + " " + item[1] + " " + item[5]).toLowerCase()) + '"><div class="reference-photo">' + image + '</div><div class="reference-card-meta"><span>' + item[6] + '</span><span>' + item[5] + '</span></div><h3>' + esc(item[0]) + '</h3><p>' + esc(item[1]) + '</p><a class="ref-link" href="' + destination + '">' + (item[4] === "hand-massage" ? "Open hand technique →" : "Open lesson →") + '</a></article>';
   }).join("");
-  return shell("<div class=\"page\"><div class=\"reference-hero\"><div><p class=\"eyebrow\">Fast reference</p><h1>Techniques</h1><p class=\"lede\">Find one movement quickly, then open its lesson for setup, boundaries, and practice.</p></div><div class=\"library-toolbar\"><label class=\"search-box\"><span class=\"sr-only\">Search techniques</span><input id=\"technique-search\" type=\"search\" placeholder=\"Search movements or areas\" /></label><label class=\"filter-label\"><span>Show</span><select id=\"technique-filter\"><option value=\"all\">All techniques</option><option value=\"movement\">Core movements</option></select></label></div></div><div class=\"reference-grid\" id=\"reference-grid\">" + cards + "</div></div>", "techniques");
+  return shell('<div class="page"><div class="reference-hero"><div><p class="eyebrow">Fast reference</p><h1>Techniques</h1><p class="lede">Find one movement quickly, then open its lesson for setup, boundaries, and practice.</p></div><div class="library-toolbar"><label class="search-box"><span class="sr-only">Search techniques</span><input id="technique-search" type="search" placeholder="Search movements or areas" /></label><label class="filter-label"><span>Show</span><select id="technique-filter"><option value="all">All techniques</option><option value="movement">Core movements</option><option value="hand-massage">Hand massage</option></select></label></div></div><div class="reference-grid" id="reference-grid">' + cards + '</div></div>', "techniques");
 }
 
 function areas() {
@@ -865,11 +937,15 @@ function areas() {
 
 function routineCard(routine, index) {
   const stages = routineCoachedStages(routine);
-  return '<article class="routine-card-enhanced"><div class="routine-card-top"><div><span class="routine-tag">' + esc(routine.tag) + '</span><h2>' + esc(routine.title) + '</h2></div><strong class="routine-time-large">' + esc(routine.time) + '</strong></div><p>' + esc(routine.description) + '</p><p class="coach-time-note">Suggested sequence · pause between stages and follow comfort, not the clock.</p>' + routineTimelineMarkup(routine) + comfortCoachMarkup(lessons.find(function (lesson) { return lesson.id === stages[0].lesson; })) + coachedPracticeMarkup("routine-" + index, stages, true) + '<div class="routine-safety"><span>!</span>' + esc(routine.safety) + '</div></article>';
+  const complete = isRoutineComplete(index);
+  return '<article class="routine-card-enhanced"><div class="routine-card-top"><div><span class="routine-tag">' + esc(routine.tag) + '</span><h2>' + esc(routine.title) + '</h2></div><strong class="routine-time-large">' + esc(routine.time) + '</strong></div><p>' + esc(routine.description) + '</p><p class="routine-card-progress" data-routine-progress="' + index + '" role="status">' + (complete ? 'Completed ✓ · ready to repeat' : 'Ready when you are · progress stays on this device') + '</p><button class="button primary follow-along-start" type="button" data-routine-id="' + index + '">START FOLLOW ALONG</button><p class="coach-time-note">Suggested sequence · pause between stages and follow comfort, not the clock.</p>' + routineTimelineMarkup(routine) + comfortCoachMarkup(lessons.find(function (lesson) { return lesson.id === stages[0].lesson; })) + '<div class="routine-safety"><span>!</span>' + esc(routine.safety) + '</div></article>';
 }
 
 function routines() {
-  return shell("<div class=\"page\"><div class=\"reference-hero routine-heading\"><div><p class=\"eyebrow\">Follow along, no planning needed</p><h1>Quick routines</h1><p class=\"lede\">Short, practical sequences for everyday use. Each step links back to the lesson that teaches it.</p></div><a class=\"button subtle\" href=\"#/safety\">Safety first →</a></div><div class=\"routine-stack\">" + routineData.map(routineCard).join("") + "</div></div>", "routines");
+  const dialog = followAlongDialogMarkup()
+    .replace('<figure class="follow-along-visual"><img class="follow-along-image"', '<figure class="follow-along-visual"><div class="follow-along-photo-wrap"><img class="follow-along-image"')
+    .replace('decoding="async" /><figcaption>Let the visual guide your hand placement.', 'decoding="async" /><svg class="follow-motion-cue" viewBox="0 0 1000 750" aria-hidden="true" hidden></svg><svg class="follow-point-marker" viewBox="0 0 1000 750" aria-hidden="true" hidden></svg></div><figcaption>Let the visual guide your hand placement.');
+  return shell("<div class=\"page\"><div class=\"reference-hero routine-heading\"><div><p class=\"eyebrow\">Follow along, no planning needed</p><h1>Quick routines</h1><p class=\"lede\">Choose a short sequence, then follow one clear visual cue at a time. Pauses and comfort checks are always welcome.</p></div><a class=\"button subtle\" href=\"#/safety\">Safety first →</a></div><div class=\"routine-stack\">" + routineData.map(routineCard).join("") + "</div>" + dialog + "</div>", "routines");
 }
 
 function reference() {
@@ -880,6 +956,14 @@ function safety() {
   return shell("<div class=\"page\"><section class=\"safety-hero\"><div class=\"safety-hero-copy\"><p class=\"eyebrow\" style=\"color:var(--sun)\">The safety boundary</p><h1>Comfort is the skill.</h1><p>The Craft is educational guidance for gentle, non-medical massage. It does not diagnose, cure, or treat medical conditions. When in doubt, pause and ask an appropriate health professional.</p></div><figure class=\"safety-hero-visual\">" + lessonImageMarkup(1, "section-photo") + "<figcaption>Ask first. Pause whenever needed.</figcaption></figure></section><section class=\"safety-at-a-glance\"><div><strong>Stop</strong><span>sharp or severe pain</span></div><div><strong>Stop</strong><span>numbness or tingling</span></div><div><strong>Stop</strong><span>dizziness or faintness</span></div><div><strong>Ask first</strong><span>injury, surgery, or a condition</span></div></section><div class=\"safety-grid\"><section class=\"safety-panel\"><h2>Stop right away for</h2><div class=\"stop-list\"><div class=\"stop-item\">Sharp or severe pain</div><div class=\"stop-item\">Numbness or tingling</div><div class=\"stop-item\">Dizziness or faintness</div><div class=\"stop-item\">Unusual weakness</div><div class=\"stop-item\">Difficulty breathing</div><div class=\"stop-item\">Any sudden concerning symptom</div></div></section><section class=\"safety-panel\"><h2>Ask for advice first</h2><ul><li>There is an injury, unexplained severe pain, or recent surgery.</li><li>A person has a medical condition, unusual swelling, or altered sensation.</li><li>The skin is broken, inflamed, bruised, or unusually hot or red.</li><li>You are unsure whether massage is appropriate or safe.</li></ul></section><section class=\"safety-panel\"><h2>Always keep out of bounds</h2><ul><li>Do not forcefully manipulate the spine, neck, joints, or injured areas.</li><li>Do not twist, crack, pull, or traction the neck.</li><li>Do not press directly on the spine, throat, open wounds, or acute pain.</li><li>Do not present massage as a cure or replacement for professional care.</li></ul></section><section class=\"safety-panel\"><h2>Good communication sounds like</h2><ul><li>“Is this pressure comfortable?”</li><li>“Would you like me to stay here, change direction, or pause?”</li><li>“Tell me if you feel anything sharp, numb, tingly, or unusual.”</li><li>“We can stop now—there is no need to push through.”</li></ul></section></div>" + relaxationEvidenceMarkup() + "</div>", "safety");
 }
 
+function routineProgressMarkup() {
+  const completed = progress.routineCompleted || [];
+  const rows = routineData.map(function (routine, index) {
+    return '<li><span>' + esc(routine.title) + '</span><strong>' + (isRoutineComplete(index) ? 'Completed' : 'Ready') + '</strong></li>';
+  }).join('');
+  return '<section class="progress-routine-summary"><div><p class="eyebrow">Private routine practice</p><h2>' + completed.length + ' of ' + routineData.length + ' routines complete</h2><p>Saved in this browser. Repeat any routine whenever you like.</p><a class="button small" href="/routines">Open routines →</a></div><ul>' + rows + '</ul></section>';
+}
+
 function progressPage() {
   const completed = lessons.filter(function (lesson) { return isComplete(lesson.id); });
   const next = currentLesson();
@@ -888,6 +972,69 @@ function progressPage() {
 
 function notFound() {
   return shell("<div class=\"page not-found\"><p class=\"eyebrow\">A quiet detour</p><h1>That page wandered off.</h1><p class=\"lede\" style=\"margin:0 auto 25px\">Let’s take you back to the learning path.</p><a class=\"button primary\" href=\"#/home\">Return home →</a></div>", "");
+}
+
+function stepThroughLearningSequence(sequence, current, direction) {
+  if (!sequence) return;
+  const items = Array.from(sequence.querySelectorAll("[data-sequence-item]")).filter(function (item) {
+    return !item.closest("[hidden]");
+  });
+  if (!items.length) return;
+  let index = current ? items.indexOf(current) : -1;
+  let nextIndex = index < 0 ? (direction > 0 ? 0 : items.length - 1) : index + direction;
+  if (nextIndex < 0 || nextIndex >= items.length) return;
+  const item = items[nextIndex];
+  if (typeof item.scrollIntoView === "function") item.scrollIntoView({ behavior: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  const heading = item.querySelector("h3, h4");
+  if (heading && typeof heading.focus === "function") heading.focus({ preventScroll: true });
+}
+
+function bindLearningArrowKeys() {
+  if (window.__craftArrowKeysBound) return;
+  window.__craftArrowKeysBound = true;
+  document.addEventListener("keydown", function (event) {
+    if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.isComposing) return;
+    const target = event.target;
+    if (target && typeof target.closest === "function" && target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"]')) return;
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const dialog = document.querySelector(".follow-along-dialog");
+    if (dialog && dialog.open && (!target || !dialog.contains || dialog.contains(target))) {
+      const control = dialog.querySelector(direction > 0 ? ".follow-next" : ".follow-previous");
+      if (control && !control.disabled) { event.preventDefault(); control.click(); }
+      return;
+    }
+    let sequence = target && typeof target.closest === "function" ? target.closest("[data-sequence]") : null;
+    if (!sequence) {
+      const sequences = Array.from(document.querySelectorAll("[data-sequence]"));
+      if (sequences.length === 1) sequence = sequences[0];
+      else sequence = sequences.find(function (item) { return item.dataset.sequence !== "quick-practice"; }) || null;
+    }
+    if (sequence && sequence.dataset.sequence === "quick-practice") {
+      const link = sequence.querySelector(direction > 0 ? ".practice-sequence-nav [data-sequence-next]" : ".practice-sequence-nav [data-sequence-previous]");
+      if (link) { event.preventDefault(); link.click(); }
+      return;
+    }
+    if (sequence && sequence.dataset.sequence === "lesson-page") {
+      const lessonFooter = sequence.querySelector(".lesson-footer");
+      const link = lessonFooter && lessonFooter.querySelector(direction > 0 ? "a.next" : "a:not(.next)");
+      if (link) { event.preventDefault(); link.click(); }
+      return;
+    }
+    if (sequence) {
+      const item = target && typeof target.closest === "function" ? target.closest("[data-sequence-item]") : null;
+      if (item || sequence.querySelector("[data-sequence-item]")) {
+        event.preventDefault();
+        stepThroughLearningSequence(sequence, item, direction);
+      }
+      return;
+    }
+    const lessonFooter = document.querySelector(".lesson-footer");
+    if (lessonFooter) {
+      const link = lessonFooter.querySelector(direction > 0 ? "a.next" : "a:not(.next)");
+      if (link) { event.preventDefault(); link.click(); }
+    }
+  });
 }
 
 function render() {
@@ -908,8 +1055,16 @@ function render() {
   else if (current === "reference") html = reference();
   else if (/^lesson\/\d+$/.test(current)) html = lessonPage(Number(current.split("/")[1]));
   else html = notFound();
+  if (/^lesson\/\d+$/.test(current)) {
+    html = html.replace('<div class="page"><div class="lesson-hero">', '<div class="page lesson-page" data-sequence="lesson-page"><div class="lesson-hero">');
+    html = html.replace('<div class="lesson-footer">', '<p class="sequence-key-hint">← Previous lesson <span aria-hidden="true">·</span> Next lesson →</p><div class="lesson-footer">');
+  }
   const app = document.getElementById("app");
   app.innerHTML = html;
+  if (current === "progress") {
+    const progressNext = app.querySelector(".progress-next");
+    if (progressNext) progressNext.insertAdjacentHTML("beforebegin", routineProgressMarkup());
+  }
   normalizeRouteLinks(app);
   updatePageMetadata(current);
   if (current === "home") replaceHeroArtwork(app);
@@ -923,7 +1078,17 @@ function render() {
 window.addEventListener("hashchange", render);
 window.addEventListener("DOMContentLoaded", render);
 function bindEvents() {
+  bindLearningArrowKeys();
+  document.querySelectorAll("[data-sequence] [data-sequence-previous], [data-sequence] [data-sequence-next]").forEach(function (button) {
+    if (button.tagName === "A") return;
+    button.addEventListener("click", function () {
+      const sequence = button.closest("[data-sequence]");
+      const current = button.closest("[data-sequence-item]");
+      stepThroughLearningSequence(sequence, current, button.hasAttribute("data-sequence-next") ? 1 : -1);
+    });
+  });
   bindGuidedPractices();
+  bindRoutineFollowAlong();
   const menu = document.querySelector(".menu-toggle");
   const nav = document.querySelector(".main-nav");
   if (menu) menu.addEventListener("click", function () {
@@ -947,7 +1112,7 @@ function bindEvents() {
   const reset = document.querySelector(".reset-progress");
   if (reset) reset.addEventListener("click", function () {
     if (window.confirm("Reset all lesson and practice progress? This cannot be undone.")) {
-      progress = { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [] };
+      progress = { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [] };
       saveProgress();
       render();
     }
@@ -1000,7 +1165,7 @@ function bindEvents() {
       }
     });
     if (pressureStatus) pressureStatus.textContent = shownAreas
-      ? "Showing " + shownAreas + " of 9 body areas · " + shownPoints + " point " + (shownPoints === 1 ? "lesson" : "lessons")
+      ? "Showing " + shownAreas + " of " + pressurePointAreas.length + " body areas · " + shownPoints + " point " + (shownPoints === 1 ? "lesson" : "lessons")
       : "No body areas match. Try another point name or landmark.";
     if (pressureNoResults) pressureNoResults.hidden = shownAreas > 0;
   }

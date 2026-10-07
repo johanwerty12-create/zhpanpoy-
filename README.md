@@ -1,6 +1,6 @@
 # The Craft
 
-The Craft is a lightweight, static massage-learning app for beginners. It keeps the existing 13 lessons, individual visual Quick Practices, quizzes, routines, timers, safety guidance, and private progress stored in the browser. There is no account, database, build step, or dependency installation.
+The Craft is a lightweight, static massage-learning app for beginners. It includes 13 lessons, individual visual Quick Practices, quizzes, nine routines, timers, safety guidance, and private progress stored in the browser. The Follow Along player shows a matching visual at every step, gentle transitions, pause/resume, and locally saved completion. The hand curriculum teaches 15 distinct techniques with unique visuals; the Pressure Points reference reviews 18 body areas and teaches six landmark-based traditional points with safety boundaries. There is no account, database, build step, or dependency installation.
 
 ## Run locally
 
@@ -18,7 +18,7 @@ Open <http://127.0.0.1:4173>. Stop the server with `Ctrl+C`. The small local ser
 - `app.js` — course lesson data, local progress, path routing, metadata, and shared events
 - `product-pass.js` — page renderers, Quick Practice, technique/routine/body-area data, and interactions
 - `styles.css`, `product-pass.css` — base styles and responsive product improvements
-- `relaxation-coach.js` — staged follow-along practice, comfort checks, and timer controls
+- `relaxation-coach.js` — staged lesson practices and the routine Follow Along player, comfort checks, and timer controls
 - `hand-massage.js` — dedicated palm/finger teaching, a guided hand routine, and the existing verified LI4 lesson
 - `design-polish.css` — warm, readable presentation with consistent cards and responsive layouts
 - `QUALITY-AUDIT.md` — instruction/visual review scope, sources, and verification limitations
@@ -39,6 +39,6 @@ There is no production compilation step for this architecture. Before deployment
 
 Also check `node --check relaxation-coach.js` and run `node tools/check-relaxation.cjs` for page/asset checks and timer regressions. Keep the asset version query in `index.html` updated when publishing another instruction change so previously cached scripts do not mask the release.
 
-The dedicated `/hand-massage` and `/pressure-points` pages are linked in navigation and on the home page. `/pressure-points#point-li4` opens the hand point directly. Check `node --check hand-massage.js` too.
+The dedicated `/hand-massage` and `/pressure-points` pages are linked in navigation and on the home page. `/pressure-points#point-li4` opens the hand point directly. The routines page includes the 8-minute 15-step hand sequence and a 3-minute, six-landmark educational tour. Check `node --check hand-massage.js` too.
 
 Progress is saved only in the current browser with `localStorage`; it does not sync between devices. The lessons are educational guidance, not medical diagnosis or treatment, and emphasize gentle pressure and stopping when comfort changes.

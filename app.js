@@ -1,4 +1,5 @@
 const STORAGE_KEY = "kindred-touch-progress-v1";
+const ROUTINE_COUNT = 7;
 
 const lessons = [
   {
@@ -198,7 +199,7 @@ let practiceTimer = null;
 function loadProgress() {
   try {
     const value = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [] };
+    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [] };
     return {
       completed: value.completed.filter(Number.isInteger),
       current: value.current || 1,
@@ -207,10 +208,13 @@ function loadProgress() {
         : [],
       scalpPracticeCompleted: Array.isArray(value.scalpPracticeCompleted)
         ? value.scalpPracticeCompleted.filter(function (id) { return typeof id === "string" && /^[a-z0-9-]+$/.test(id); })
+        : [],
+      routineCompleted: Array.isArray(value.routineCompleted)
+        ? value.routineCompleted.filter(function (id) { return Number.isInteger(id) && id >= 0 && id < ROUTINE_COUNT; })
         : []
     };
   } catch (error) {
-    return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [] };
+    return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [] };
   }
 }
 function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
@@ -219,6 +223,12 @@ function isPracticeComplete(id) { return (progress.practiceCompleted || []).incl
 function markPracticeComplete(id) {
   if (!progress.practiceCompleted) progress.practiceCompleted = [];
   if (!progress.practiceCompleted.includes(id)) progress.practiceCompleted.push(id);
+  saveProgress();
+}
+function isRoutineComplete(id) { return (progress.routineCompleted || []).includes(id); }
+function markRoutineComplete(id) {
+  if (!progress.routineCompleted) progress.routineCompleted = [];
+  if (!progress.routineCompleted.includes(id)) progress.routineCompleted.push(id);
   saveProgress();
 }
 function percentComplete() { return Math.round(progress.completed.length / lessons.length * 100); }
