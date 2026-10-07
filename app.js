@@ -199,7 +199,7 @@ let practiceTimer = null;
 function loadProgress() {
   try {
     const value = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [] };
+    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [], visualSequencesCompleted: [] };
     return {
       completed: value.completed.filter(Number.isInteger),
       current: value.current || 1,
@@ -211,10 +211,13 @@ function loadProgress() {
         : [],
       routineCompleted: Array.isArray(value.routineCompleted)
         ? value.routineCompleted.filter(function (id) { return Number.isInteger(id) && id >= 0 && id < ROUTINE_COUNT; })
+        : [],
+      visualSequencesCompleted: Array.isArray(value.visualSequencesCompleted)
+        ? value.visualSequencesCompleted.filter(function (key) { return typeof key === "string" && /^(lesson|hand|scalp|point):[a-z0-9-]+$/.test(key); })
         : []
     };
   } catch (error) {
-    return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [] };
+    return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [], visualSequencesCompleted: [] };
   }
 }
 function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }

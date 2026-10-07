@@ -36,7 +36,7 @@ const context = vm.createContext({
     clearInterval(id) { clock.intervals.delete(id); }
   }
 });
-for (const name of ['app.js', 'product-pass.js', 'relaxation-coach.js', 'hand-massage.js']) {
+for (const name of ['app.js', 'product-pass.js', 'relaxation-coach.js', 'hand-massage.js', 'visual-learning.js']) {
   const source = fs.readFileSync(path.join(project, name), 'utf8');
   new vm.Script(source, { filename: name }).runInContext(context);
 }
@@ -126,8 +126,54 @@ assert.ok(pointTour.every((stage, index) => stage.image === evaluate(`pressurePo
 assert.ok(evaluate('pressurePoints.every(point => pressurePointVisualSpecs[point.id].image && pressurePointVisualSpecs[point.id].alt)'));
 assert.ok(fs.readFileSync(path.join(project, 'index.html'), 'utf8').includes('/relaxation-coach.js'));
 
+const visualKeys = Array.from(evaluate(`[
+  ...lessons.map(item => 'lesson:' + item.id),
+  ...scalpTechniques.map(item => 'scalp:' + item.id),
+  ...handMassageTechniques.map(item => 'hand:' + item.id),
+  ...pressurePoints.map(item => 'point:' + item.id)
+]`));
+assert.equal(visualKeys.length, 47, 'Every lesson, scalp technique, hand technique, and pressure point gets a guide');
+const visualImages = [];
+for (const key of visualKeys) {
+  const sequence = evaluate(`window.CraftVisualLearning.getSequence(${JSON.stringify(key)})`);
+  assert.ok(sequence, 'Missing visual sequence: ' + key);
+  assert.equal(sequence.steps.length, 10, 'Every guide must have exactly 10 steps: ' + key);
+  assert.ok(sequence.title && sequence.area && sequence.image && sequence.alt && sequence.hand && sequence.direction && sequence.pressure && sequence.avoid && sequence.safety);
+  assert.ok(fs.existsSync(path.join(project, 'assets', 'lessons', sequence.image)), 'Missing sequence visual: ' + sequence.image);
+  assert.ok(sequence.steps.every(step => step.title && step.instruction && step.what && step.hand && step.direction && step.pressure && step.avoid));
+  visualImages.push(sequence.image);
+  for (let step = 1; step <= 10; step++) {
+    const markup = evaluate(`window.CraftVisualLearning.stageVisualMarkup(window.CraftVisualLearning.getSequence(${JSON.stringify(key)}), window.CraftVisualLearning.getSequence(${JSON.stringify(key)}).steps[${step - 1}])`);
+    assert.match(markup, new RegExp('data-visual-step="' + step + '"'));
+    checkAssets(markup);
+  }
+}
+assert.equal(new Set(visualImages).size, 47, 'Every individual technique sequence must have its own matching source illustration');
+for (let index = 0; index < 9; index++) {
+  const stages = evaluate(`routineCoachedStages(routineData[${index}])`);
+  stages.forEach((stage, stageIndex) => {
+    const key = evaluate(`window.CraftVisualLearning.visualKeyForRoutineStage(routineCoachedStages(routineData[${index}])[${stageIndex}])`);
+    assert.ok(evaluate(`window.CraftVisualLearning.getSequence(${JSON.stringify(key)})`), `Routine ${index + 1}, stage ${stageIndex + 1} must open a matching visual guide (${key})`);
+  });
+}
+const visualTimer = evaluate('window.CraftVisualLearning.createTimer(function (state) { window.__timerState = state; })');
+visualTimer.setDuration(15); visualTimer.start();
+assert.equal(clock.intervals.size, 1, 'The visual-step timer should start');
+advance(6); visualTimer.pause();
+assert.equal(clock.intervals.size, 0, 'The visual-step timer should pause');
+assert.ok(evaluate('window.__timerState.remaining') <= 9 && evaluate('window.__timerState.remaining') >= 8);
+visualTimer.start(); advance(20);
+assert.equal(evaluate('window.__timerState.remaining'), 0, 'The visual-step timer should stop at zero');
+visualTimer.dispose();
+assert.ok(evaluate('window.CraftVisualLearning.canHandleArrow({key: "ArrowRight", target: {closest() { return null; }}})'));
+assert.ok(!evaluate('window.CraftVisualLearning.canHandleArrow({key: "ArrowRight", target: {closest() { return {}; }}})'), 'Arrow navigation must not steal input controls');
+const visualProgress = fs.readFileSync(path.join(project, 'app.js'), 'utf8');
+assert.match(visualProgress, /visualSequencesCompleted/);
+assert.ok(fs.readFileSync(path.join(project, 'index.html'), 'utf8').includes('/visual-learning.js'));
+assert.match(evaluate('followAlongDialogMarkup()'), /follow-visual-steps/);
+
 function element() {
-  return { hidden: false, textContent: '', listeners: {}, addEventListener(name, callback) { this.listeners[name] = callback; } };
+  return { hidden: false, textContent: '', dataset: {}, listeners: {}, addEventListener(name, callback) { this.listeners[name] = callback; } };
 }
 function makeRoot(key, withImage = false) {
   const elements = new Map();
@@ -197,7 +243,7 @@ assert.equal(clock.intervals.size, 0);
 
 function makeUiElement() {
   return {
-    hidden: false, disabled: false, textContent: '', src: '', alt: '', loading: '', open: false,
+    hidden: false, disabled: false, textContent: '', src: '', alt: '', loading: '', open: false, dataset: {},
     listeners: {}, addEventListener(name, callback) { this.listeners[name] = callback; },
     focus() {}, click() { if (this.listeners.click) this.listeners.click({ target: this }); }
   };
@@ -347,11 +393,12 @@ assert.deepEqual(persisted.completed, [1], 'Routine progress must preserve exist
 assert.deepEqual(persisted.practiceCompleted, [3], 'Routine progress must preserve existing practice progress');
 assert.deepEqual(persisted.routineCompleted.sort(), [0, 1, 2, 3, 4, 5, 6, 7, 8]);
 assert.ok(evaluate('routineProgressMarkup()').includes('9 of 9 routines complete'));
-savedProgress = JSON.stringify({ completed: [2], current: 3, practiceCompleted: [8], scalpPracticeCompleted: ['small-circles'] });
+savedProgress = JSON.stringify({ completed: [2], current: 3, practiceCompleted: [8], scalpPracticeCompleted: ['small-circles'], visualSequencesCompleted: ['hand:palm-gliding', 'not-a-sequence'] });
 const upgradedProgress = evaluate('loadProgress()');
 assert.deepEqual(Array.from(upgradedProgress.completed), [2], 'Older local progress remains readable');
 assert.deepEqual(Array.from(upgradedProgress.practiceCompleted), [8], 'Older practice progress remains readable');
 assert.deepEqual(Array.from(upgradedProgress.routineCompleted), [], 'Older progress gets an empty routine-completion list');
+assert.deepEqual(Array.from(upgradedProgress.visualSequencesCompleted), ['hand:palm-gliding'], 'Visual guide progress is validated without dropping existing progress');
 
 // Arrow keys navigate sequences but never consume arrows while typing/searching.
 evaluate('bindLearningArrowKeys()');
@@ -391,4 +438,4 @@ assert.equal(focusedSequenceItem, 'hand-1', 'Left arrow goes back to the prior h
 const searchTarget = { closest(selector) { return selector.indexOf('input') >= 0 ? this : null; } };
 assert.equal(sendArrow('ArrowRight', searchTarget), false, 'Search inputs retain normal arrow-key behavior');
 assert.equal(sendArrow('ArrowRight', makeSequenceTarget(sequenceItems[0]), { shiftKey: true }), false, 'Modified arrow shortcuts are ignored');
-console.log('PASS: lessons/routes/assets, 15 unique hand techniques, all 18 pressure-point areas and 6 point lessons, all 9 routines and every visual mapping; full timed completion; pause/resume (including transitions); previous/next; exit; repeat; saved routine progress; and preservation of existing progress.');
+console.log('PASS: all 47 ten-step guides and 470 step frames; 47 unique technique visuals; all routine-stage mappings and image assets; timer start/pause/resume/complete; all 9 Follow Along routines; navigation, exit, repeat, and local progress preservation.');

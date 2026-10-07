@@ -111,7 +111,7 @@ function routineTimelineMarkup(routine) {
 }
 
 function followAlongDialogMarkup() {
-  return '<dialog class="follow-along-dialog" aria-labelledby="follow-technique-title"><div class="follow-along-shell"><header class="follow-along-header"><div><p class="eyebrow follow-routine-name">Follow Along</p><p class="follow-step-count"></p></div><button class="button subtle follow-exit" type="button">Exit routine</button></header><div class="follow-along-layout"><figure class="follow-along-visual"><img class="follow-along-image" src="/assets/lessons/lesson-10-arm-hand.webp" alt="" width="1448" height="1086" decoding="async" /><figcaption>Let the visual guide your hand placement.</figcaption></figure><section class="follow-along-guide"><div class="follow-live-details"><p class="follow-area"></p><h2 id="follow-technique-title" class="follow-technique" tabindex="-1"></h2><p class="follow-instruction"></p><dl class="follow-cues"><div><dt>MOVE</dt><dd class="follow-direction"></dd></div><div><dt>PRESSURE</dt><dd class="follow-pressure"></dd></div></dl></div><p class="follow-transition" role="status" aria-live="polite" hidden></p><div class="follow-clock"><span class="follow-phase-label"></span><output class="follow-time" role="timer" aria-live="off"></output></div><p class="follow-status" role="status" aria-live="polite"></p><div class="follow-controls"><button class="button follow-previous" type="button">Previous</button><button class="button primary follow-toggle" type="button">Pause</button><button class="button follow-next" type="button">Next</button></div><section class="follow-finish" hidden><p class="eyebrow">ROUTINE COMPLETE</p><h2>Take a moment before getting up.</h2><p>Your routine is saved on this device. Repeat it whenever you like.</p><div class="follow-finish-actions"><button class="button primary follow-repeat" type="button">Repeat routine</button><button class="button subtle follow-exit" type="button">Exit routine</button></div></section><p class="follow-safety">Keep touch comfortable. Stop for pain, numbness, tingling, dizziness, or anything unusual. Exit at any time.</p></section></div></div></dialog>';
+  return '<dialog class="follow-along-dialog" aria-labelledby="follow-technique-title"><div class="follow-along-shell"><header class="follow-along-header"><div><p class="eyebrow follow-routine-name">Follow Along</p><p class="follow-step-count"></p></div><button class="button subtle follow-exit" type="button">Exit routine</button></header><div class="follow-along-layout"><figure class="follow-along-visual"><img class="follow-along-image" src="/assets/lessons/lesson-10-arm-hand.webp" alt="" width="1448" height="1086" decoding="async" /><figcaption>Let the visual guide your hand placement.</figcaption></figure><section class="follow-along-guide"><div class="follow-live-details"><p class="follow-area"></p><h2 id="follow-technique-title" class="follow-technique" tabindex="-1"></h2><p class="follow-instruction"></p><dl class="follow-cues"><div><dt>MOVE</dt><dd class="follow-direction"></dd></div><div><dt>PRESSURE</dt><dd class="follow-pressure"></dd></div></dl><button class="button small follow-visual-steps" type="button" data-visual-learning="lesson:3">Open 10-step visual guide</button></div><p class="follow-transition" role="status" aria-live="polite" hidden></p><div class="follow-clock"><span class="follow-phase-label"></span><output class="follow-time" role="timer" aria-live="off"></output></div><p class="follow-status" role="status" aria-live="polite"></p><div class="follow-controls"><button class="button follow-previous" type="button">Previous</button><button class="button primary follow-toggle" type="button">Pause</button><button class="button follow-next" type="button">Next</button></div><section class="follow-finish" hidden><p class="eyebrow">ROUTINE COMPLETE</p><h2>Take a moment before getting up.</h2><p>Your routine is saved on this device. Repeat it whenever you like.</p><div class="follow-finish-actions"><button class="button primary follow-repeat" type="button">Repeat routine</button><button class="button subtle follow-exit" type="button">Exit routine</button></div></section><p class="follow-safety">Keep touch comfortable. Stop for pain, numbness, tingling, dizziness, or anything unusual. Exit at any time.</p></section></div></div></dialog>';
 }
 
 function relaxationEvidenceMarkup() {
@@ -217,6 +217,7 @@ function bindRoutineFollowAlong() {
     instruction: dialog.querySelector('.follow-instruction'),
     direction: dialog.querySelector('.follow-direction'),
     pressure: dialog.querySelector('.follow-pressure'),
+    visualSteps: dialog.querySelector('.follow-visual-steps'),
     transition: dialog.querySelector('.follow-transition'),
     clock: dialog.querySelector('.follow-clock'),
     phase: dialog.querySelector('.follow-phase-label'),
@@ -271,6 +272,12 @@ function bindRoutineFollowAlong() {
     ui.instruction.textContent = stage.short;
     ui.direction.textContent = stage.direction;
     ui.pressure.textContent = stage.pressure;
+    if (ui.visualSteps && window.CraftVisualLearning) {
+      const visualKey = window.CraftVisualLearning.visualKeyForRoutineStage(stage);
+      const available = !!window.CraftVisualLearning.getSequence(visualKey);
+      ui.visualSteps.hidden = complete || !available;
+      if (available) ui.visualSteps.dataset.visualLearning = visualKey;
+    }
     const preparing = phase === 'transition' || (phase === 'paused' && resumePhase === 'transition');
     ui.transition.hidden = !preparing;
     ui.transition.textContent = preparing

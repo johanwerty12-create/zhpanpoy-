@@ -1038,6 +1038,7 @@ function bindLearningArrowKeys() {
 }
 
 function render() {
+  if (window.CraftVisualLearning) window.CraftVisualLearning.close();
   stopAllCoachedSessions();
   if (practiceTimer) { clearInterval(practiceTimer); practiceTimer = null; }
   const current = route();
@@ -1060,7 +1061,7 @@ function render() {
     html = html.replace('<div class="lesson-footer">', '<p class="sequence-key-hint">← Previous lesson <span aria-hidden="true">·</span> Next lesson →</p><div class="lesson-footer">');
   }
   const app = document.getElementById("app");
-  app.innerHTML = html;
+  app.innerHTML = html + (window.CraftVisualLearning ? window.CraftVisualLearning.dialogMarkup() : "");
   if (current === "progress") {
     const progressNext = app.querySelector(".progress-next");
     if (progressNext) progressNext.insertAdjacentHTML("beforebegin", routineProgressMarkup());
@@ -1089,6 +1090,7 @@ function bindEvents() {
   });
   bindGuidedPractices();
   bindRoutineFollowAlong();
+  if (window.CraftVisualLearning) window.CraftVisualLearning.bind();
   const menu = document.querySelector(".menu-toggle");
   const nav = document.querySelector(".main-nav");
   if (menu) menu.addEventListener("click", function () {
