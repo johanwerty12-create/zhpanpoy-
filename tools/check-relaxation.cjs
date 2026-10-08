@@ -88,6 +88,13 @@ for (let id = 1; id <= lessonCount; id++) {
 }
 const pages = ['home()', 'course()', 'techniques()', 'areas()', 'routines()', 'safety()', 'progressPage()', 'reference()', 'pressurePointsPage()', 'handMassagePage()', 'quickPracticePage()', 'notFound()'];
 pages.forEach(page => { const html = evaluate(page); assert.ok(html.includes('<main'), page); checkAssets(html); });
+const homeMarkup = evaluate('progress.completed = []; progress.current = 1; home()');
+assert.match(homeMarkup, /href="\/lessons\/1">Start lesson 1/);
+assert.match(homeMarkup, /href="\/quick-practice"/);
+assert.match(homeMarkup, /href="\/routines"[^>]*>Or follow a short routine/);
+assert.equal((homeMarkup.match(/class="goal-card /g) || []).length, 3, 'The home page keeps its focused body-area shortcuts to three');
+const exploreMarkup = evaluate('reference()');
+for (const href of ['/hand-massage', '/lessons/9', '/pressure-points', '/techniques', '/body-areas']) assert.ok(exploreMarkup.includes('href="' + href + '"'), 'Explore should link directly to ' + href);
 const courseMarkup = evaluate('course()');
 assert.match(courseMarkup, /data-sequence="course-lessons"/);
 assert.equal((courseMarkup.match(/data-sequence-item="lesson-/g) || []).length, 13, 'The course map exposes all 13 lessons as an ordered keyboard sequence');
@@ -112,6 +119,8 @@ for (let i = 0; i < 9; i++) {
 const routineMarkup = evaluate('routines()');
 assert.equal((routineMarkup.match(/START FOLLOW ALONG/g) || []).length, 9);
 assert.match(routineMarkup, /Hand &amp; Fingers · 8 min/);
+assert.equal((routineMarkup.match(/class="routine-preview"/g) || []).length, 9, 'All nine routine outlines stay available as optional previews');
+assert.ok(!routineMarkup.includes('class="coached-practice"'), 'Routine selection cards do not repeat the full in-player practice instructions');
 assert.equal((routineMarkup.match(/class="follow-along-dialog"/g) || []).length, 1);
 checkAssets(routineMarkup);
 assert.match(evaluate('routineProgressMarkup()'), /9 routines complete/);
@@ -123,7 +132,68 @@ assert.equal(evaluate('handMassageStages().reduce((sum, stage) => sum + stage.se
 assert.deepEqual(Array.from(evaluate('handMassageStages().map(stage => stage.image)')), handImages);
 const handMarkup = evaluate('handMassagePage()');
 assert.equal((handMarkup.match(/class="hand-technique-card"/g) || []).length, 15);
+assert.match(handMarkup, /data-sequence-picker="hand-techniques"/);
+assert.equal((handMarkup.match(/class="hand-technique-card"[^>]* hidden/g) || []).length, 14, 'Hand learning opens on one technique and keeps the other 14 selectable');
 checkAssets(handMarkup);
+const scalpMarkup = evaluate('headScalpQuickPractice(lessons[8])');
+assert.equal((scalpMarkup.match(/data-sequence-item=/g) || []).length, 13);
+assert.match(scalpMarkup, /data-sequence-picker="scalp-techniques"/);
+assert.equal((scalpMarkup.match(/class="scalp-technique-card[^"]*"[^>]* hidden/g) || []).length, 12, 'Scalp learning opens on one technique and keeps the other 12 selectable');
+checkAssets(scalpMarkup);
+
+const pickerGroups = [{ hidden: false }, { hidden: true }];
+const picker = { value: 'scalp-gliding' };
+const pickerProgress = { textContent: '' };
+const pickerRoot = { querySelector(selector) {
+  if (selector === '[data-sequence-picker="scalp-techniques"]') return picker;
+  if (selector === '[data-sequence-progress]') return pickerProgress;
+  return null;
+} };
+let pickerSequence;
+const pickerItems = ['scalp-gliding', 'temple-circles', 'behind-ear'].map((id, index) => {
+  const hint = { textContent: '' };
+  const heading = { focus() {} };
+  return {
+    dataset: { sequenceItem: id }, hidden: index !== 0, group: index === 0 ? pickerGroups[0] : pickerGroups[1], attributes: {},
+    closest(selector) { return selector === '[data-sequence]' ? pickerSequence : selector === '[data-sequence-group]' ? this.group : null; },
+    querySelector(selector) { return selector === '.sequence-key-hint' ? hint : heading; },
+    setAttribute(name, value) { this.attributes[name] = value; }, removeAttribute(name) { delete this.attributes[name]; },
+    scrollIntoView() {}
+  };
+});
+pickerSequence = {
+  dataset: { sequence: 'scalp-techniques' }, parentElement: pickerRoot,
+  querySelectorAll(selector) { return selector === '[data-sequence-item]' ? pickerItems : selector === '[data-sequence-group]' ? pickerGroups : []; },
+  querySelector() { return null; }
+};
+context.__pickerSequenceTest = { pickerSequence, pickerItems };
+evaluate('activateLearningSequenceItem(__pickerSequenceTest.pickerSequence, __pickerSequenceTest.pickerItems[1], 1, false)');
+assert.equal(picker.value, 'temple-circles');
+assert.equal(pickerItems[0].hidden, true);
+assert.equal(pickerItems[1].hidden, false);
+assert.equal(pickerGroups[0].hidden, true);
+assert.equal(pickerGroups[1].hidden, false);
+assert.equal(pickerProgress.textContent, 'Technique 2 of 3');
+assert.equal(pickerItems[1].attributes['aria-current'], 'step');
+assert.equal(evaluate('stepThroughLearningSequence(__pickerSequenceTest.pickerSequence, __pickerSequenceTest.pickerItems[1], 1)'), true);
+assert.equal(picker.value, 'behind-ear', 'Next advances through hidden techniques in the full sequence');
+assert.equal(pickerItems[2].hidden, false);
+let filteredSequence;
+const filteredItems = ['first', 'filtered-out', 'last'].map((id, index) => {
+  const hint = { textContent: '' };
+  const heading = { focus() {} };
+  return {
+    dataset: { sequenceItem: id }, hidden: index === 1, attributes: {},
+    closest(selector) { return selector === '[data-sequence]' ? filteredSequence : selector === '[hidden]' && this.hidden ? this : null; },
+    getClientRects() { return this.hidden ? [] : [{}]; },
+    querySelector(selector) { return selector === '.sequence-key-hint' ? hint : heading; },
+    setAttribute(name, value) { this.attributes[name] = value; }, removeAttribute(name) { delete this.attributes[name]; }, scrollIntoView() {}
+  };
+});
+filteredSequence = { dataset: { sequence: 'technique-library' }, querySelectorAll() { return filteredItems; }, querySelector() { return null; } };
+context.__filteredSequenceTest = { filteredSequence, filteredItems };
+assert.equal(evaluate('stepThroughLearningSequence(__filteredSequenceTest.filteredSequence, __filteredSequenceTest.filteredItems[0], 1)'), true);
+assert.match(filteredItems[2].querySelector('.sequence-key-hint').textContent, /Technique 2 of 2/, 'Filtered sequences announce the visible result count');
 const quickHandMarkup = evaluate('handMassageQuickPracticeMarkup(lessons[9])');
 assert.equal((quickHandMarkup.match(/class="hand-quick-card"/g) || []).length, 15);
 checkAssets(quickHandMarkup);
@@ -141,6 +211,8 @@ for (let i = 0; i < 6; i++) {
 const pressureMarkup = evaluate('pressurePointsPage()');
 for (const area of expectedAreas) assert.ok(pressureMarkup.includes('>' + evaluate('esc(' + JSON.stringify(area) + ')') + '</h2>'), 'Missing pressure area: ' + area);
 assert.match(pressureMarkup, /18 body areas/);
+assert.equal((pressureMarkup.match(/<option value="(?:all|[a-z0-9-]+)">/g) || []).length, 19, 'Pressure-point filtering keeps all areas in one compact accessible selector');
+assert.ok(!pressureMarkup.includes('pp-area-chip'), 'Pressure-point filtering no longer renders a wall of area buttons');
 const pointTour = evaluate('routineCoachedStages(routineData[8])');
 assert.equal(pointTour.length, 6);
 assert.deepEqual(Array.from(pointTour.map(stage => stage.pointId)), Array.from(evaluate('pressurePoints.map(point => point.id)')));

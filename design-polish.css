@@ -445,3 +445,76 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
 @media (prefers-reduced-motion: reduce) {
   .visual-learning-image, .visual-learning-motion .motion-path { transition: none; }
 }
+
+/* Usability review: keep primary paths obvious and lessons focused. */
+.home-primary-actions { align-items: center; gap: 12px; }
+.home-follow-link, .home-explore-link a { color: #245b3c; font-weight: 750; text-decoration: underline; text-underline-offset: 3px; }
+.home-follow-link { padding: 9px 4px; }
+.home-explore-link { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin: 16px 0 0; }
+.home-explore-link span { color: #4c6053; font-size: 14px; }
+.footer-inner { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; }
+.footer-inner nav { display: flex; flex-wrap: wrap; gap: 16px; }
+.footer-inner nav a { min-height: 44px; display: inline-flex; align-items: center; color: #245b3c; font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+
+.explore-guide-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: stretch; }
+.explore-guide-grid .reference-hub-card { min-height: 0; gap: 11px; }
+.explore-guide-grid .reference-hub-card > .section-photo,
+.explore-guide-grid .reference-hub-card > .pp-photo-visual { display: block; flex: 0 0 auto; width: 100%; height: auto; max-height: none; aspect-ratio: 4 / 3; object-fit: cover; overflow: hidden; border-radius: 12px; }
+.explore-guide-grid .reference-hub-card > .pp-photo-visual { position: relative; background: #f1eee7; }
+.explore-guide-grid .pp-photo-visual > img { width: 100%; height: 100%; object-fit: cover; }
+.explore-guide-grid .reference-hub-card strong { color: #173d2b; font-size: 21px; }
+.explore-guide-grid .reference-hub-card p { color: #344b3d; font-size: 15px; line-height: 1.5; }
+.explore-library-links { display: flex; flex-wrap: wrap; gap: 10px 24px; padding: 18px 0; margin-top: 18px; border-top: 1px solid #d1ddd1; border-bottom: 1px solid #d1ddd1; }
+.explore-library-links a { min-height: 44px; display: inline-flex; align-items: center; gap: 8px; color: #245b3c; font-weight: 750; text-decoration: underline; }
+.pp-area-select-label { display: grid; gap: 6px; color: #173d2b; font-size: 15px; font-weight: 800; }
+.pp-area-select-label select { width: 100%; min-height: 50px; padding: 10px 13px; color: #203a2b; border: 2px solid #b8ccba; border-radius: 12px; font: inherit; font-size: 16px; }
+
+.sequence-picker-row { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px 20px; padding: 16px 18px; margin: 14px 0 18px; background: #f2f6ef; border: 1px solid #cbd9cb; border-radius: 14px; }
+.sequence-picker-row label { display: grid; flex: 1 1 280px; gap: 6px; color: #173d2b; font-size: 15px; font-weight: 750; }
+.sequence-picker-row select { width: 100%; max-width: 520px; padding: 8px 12px; color: #1f3528; font: inherit; }
+.sequence-picker-progress { margin: 0 0 8px; color: #315940; font-size: 15px; font-weight: 750; font-variant-numeric: tabular-nums; }
+.hand-technique-card[hidden], .scalp-technique-card[hidden], .scalp-technique-group[hidden] { display: none !important; }
+.scalp-module .scalp-technique-grid { grid-template-columns: minmax(0, 1fr); }
+.scalp-module .scalp-technique-card { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); align-items: start; }
+.scalp-module .scalp-card-heading { grid-column: 1 / -1; }
+.scalp-module .scalp-visual-enlarge { grid-column: 1; grid-row: 2 / span 2; align-self: start; }
+.scalp-module .scalp-card-body { grid-column: 2; grid-row: 2; }
+.scalp-module .hand-technique-nav, .scalp-module .sequence-key-hint { grid-column: 1 / -1; }
+
+.routine-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
+.page .routine-card-enhanced, .page .routine-card-enhanced:first-child, .page .routine-card-enhanced.is-recommended {
+  display: flex; grid-column: auto; flex-direction: column; align-items: stretch; gap: 12px;
+  padding: clamp(18px, 2vw, 24px); background: #fff; border: 1px solid #d0ddd0; border-radius: 19px;
+}
+.page .routine-card-enhanced.is-recommended { background: #f0f5eb; border-color: #93b49b; box-shadow: 0 5px 18px rgba(33, 79, 51, .08); }
+.routine-card-top { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
+.routine-card-top h2 { margin: 5px 0 0; font-size: clamp(20px, 2vw, 24px); }
+.routine-card-enhanced .routine-tag { display: inline-flex; padding: 5px 9px; border-radius: 999px; color: #31563e; background: #e6efe2; font-size: 12px; font-weight: 800; }
+.routine-card-enhanced .routine-description { margin: 0; color: #3e5145; font-size: 16px; line-height: 1.5; }
+.routine-preview { padding-top: 10px; border-top: 1px solid #d8e1d7; }
+.routine-preview summary { min-height: 44px; display: flex; align-items: center; color: #245b3c; font-size: 15px; font-weight: 750; cursor: pointer; }
+.routine-preview ol { display: grid; gap: 5px; padding-left: 22px; margin: 6px 0 2px; color: #384b3e; }
+.routine-preview li { padding: 2px 0; font-size: 14px; line-height: 1.45; }
+.routine-card-progress { margin: 0; color: #405f4d; font-size: 13px; }
+.routine-card-enhanced .follow-along-start { width: 100%; }
+.routine-card-enhanced .routine-safety { margin: 0; padding: 10px 12px; border-radius: 10px; color: #593b2a; background: #fbf3e9; font-size: 13px; line-height: 1.45; }
+
+@media (max-width: 900px) {
+  .routine-stack { grid-template-columns: minmax(0, 1fr); }
+  .explore-guide-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .explore-guide-grid .reference-hub-card:last-child { grid-column: 1 / -1; }
+}
+@media (max-width: 760px) {
+  .footer-inner { display: flex; align-items: start; flex-direction: column; }
+  .home-primary-actions { align-items: stretch; }
+  .home-primary-actions .button { flex: 1 1 190px; }
+  .home-follow-link { flex: 1 1 100%; text-align: center; }
+  .explore-guide-grid { grid-template-columns: minmax(0, 1fr); }
+  .explore-guide-grid .reference-hub-card:last-child { grid-column: auto; }
+  .sequence-picker-row { align-items: stretch; }
+  .sequence-picker-row label { flex-basis: 100%; }
+  .sequence-picker-progress { margin: 0; }
+  .scalp-module .scalp-technique-card { grid-template-columns: minmax(0, 1fr); }
+  .scalp-module .scalp-visual-enlarge, .scalp-module .scalp-card-body { grid-column: 1; grid-row: auto; }
+  .scalp-module .scalp-card-heading { grid-column: 1; }
+}
