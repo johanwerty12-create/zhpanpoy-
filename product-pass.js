@@ -360,20 +360,21 @@ function home() {
   return shell(markup, "home");
 }
 
-function lessonCardMarkup(lesson, forProgress) {
+function lessonCardMarkup(lesson, forProgress, sequenceCurrentId) {
   const lessonNumber = String(lesson.id).padStart(2, "0");
   const summary = forProgress && isComplete(lesson.id) ? "Completed and ready to revisit." : esc(lesson.short);
   const details = forProgress
     ? statusMarkup(lesson)
     : "<div class=\"lesson-meta\"><span>" + esc(lesson.level) + "</span><span>" + lesson.time + " min</span></div>";
   const status = forProgress ? "" : statusMarkup(lesson);
-  return "<article class=\"lesson-card " + (isComplete(lesson.id) ? "complete" : "") + "\"><div class=\"lesson-card-visual\">" + lessonImageMarkup(lesson.id, "lesson-card-image") + "<span aria-hidden=\"true\">" + lessonNumber + "</span></div><div><h3>" + esc(lesson.title) + "</h3><p>" + summary + "</p>" + details + "</div><div>" + status + lessonButton(lesson) + "</div></article>";
+  const sequenceAttributes = sequenceCurrentId ? ' data-sequence-item="lesson-' + lesson.id + '"' + (sequenceCurrentId === lesson.id ? ' aria-current="step"' : '') : "";
+  return "<article class=\"lesson-card " + (isComplete(lesson.id) ? "complete" : "") + "\"" + sequenceAttributes + "><div class=\"lesson-card-visual\">" + lessonImageMarkup(lesson.id, "lesson-card-image") + "<span aria-hidden=\"true\">" + lessonNumber + "</span></div><div><h3 tabindex=\"-1\">" + esc(lesson.title) + "</h3><p>" + summary + "</p>" + details + "</div><div>" + status + lessonButton(lesson) + "</div><p class=\"sequence-key-hint\" role=\"status\" aria-live=\"polite\">Lesson " + lesson.id + " of " + lessons.length + " · ← Previous <span aria-hidden=\"true\">·</span> Next →</p></article>";
 }
 
 function course() {
   const next = currentLesson();
   const nextText = isComplete(next.id) ? "You’ve reached the end of the path. Revisit any lesson or practice the complete routine." : "Your next recommended step is ready whenever you are.";
-  return shell("<div class=\"page\"><div class=\"course-top\"><div><p class=\"eyebrow\">The guided path</p><h1>Course map</h1><p class=\"lede\">Start at the top and build a small, safe toolkit. Every lesson ends with practice and a clear next step.</p></div><div class=\"course-stat\"><strong>" + progress.completed.length + " / " + lessons.length + "</strong><span>lessons completed</span>" + progressBar(true) + "</div></div><section class=\"course-next\"><div class=\"course-next-mark\">" + String(next.id).padStart(2, "0") + "</div><div><p class=\"eyebrow\">Next recommended</p><h2>" + esc(next.title) + "</h2><p>" + nextText + "</p></div><a class=\"button primary small\" href=\"#/lesson/" + next.id + "\">" + (isComplete(next.id) ? "Review lesson" : "Continue") + " →</a></section><div class=\"lesson-list\">" + lessons.map(function (lesson) { return lessonCardMarkup(lesson, false); }).join("") + "</div><div class=\"button-row\" style=\"margin-top:26px\"><a class=\"button subtle\" href=\"#/progress\">View your progress</a><a class=\"button\" href=\"#/safety\">Review safety</a></div></div>", "course");
+  return shell("<div class=\"page\"><div class=\"course-top\"><div><p class=\"eyebrow\">The guided path</p><h1>Course map</h1><p class=\"lede\">Start at the top and build a small, safe toolkit. Every lesson ends with practice and a clear next step.</p></div><div class=\"course-stat\"><strong>" + progress.completed.length + " / " + lessons.length + "</strong><span>lessons completed</span>" + progressBar(true) + "</div></div><section class=\"course-next\"><div class=\"course-next-mark\">" + String(next.id).padStart(2, "0") + "</div><div><p class=\"eyebrow\">Next recommended</p><h2>" + esc(next.title) + "</h2><p>" + nextText + "</p></div><a class=\"button primary small\" href=\"#/lesson/" + next.id + "\">" + (isComplete(next.id) ? "Review lesson" : "Continue") + " →</a></section><section class=\"course-lesson-sequence\" data-sequence=\"course-lessons\" aria-label=\"Course lessons\"><nav class=\"button-row practice-sequence-nav\" aria-label=\"Course lesson sequence\"><button class=\"button small\" type=\"button\" data-sequence-previous aria-label=\"Previous course lesson\">← Previous lesson</button><button class=\"button small\" type=\"button\" data-sequence-next aria-label=\"Next course lesson\">Next lesson →</button></nav><p class=\"sequence-key-hint\" data-sequence-status role=\"status\" aria-live=\"polite\">Lesson " + next.id + " of " + lessons.length + " · ← Previous lesson <span aria-hidden=\"true\">·</span> Next lesson →</p><div class=\"lesson-list\">" + lessons.map(function (lesson) { return lessonCardMarkup(lesson, false, next.id); }).join("") + "</div></section><div class=\"button-row\" style=\"margin-top:26px\"><a class=\"button subtle\" href=\"#/progress\">View your progress</a><a class=\"button\" href=\"#/safety\">Review safety</a></div></div>", "course");
 }
 
 const quickPracticeGuides = {
@@ -905,7 +906,7 @@ function fullLesson(lesson) {
   const steps = lesson.steps.map(function (step, index) {
     const previous = index > 0 ? '<button class="button small" type="button" data-sequence-previous aria-label="Previous lesson step: ' + esc(lesson.steps[index - 1][0]) + '">← Previous step</button>' : '<span></span>';
     const next = index < lesson.steps.length - 1 ? '<button class="button small" type="button" data-sequence-next aria-label="Next lesson step: ' + esc(lesson.steps[index + 1][0]) + '">Next step →</button>' : '<span></span>';
-    return '<div class="step" data-sequence-item="' + (index + 1) + '"><div><p class="eyebrow">Step ' + (index + 1) + ' of ' + lesson.steps.length + '</p><h3 tabindex="-1">' + esc(step[0]) + '</h3><p>' + esc(step[1]) + '</p><nav class="hand-technique-nav" aria-label="Lesson step sequence">' + previous + next + '</nav></div></div>';
+    return '<div class="step" data-sequence-item="' + (index + 1) + '"' + (index === 0 ? ' aria-current="step"' : '') + '><div><p class="eyebrow">Step ' + (index + 1) + ' of ' + lesson.steps.length + '</p><h3 tabindex="-1">' + esc(step[0]) + '</h3><p>' + esc(step[1]) + '</p><nav class="hand-technique-nav" aria-label="Lesson step sequence">' + previous + next + '</nav></div></div>';
   }).join("");
   return "<details class=\"full-lesson\" id=\"full-lesson\"><summary><span><b>Full lesson</b><small>Setup, technique, pressure, and safety details</small></span><strong>Show details</strong></summary><div class=\"full-lesson-body\"><section class=\"lesson-section\"><h2>What you will learn</h2><p class=\"section-intro\">" + esc(lesson.learn) + "</p><div class=\"two-column\"><div class=\"info-card\"><h3>Before you start</h3><ul>" + lesson.before.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("") + "</ul></div><div class=\"info-card\"><h3>Make it comfortable</h3><p>Keep checking the person’s breathing, body language, and words. A pause is always useful—not a failure.</p></div></div></section><section class=\"lesson-section\"><h2>Position</h2><div class=\"position-grid\"><div class=\"position-list\">" + positions + "</div><div class=\"info-card\"><h3>Find your neutral</h3><p>Can you breathe freely, keep your shoulders down, and move without reaching? If not, adjust the setup before your hands begin.</p></div></div></section><section class=\"lesson-section\"><h2>How to do it</h2><div class=\"step-list\" data-sequence=\"lesson-steps\">" + steps + "</div><p class=\"sequence-key-hint\" role=\"status\" aria-live=\"polite\">Step 1 of " + lesson.steps.length + " · ← Previous step · Next step →</p></section><section class=\"lesson-section\"><h2>Pressure guide</h2><div class=\"pressure-grid\"><div class=\"pressure gentle\"><h3>Start light</h3><p>" + esc(lesson.pressure[0]) + "</p></div><div class=\"pressure moderate\"><h3>Check before adjusting</h3><p>" + esc(lesson.pressure[1]) + "</p></div><div class=\"pressure stop\"><h3>Stop or pause</h3><p>" + esc(lesson.pressure[2]) + "</p></div></div></section><section class=\"lesson-section\"><h2>Notice the difference</h2><div class=\"feel-grid\"><div class=\"feel-card good\"><h3>What it should feel like</h3><p>" + esc(lesson.feel) + "</p></div><div class=\"feel-card mistake\"><h3>Common beginner mistakes</h3><ul class=\"mistake-list\">" + lesson.mistakes.map(function (item) { return "<li>" + esc(item) + "</li>"; }).join("") + "</ul></div></div></section><section class=\"lesson-section\"><div class=\"safety-callout\"><div class=\"callout-icon\">!</div><div><h3>Safety for this lesson</h3><p>" + esc(lesson.safety) + "</p></div></div></section></div></details>";
 }
@@ -922,14 +923,14 @@ function lessonPage(id) {
 }
 
 function techniques() {
-  const cards = libraryItems.map(function (item) {
+  const cards = libraryItems.map(function (item, index) {
     const image = item[7]
       ? '<img class="section-photo" src="/assets/lessons/' + item[7] + '" alt="' + esc(item[8]) + '" width="1448" height="1086" loading="lazy" decoding="async" />'
       : lessonImageMarkup(item[3], "section-photo");
     const destination = item[4] === "hand-massage" ? "/hand-massage#hand-technique-" + item[9] : "#/lesson/" + item[3];
-    return '<article class="reference-card enhanced-reference-card" data-category="' + item[4] + '" data-search="' + esc((item[0] + " " + item[1] + " " + item[5]).toLowerCase()) + '"><div class="reference-photo">' + image + '</div><div class="reference-card-meta"><span>' + item[6] + '</span><span>' + item[5] + '</span></div><h3>' + esc(item[0]) + '</h3><p>' + esc(item[1]) + '</p><a class="ref-link" href="' + destination + '">' + (item[4] === "hand-massage" ? "Open hand technique →" : "Open lesson →") + '</a></article>';
+    return '<article class="reference-card enhanced-reference-card" data-sequence-item="technique-' + (index + 1) + '"' + (index === 0 ? ' aria-current="step"' : '') + ' data-category="' + item[4] + '" data-search="' + esc((item[0] + " " + item[1] + " " + item[5]).toLowerCase()) + '"><div class="reference-photo">' + image + '</div><div class="reference-card-meta"><span>' + item[6] + '</span><span>' + item[5] + '</span></div><h3 tabindex="-1">' + esc(item[0]) + '</h3><p>' + esc(item[1]) + '</p><a class="ref-link" href="' + destination + '">' + (item[4] === "hand-massage" ? "Open hand technique →" : "Open lesson →") + '</a><p class="sequence-key-hint" role="status" aria-live="polite">Technique ' + (index + 1) + ' · ← Previous <span aria-hidden="true">·</span> Next →</p></article>';
   }).join("");
-  return shell('<div class="page"><div class="reference-hero"><div><p class="eyebrow">Fast reference</p><h1>Techniques</h1><p class="lede">Find one movement quickly, then open its lesson for setup, boundaries, and practice.</p></div><div class="library-toolbar"><label class="search-box"><span class="sr-only">Search techniques</span><input id="technique-search" type="search" placeholder="Search movements or areas" /></label><label class="filter-label"><span>Show</span><select id="technique-filter"><option value="all">All techniques</option><option value="movement">Core movements</option><option value="hand-massage">Hand massage</option></select></label></div></div><div class="reference-grid" id="reference-grid">' + cards + '</div></div>', "techniques");
+  return shell('<div class="page"><div class="reference-hero"><div><p class="eyebrow">Fast reference</p><h1>Techniques</h1><p class="lede">Find one movement quickly, then open its lesson for setup, boundaries, and practice. Use ←/→ to browse the matching cards; Tab or Enter opens a lesson.</p></div><div class="library-toolbar"><label class="search-box"><span class="sr-only">Search techniques</span><input id="technique-search" type="search" placeholder="Search movements or areas" /></label><label class="filter-label"><span>Show</span><select id="technique-filter"><option value="all">All techniques</option><option value="movement">Core movements</option><option value="hand-massage">Hand massage</option></select></label></div></div><section class="technique-sequence" data-sequence="technique-library" aria-label="Technique results"><nav class="button-row practice-sequence-nav" aria-label="Technique card sequence"><button class="button small" type="button" data-sequence-previous aria-label="Previous technique card">← Previous technique</button><button class="button small" type="button" data-sequence-next aria-label="Next technique card">Next technique →</button></nav><p class="sequence-key-hint" data-sequence-status role="status" aria-live="polite">Technique 1 of ' + libraryItems.length + ' · ← Previous technique <span aria-hidden="true">·</span> Next technique →</p><div class="reference-grid" id="reference-grid">' + cards + '</div></section></div>', "techniques");
 }
 
 function areas() {
@@ -978,29 +979,79 @@ function notFound() {
   return shell("<div class=\"page not-found\"><p class=\"eyebrow\">A quiet detour</p><h1>That page wandered off.</h1><p class=\"lede\" style=\"margin:0 auto 25px\">Let’s take you back to the learning path.</p><a class=\"button primary\" href=\"#/home\">Return home →</a></div>", "");
 }
 
+function learningSequenceItems(sequence) {
+  if (!sequence) return [];
+  return Array.from(sequence.querySelectorAll("[data-sequence-item]")).filter(function (item) {
+    return item.closest("[data-sequence]") === sequence && !item.closest("[hidden]") && item.getClientRects().length > 0;
+  });
+}
+
 function stepThroughLearningSequence(sequence, current, direction) {
   if (!sequence) return false;
-  const items = Array.from(sequence.querySelectorAll("[data-sequence-item]")).filter(function (item) {
-    return !item.closest("[hidden]");
-  });
+  const items = learningSequenceItems(sequence);
   if (!items.length) return false;
-  let index = current ? items.indexOf(current) : -1;
-  let nextIndex = index < 0 ? (direction > 0 ? 0 : items.length - 1) : index + direction;
-  if (nextIndex < 0 || nextIndex >= items.length) return false;
+  let index = current && items.includes(current) ? items.indexOf(current) : items.findIndex(function (item) { return item.getAttribute("aria-current") === "step"; });
+  if (index < 0) index = direction > 0 ? -1 : items.length;
+  const nextIndex = index + direction;
+  if (nextIndex < 0 || nextIndex >= items.length) {
+    const label = sequence.dataset.sequence === "pressure-points" ? "point" : sequence.dataset.sequence === "lesson-steps" ? "step" : sequence.dataset.sequence === "course-lessons" ? "lesson" : "technique";
+    const boundary = direction < 0 ? "First " + label + " · no previous item" : "Final " + label + " · no next item";
+    const status = sequence.querySelector("[data-sequence-status]");
+    if (status) status.textContent = boundary;
+    const active = items[index];
+    const hint = active && active.querySelector(".sequence-key-hint");
+    if (hint) hint.textContent = boundary;
+    return false;
+  }
   const item = items[nextIndex];
   items.forEach(function (entry) {
     if (entry === item) entry.setAttribute("aria-current", "step");
     else entry.removeAttribute("aria-current");
   });
   const hint = item.querySelector(".sequence-key-hint");
+  const label = sequence.dataset.sequence === "pressure-points" ? "Point" : sequence.dataset.sequence === "lesson-steps" ? "Step" : sequence.dataset.sequence === "course-lessons" ? "Lesson" : "Technique";
+  const announcement = label + " " + (nextIndex + 1) + " of " + items.length + " · ← Previous · Next →";
   if (hint) {
-    const label = sequence.dataset.sequence === "pressure-points" ? "Point" : sequence.dataset.sequence === "lesson-steps" ? "Step" : "Technique";
-    hint.textContent = label + " " + (nextIndex + 1) + " of " + items.length + " · ← Previous · Next →";
+    hint.textContent = announcement;
   }
+  const status = sequence.querySelector("[data-sequence-status]");
+  if (status) status.textContent = announcement;
   if (typeof item.scrollIntoView === "function") item.scrollIntoView({ behavior: window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
   const heading = item.querySelector("h3, h4");
   if (heading && typeof heading.focus === "function") heading.focus({ preventScroll: true });
   return true;
+}
+
+function nearestLearningSequence() {
+  const centerY = window.innerHeight / 2;
+  const candidates = Array.from(document.querySelectorAll("#app [data-sequence]")).map(function (sequence) {
+    const items = learningSequenceItems(sequence);
+    if (!items.length) return null;
+    const visibleItems = items.map(function (item) {
+      const rect = item.getBoundingClientRect();
+      const distance = rect.bottom < 0 ? -rect.bottom : rect.top > window.innerHeight ? rect.top - window.innerHeight : Math.abs((rect.top + rect.bottom) / 2 - centerY);
+      return { item, distance };
+    });
+    visibleItems.sort(function (a, b) { return a.distance - b.distance; });
+    return { sequence, item: visibleItems[0].item, distance: visibleItems[0].distance };
+  }).filter(Boolean);
+  candidates.sort(function (a, b) {
+    if (a.distance !== b.distance) return a.distance - b.distance;
+    return b.sequence.querySelectorAll("[data-sequence]").length - a.sequence.querySelectorAll("[data-sequence]").length;
+  });
+  return candidates[0] || null;
+}
+
+function navigateLearningSequence(sequence, current, direction) {
+  if (!sequence) return false;
+  const items = learningSequenceItems(sequence);
+  const active = current && items.includes(current) ? current : (items.find(function (item) { return item.getAttribute("aria-current") === "step"; }) || null);
+  const control = active && active.querySelector(direction > 0 ? "[data-sequence-next]" : "[data-sequence-previous]");
+  if (control && !control.disabled) {
+    control.click();
+    return true;
+  }
+  return stepThroughLearningSequence(sequence, active, direction);
 }
 
 function bindLearningArrowKeys() {
@@ -1009,26 +1060,26 @@ function bindLearningArrowKeys() {
   document.addEventListener("keydown", function (event) {
     if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.isComposing) return;
     const target = event.target;
-    const arrowBlocked = target && typeof target.closest === "function" && target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"], [role="listbox"], [role="option"], [role="tablist"], [role="tab"], [role="grid"], [role="tree"], [role="menu"], [role="spinbutton"], [role="application"]');
-    if (arrowBlocked) return;
     const direction = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+    const arrowBlocked = target && typeof target.closest === "function" && target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"], [role="listbox"], [role="option"], [role="tablist"], [role="tab"], [role="grid"], [role="tree"], [role="menu"], [role="spinbutton"], [role="application"]');
+    if (direction && arrowBlocked) return;
     const dialog = document.querySelector(".follow-along-dialog");
     const visualDialog = document.querySelector(".visual-learning-dialog");
     function consume() { event.preventDefault(); event.stopPropagation(); }
-    if (direction && visualDialog && visualDialog.open && window.CraftVisualLearning && window.CraftVisualLearning.handleKeyboard(event)) {
+    if (direction && visualDialog && visualDialog.open && window.CraftVisualLearning && window.CraftVisualLearning.navigate(direction)) {
       consume();
       return;
     }
-    if (direction && dialog && dialog.open && target && dialog.contains(target)) {
+    if (direction && dialog && dialog.open) {
       const control = dialog.querySelector(direction > 0 ? ".follow-next" : ".follow-previous");
       consume();
-      if (control && !control.disabled) {
+      if (control && !control.disabled && !control.hidden) {
         control.click();
         const heading = dialog.querySelector(".follow-technique");
         if (heading && typeof heading.focus === "function") heading.focus({ preventScroll: true });
       } else {
         const status = dialog.querySelector(".follow-status");
-        if (status) status.textContent = direction < 0 ? "You are at the first routine step." : "The routine is at its final step.";
+        if (status) status.textContent = control && control.hidden ? "The routine is complete. Repeat it or exit when you are ready." : direction < 0 ? "You are at the first routine step." : "The routine is at its final step.";
       }
       return;
     }
@@ -1036,7 +1087,7 @@ function bindLearningArrowKeys() {
       const spaceBlocked = target && typeof target.closest === "function" && target.closest('button, a, input, textarea, select, summary, [contenteditable="true"], [role="button"], [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"], [role="listbox"], [role="option"], [role="tab"], [role="menuitem"]');
       if (spaceBlocked) return;
       let toggle = null;
-      if (dialog && dialog.open && target && dialog.contains(target)) toggle = dialog.querySelector(".follow-toggle");
+      if (dialog && dialog.open) toggle = dialog.querySelector(".follow-toggle");
       else {
         const practice = target && typeof target.closest === "function" ? target.closest(".coached-practice") : null;
         toggle = practice && practice.querySelector(".coach-toggle");
@@ -1049,7 +1100,9 @@ function bindLearningArrowKeys() {
     }
     if (!direction) return;
 
-    const practice = target && typeof target.closest === "function" ? target.closest(".coached-practice") : null;
+    const focusedPractice = target && typeof target.closest === "function" ? target.closest(".coached-practice") : null;
+    const activeSession = activeCoachedSessionKey && coachedSessions.get(activeCoachedSessionKey);
+    const practice = focusedPractice || (activeSession && activeSession.root && activeSession.root.isConnected ? activeSession.root : null);
     if (practice) {
       const session = coachedSessions.get(practice.dataset.coachSession);
       consume();
@@ -1063,10 +1116,23 @@ function bindLearningArrowKeys() {
 
     if (target && typeof target.closest === "function" && target.closest("dialog")) return;
 
-    const sequence = target && typeof target.closest === "function" ? target.closest("[data-sequence]") : null;
+    let sequence = target && typeof target.closest === "function" ? target.closest("[data-sequence]") : null;
+    let currentItem = target && typeof target.closest === "function" ? target.closest("[data-sequence-item]") : null;
+    const quickPracticePage = document.querySelector(".quick-practice-page");
+    if (!sequence || (sequence.dataset.sequence !== "quick-practice" && !learningSequenceItems(sequence).length)) {
+      if (quickPracticePage && (!sequence || sequence.dataset.sequence === "quick-practice")) sequence = quickPracticePage;
+      else {
+        const nearest = nearestLearningSequence();
+        if (nearest) {
+          sequence = nearest.sequence;
+          const items = learningSequenceItems(sequence);
+          currentItem = items.find(function (item) { return item.getAttribute("aria-current") === "step"; }) || nearest.item;
+        }
+        else if (!sequence || sequence.dataset.sequence !== "quick-practice") sequence = null;
+      }
+    }
     if (!sequence) return;
     if (sequence && sequence.dataset.sequence === "quick-practice") {
-      if (!target.closest(".quick-version, .practice-sequence-nav")) return;
       const link = sequence.querySelector(direction > 0 ? ".practice-sequence-nav [data-sequence-next]" : ".practice-sequence-nav [data-sequence-previous]");
       consume();
       if (link) link.click();
@@ -1076,22 +1142,14 @@ function bindLearningArrowKeys() {
       }
       return;
     }
-    if (sequence && sequence.dataset.sequence === "lesson-page") {
-      const lessonFooter = sequence.querySelector(".lesson-footer");
-      const link = lessonFooter && lessonFooter.querySelector(direction > 0 ? "a.next" : "a:not(.next)");
-      consume();
-      if (link) link.click();
-      else {
-        const hint = sequence.querySelector(".sequence-key-hint");
-        if (hint) hint.textContent = direction < 0 ? "You are at the first lesson." : "You are at the final lesson.";
-      }
-      return;
-    }
     if (sequence) {
-      const item = target && typeof target.closest === "function" ? target.closest("[data-sequence-item]") : null;
-      if (item || sequence.querySelector("[data-sequence-item]")) {
+      const items = learningSequenceItems(sequence);
+      const item = currentItem && currentItem.closest("[data-sequence]") === sequence
+        ? currentItem
+        : (items.find(function (entry) { return entry.getAttribute("aria-current") === "step"; }) || null);
+      if (item || items.length) {
         consume();
-        const moved = stepThroughLearningSequence(sequence, item, direction);
+        const moved = navigateLearningSequence(sequence, item, direction);
         if (!moved && item) {
           if (sequence.dataset.sequence === "lesson-steps") {
             const lessonPage = sequence.closest(".lesson-page");
@@ -1111,7 +1169,7 @@ function bindLearningArrowKeys() {
         }
       }
     }
-  });
+  }, true);
 }
 
 function render() {
@@ -1155,14 +1213,14 @@ function render() {
 }
 
 window.addEventListener("hashchange", render);
+bindLearningArrowKeys();
 window.addEventListener("DOMContentLoaded", render);
 function bindEvents() {
-  bindLearningArrowKeys();
   document.querySelectorAll("[data-sequence] [data-sequence-previous], [data-sequence] [data-sequence-next]").forEach(function (button) {
     if (button.tagName === "A") return;
     button.addEventListener("click", function () {
       const sequence = button.closest("[data-sequence]");
-      const current = button.closest("[data-sequence-item]");
+      const current = button.closest("[data-sequence-item]") || (sequence && sequence.querySelector('[data-sequence-item][aria-current="step"]'));
       stepThroughLearningSequence(sequence, current, button.hasAttribute("data-sequence-next") ? 1 : -1);
     });
   });

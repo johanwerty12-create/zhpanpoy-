@@ -15,14 +15,20 @@ let savedProgress = null;
 let keyboardSequences = [];
 const routineStatusNodes = Array.from({ length: 9 }, () => ({ textContent: '' }));
 const documentHandlers = {};
+const documentHandlerOptions = {};
+const documentHandlerCounts = {};
 const document = {
   hidden: false,
-  addEventListener(name, callback) { documentHandlers[name] = callback; },
+  addEventListener(name, callback, options) {
+    documentHandlers[name] = callback;
+    documentHandlerOptions[name] = options;
+    documentHandlerCounts[name] = (documentHandlerCounts[name] || 0) + 1;
+  },
   getElementById(id) { return id === 'app' ? visualRoot : null; },
   querySelectorAll(selector) {
     if (selector === '[data-coach-session]') return roots;
     if (selector === '.follow-along-start') return followStarts;
-    if (selector === '[data-sequence]') return keyboardSequences;
+    if (selector === '[data-sequence]' || selector === '#app [data-sequence]') return keyboardSequences;
     return [];
   },
   querySelector(selector) {
@@ -35,7 +41,7 @@ const document = {
 const context = vm.createContext({
   console, Date: ClockDate, URLSearchParams, document,
   localStorage: { getItem() { return savedProgress; }, setItem(key, value) { savedProgress = value; } },
-  window: { location: { pathname: '/', hash: '', search: '' }, addEventListener() {},
+  window: { location: { pathname: '/', hash: '', search: '' }, innerHeight: 900, addEventListener() {},
     setInterval(callback) { const id = ++clock.next; clock.intervals.set(id, callback); return id; },
     clearInterval(id) { clock.intervals.delete(id); }
   }
@@ -77,10 +83,19 @@ for (let id = 1; id <= lessonCount; id++) {
   const detailedLesson = evaluate(`fullLesson(lessons[${id - 1}])`);
   assert.match(detailedLesson, /data-sequence="lesson-steps"/);
   assert.equal((detailedLesson.match(/data-sequence-item=/g) || []).length, evaluate(`lessons[${id - 1}].steps.length`));
+  assert.match(detailedLesson, /data-sequence-item="1" aria-current="step"/, 'Detailed lessons begin with their first keyboard step selected');
   assert.equal(evaluate(`lessons[${id - 1}].quiz.length`), 2);
 }
 const pages = ['home()', 'course()', 'techniques()', 'areas()', 'routines()', 'safety()', 'progressPage()', 'reference()', 'pressurePointsPage()', 'handMassagePage()', 'quickPracticePage()', 'notFound()'];
 pages.forEach(page => { const html = evaluate(page); assert.ok(html.includes('<main'), page); checkAssets(html); });
+const courseMarkup = evaluate('course()');
+assert.match(courseMarkup, /data-sequence="course-lessons"/);
+assert.equal((courseMarkup.match(/data-sequence-item="lesson-/g) || []).length, 13, 'The course map exposes all 13 lessons as an ordered keyboard sequence');
+assert.equal((courseMarkup.match(/data-sequence-next aria-label="Next course lesson"/g) || []).length, 1, 'Course navigation has one shared Next control');
+const techniquesMarkup = evaluate('techniques()');
+assert.match(techniquesMarkup, /data-sequence="technique-library"/);
+assert.equal((techniquesMarkup.match(/data-sequence-item="technique-/g) || []).length, evaluate('libraryItems.length'), 'Technique search results are navigable in their filtered order');
+assert.ok(!evaluate('areas()').includes('data-sequence='), 'Body Areas remains a normal accessible grid, not an imposed arrow sequence');
 assert.equal(evaluate('routineData.length'), 9);
 for (let i = 0; i < 9; i++) {
   const stages = evaluate(`routineCoachedStages(routineData[${i}])`);
@@ -178,8 +193,9 @@ assert.ok(evaluate('window.__timerState.remaining') <= 9 && evaluate('window.__t
 visualTimer.start(); advance(20);
 assert.equal(evaluate('window.__timerState.remaining'), 0, 'The visual-step timer should stop at zero');
 visualTimer.dispose();
-assert.ok(evaluate('window.CraftVisualLearning.canHandleArrow({key: "ArrowRight", target: {closest() { return null; }}})'));
-assert.ok(!evaluate('window.CraftVisualLearning.canHandleArrow({key: "ArrowRight", target: {closest() { return {}; }}})'), 'Arrow navigation must not steal input controls');
+assert.equal(typeof evaluate('window.CraftVisualLearning.navigate'), 'function', 'The visual guide exposes its shared navigation action');
+assert.equal(documentHandlerCounts.keydown, 1, 'The app installs exactly one global keydown handler before rendering');
+assert.equal(documentHandlerOptions.keydown, true, 'The app-level handler captures keys before overlays can intercept them');
 const visualProgress = fs.readFileSync(path.join(project, 'app.js'), 'utf8');
 assert.match(visualProgress, /visualSequencesCompleted/);
 assert.ok(fs.readFileSync(path.join(project, 'index.html'), 'utf8').includes('/visual-learning.js'));
@@ -190,7 +206,7 @@ function element() {
 }
 function makeRoot(key, withImage = false) {
   const elements = new Map();
-  return { dataset: { coachSession: key }, classList: { add() {}, remove() {} },
+  return { dataset: { coachSession: key }, isConnected: true, classList: { add() {}, remove() {} },
     closest(selector) { return selector === '.coached-practice' ? this : null; },
     querySelector(selector) {
       if (!withImage && (selector === '.coach-stage-visual img' || selector === '.coach-lesson-link')) return null;
@@ -418,22 +434,39 @@ assert.deepEqual(Array.from(upgradedProgress.visualSequencesCompleted), ['hand:p
 // Arrow keys navigate sequences but never consume arrows while typing/searching.
 evaluate('bindLearningArrowKeys()');
 let focusedSequenceItem = null;
-function makeSequenceItem(id) {
+function makeSequenceItem(id, index) {
   const attributes = {};
+  const hint = element();
   return {
     id,
-    closest(selector) { return selector === '[hidden]' ? null : null; },
+    closest(selector) { return selector === '[data-sequence]' ? handSequence : null; },
+    getClientRects() { return [1]; },
+    getBoundingClientRect() { return { top: 350 + index * 120, bottom: 450 + index * 120 }; },
     scrollIntoView() {},
     setAttribute(name, value) { attributes[name] = value; },
     removeAttribute(name) { delete attributes[name]; },
     getAttribute(name) { return attributes[name] || null; },
-    querySelector() { return { focus() { focusedSequenceItem = id; } }; }
+    querySelector(selector) {
+      if (selector === '.sequence-key-hint') return hint;
+      if (selector === '[data-sequence-next]') return index < 1 ? { disabled: false, click() { moveMockSequence(index, 1); } } : null;
+      if (selector === '[data-sequence-previous]') return index > 0 ? { disabled: false, click() { moveMockSequence(index, -1); } } : null;
+      return { focus() { focusedSequenceItem = id; } };
+    }
   };
 }
-const sequenceItems = [makeSequenceItem('hand-1'), makeSequenceItem('hand-2')];
+const sequenceItems = [makeSequenceItem('hand-1', 0), makeSequenceItem('hand-2', 1)];
+function moveMockSequence(index, direction) {
+  const next = sequenceItems[index + direction];
+  if (!next) return false;
+  sequenceItems.forEach(item => item.removeAttribute('aria-current'));
+  next.setAttribute('aria-current', 'step');
+  focusedSequenceItem = next.id;
+  return true;
+}
 const handSequence = {
   dataset: { sequence: 'hand-techniques' },
-  querySelectorAll() { return sequenceItems; }
+  querySelectorAll() { return sequenceItems; },
+  querySelector() { return null; }
 };
 keyboardSequences = [handSequence];
 function makeSequenceTarget(item) {
@@ -463,9 +496,16 @@ assert.equal(sendArrow('ArrowRight', searchTarget), false, 'Search inputs retain
 const nativeControlTarget = { closest(selector) { return selector.includes('[role="radio"]') ? this : null; } };
 assert.equal(sendArrow('ArrowRight', nativeControlTarget), false, 'Arrow keys remain available to other keyboard-controlled widgets');
 assert.equal(sendArrow('ArrowRight', makeSequenceTarget(sequenceItems[0]), { shiftKey: true }), false, 'Modified arrow shortcuts are ignored');
-assert.equal(sendArrow('ArrowRight', { closest() { return null; } }), false, 'Arrow keys outside a learning sequence do not jump to unrelated content');
+assert.equal(sendArrow('ArrowRight', { closest() { return null; } }), true, 'Arrow keys work when an active learning sequence has no focused control');
+assert.equal(focusedSequenceItem, 'hand-2', 'No-focus navigation advances the sequence item nearest the viewport');
+sequenceItems.forEach(item => item.removeAttribute('aria-current'));
+assert.equal(sendArrow('ArrowRight', makeSequenceTarget(null)), true, 'An unselected sequence starts at its first item when moving forward');
+assert.equal(focusedSequenceItem, 'hand-1');
+sequenceItems.forEach(item => item.removeAttribute('aria-current'));
+assert.equal(sendArrow('ArrowLeft', makeSequenceTarget(null)), true, 'An unselected sequence starts at its last item when moving backward');
+assert.equal(focusedSequenceItem, 'hand-2');
 
-// Quick Practice and lesson navigation use only their own controls and announce boundaries.
+// Quick Practice uses its own controls; lessons do not skip ahead before a step sequence is finished.
 let quickClicks = 0;
 const quickHint = element();
 const quickLink = { click() { quickClicks += 1; } };
@@ -488,20 +528,24 @@ assert.equal(quickClicks, 1);
 let lessonNextClicks = 0;
 const lessonHint = element();
 const lessonFooter = { querySelector() { return { click() { lessonNextClicks += 1; } }; } };
-const lessonSequence = { dataset: { sequence: 'lesson-page' }, querySelector(selector) { return selector === '.lesson-footer' ? lessonFooter : selector === '.sequence-key-hint' ? lessonHint : null; } };
+const lessonSequence = { dataset: { sequence: 'lesson-page' }, querySelectorAll() { return []; }, querySelector(selector) { return selector === '.lesson-footer' ? lessonFooter : selector === '.sequence-key-hint' ? lessonHint : null; } };
 const lessonTarget = { closest(selector) { return selector === '[data-sequence]' ? lessonSequence : null; } };
-assert.equal(sendArrow('ArrowRight', lessonTarget), true);
-assert.equal(lessonNextClicks, 1, 'Right arrow follows the next lesson');
+keyboardSequences = [];
+assert.equal(sendArrow('ArrowRight', lessonTarget), false, 'A lesson page without an active step sequence does not jump ahead');
+assert.equal(lessonNextClicks, 0, 'Lesson navigation waits until the current step sequence is complete');
 
 let lessonBoundaryPrevious = 0;
 let lessonBoundaryNext = 0;
 let focusedLessonStep = null;
 const lessonStepHints = [element(), element()];
 const lessonStepItems = [0, 1].map(index => ({
-  closest(selector) { return selector === '[hidden]' ? null : null; },
+  closest(selector) { return selector === '[data-sequence]' ? lessonSteps : null; },
+  getClientRects() { return [1]; },
   scrollIntoView() {}, setAttribute() {}, removeAttribute() {},
   querySelector(selector) {
     if (selector === '.sequence-key-hint') return lessonStepHints[index];
+    if (selector === '[data-sequence-next]') return index === 0 ? { disabled: false, click() { moveMockLessonStep(index, 1); } } : null;
+    if (selector === '[data-sequence-previous]') return index === 1 ? { disabled: false, click() { moveMockLessonStep(index, -1); } } : null;
     return { focus() { focusedLessonStep = index; } };
   }
 }));
@@ -513,6 +557,15 @@ const lessonSteps = {
   querySelectorAll() { return lessonStepItems; },
   querySelector(selector) { return selector === '[data-sequence-item]' ? lessonStepItems[0] : null; }
 };
+function moveMockLessonStep(index, direction) {
+  const next = lessonStepItems[index + direction];
+  if (!next) return false;
+  lessonStepItems.forEach(item => item.removeAttribute('aria-current'));
+  next.setAttribute('aria-current', 'step');
+  focusedLessonStep = index + direction;
+  lessonStepHints[index + direction].textContent = 'Step ' + (index + direction + 1) + ' of ' + lessonStepItems.length;
+  return true;
+}
 const lessonStepTarget = index => ({ closest(selector) {
   if (selector === '[data-sequence]') return lessonSteps;
   if (selector === '[data-sequence-item]') return lessonStepItems[index];
@@ -531,7 +584,7 @@ const guided = makeRoot('lesson-3');
 roots = [guided]; evaluate('bindGuidedPractices()');
 const guidedTarget = { closest(selector) { return selector === '.coached-practice' ? guided : null; } };
 click(guided, '.coach-toggle');
-assert.equal(sendArrow('ArrowRight', guidedTarget), true);
+assert.equal(sendArrow('ArrowRight', { closest() { return null; } }), true, 'The active guided session works without sequence focus');
 assert.equal(guided.querySelector('.coach-stage-count').textContent, 'Stage 2 of 3', 'Arrow navigation advances guided practice stages');
 assert.equal(clock.intervals.size, 0, 'Changing stages clears the old countdown');
 click(guided, '.coach-toggle');
@@ -545,9 +598,9 @@ documentHandlers.keydown({ key: ' ', code: 'Space', target: guidedTarget, defaul
 assert.equal(guided.querySelector('.coach-toggle').textContent, 'Pause', 'Space resumes paused guided practice');
 evaluate('stopAllCoachedSessions()');
 
-// Full-screen Follow Along receives arrows only while focus is inside its dialog.
+// Full-screen Follow Along uses its visible controls even if focus is outside its dialog.
 followStarts[0].click();
-const followTarget = { inFollowDialog: true, closest() { return null; } };
+const followTarget = { inFollowDialog: false, closest() { return null; } };
 assert.equal(sendArrow('ArrowRight', followTarget), true);
 assert.match(followDialog.querySelector('.follow-step-count').textContent, /Step 2 of 3 · get ready/);
 assert.match(followDialog.querySelector('.follow-transition').textContent, /reposition your hands/);
@@ -582,10 +635,18 @@ const visualTrigger = Object.assign(element(), { isConnected: true, focus() { th
 visualTrigger.dataset.visualLearning = 'hand:' + evaluate('handMassageTechniques[0].id');
 visualTrigger.closest = selector => selector === '[data-visual-learning]' ? visualTrigger : null;
 documentHandlers.click({ target: visualTrigger });
-const visualTarget = { inVisualDialog: true, closest() { return null; } };
+const visualTarget = { inVisualDialog: false, closest() { return null; } };
 assert.equal(sendArrow('ArrowRight', visualTarget), true);
 assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /TECHNIQUE 1 OF 15 · STEP 2 OF 10/);
 assert.match(visualDialog.querySelector('.visual-learning-art').innerHTML, /data-visual-step="2"/);
+visualDialog.querySelector('.visual-learning-next').click();
+assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /STEP 3 OF 10/, 'The visible Next button uses the same visual-step action');
+assert.equal(sendArrow('ArrowLeft', visualTarget), true);
+assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /STEP 2 OF 10/, 'ArrowLeft reverses the visible Next action');
+visualDialog.querySelector('.visual-learning-previous').click();
+assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /STEP 1 OF 10/, 'The visible Previous button uses the same visual-step action');
+assert.equal(sendArrow('ArrowRight', visualTarget), true);
+assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /STEP 2 OF 10/);
 for (let step = 2; step < 10; step++) assert.equal(sendArrow('ArrowRight', visualTarget), true);
 assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /STEP 10 OF 10/);
 assert.equal(visualDialog.querySelector('.visual-learning-next').textContent, 'Next technique →');

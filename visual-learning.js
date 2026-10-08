@@ -420,13 +420,6 @@
     return { state, setDuration, start, pause, reset, dispose };
   }
 
-  function canHandleArrow(event) {
-    if (event.defaultPrevented || event.repeat || event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.isComposing) return false;
-    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return false;
-    const target = event.target;
-    return !(target && typeof target.closest === 'function' && target.closest('input, textarea, select, [contenteditable="true"], [role="textbox"], [role="searchbox"], [role="combobox"], [role="radio"], [role="slider"], [role="listbox"], [role="option"], [role="tablist"], [role="tab"], [role="grid"], [role="tree"], [role="menu"], [role="spinbutton"], [role="application"]'));
-  }
-
   function bind() {
     const root = document.getElementById('app');
     if (!root) return;
@@ -557,9 +550,8 @@
       ui.title.focus({ preventScroll: true });
     }
 
-    function handleKeyboard(event) {
-      if (!dialog.open || !dialog.contains(event.target) || !canHandleArrow(event)) return false;
-      const direction = event.key === 'ArrowRight' ? 1 : -1;
+    function navigate(direction) {
+      if (!dialog.open || !current || (direction !== -1 && direction !== 1)) return false;
       if (direction > 0 && current && index === current.steps.length - 1) {
         if (!switchSequence(1)) finish();
       } else if (direction < 0 && index === 0) {
@@ -576,7 +568,7 @@
       if (dialog.open) dialog.close();
     }
 
-    activeController = { open, move, handleKeyboard, close: closeGuide, dialog };
+    activeController = { open, move, navigate, close: closeGuide, dialog };
     if (!window.__craftVisualLearningBound) {
       window.__craftVisualLearningBound = true;
       document.addEventListener('click', function (event) {
@@ -586,16 +578,8 @@
     }
 
     dialog.querySelector('.visual-learning-close').addEventListener('click', function () { dialog.close(); });
-    ui.previous.addEventListener('click', function () {
-      if (index === 0) switchSequence(-1);
-      else move(-1);
-    });
-    ui.next.addEventListener('click', function () {
-      if (index === current.steps.length - 1) {
-        if (!switchSequence(1)) finish();
-      }
-      else move(1);
-    });
+    ui.previous.addEventListener('click', function () { navigate(-1); });
+    ui.next.addEventListener('click', function () { navigate(1); });
     ui.restart.addEventListener('click', function () { clock.reset(); index = 0; renderSlide(); });
     ui.timerToggle.addEventListener('click', function () {
       const state = clock.state();
@@ -618,8 +602,7 @@
     dialogMarkup,
     stageVisualMarkup,
     createTimer,
-    canHandleArrow,
-    handleKeyboard: function (event) { return !!(activeController && activeController.handleKeyboard(event)); },
+    navigate: function (direction) { return !!(activeController && activeController.navigate(direction)); },
     bind,
     close: function () { if (activeController) activeController.close(); }
   };

@@ -1,6 +1,7 @@
 // Shared follow-along flow. Times are practice prompts, not pressure doses.
 const coachedSessions = new Map();
 let activeRoutineFollowAlong = null;
+let activeCoachedSessionKey = null;
 
 function comfortCoachMarkup(lesson) {
   const heading = lesson.id === 8 ? 'Start light · check comfort · keep the head supported' : 'Start light · check comfort · adjust slowly';
@@ -122,6 +123,7 @@ function stopAllCoachedSessions() {
   if (activeRoutineFollowAlong) activeRoutineFollowAlong.exit();
   coachedSessions.forEach(function (session) { session.dispose(); });
   coachedSessions.clear();
+  activeCoachedSessionKey = null;
 }
 
 function bindGuidedPractices() {
@@ -167,6 +169,7 @@ function bindGuidedPractices() {
     }
     function finish(early) {
       clear(); mode = 'finished'; toggle.hidden = true; onward.hidden = true; end.hidden = true; previous.hidden = true; forward.hidden = true;
+      if (activeCoachedSessionKey === key) activeCoachedSessionKey = null;
       if (early) time.textContent = 'Ended';
       root.classList.add('coach-finished');
       status.textContent = early ? 'Practice ended. Ease contact to zero, release gently, and check how the person feels. Stopping early is fine.' : 'Practice complete. Finish the lighter contact, ease away gradually, and ask how it felt.';
@@ -190,6 +193,7 @@ function bindGuidedPractices() {
     }
     function run() {
       coachedSessions.forEach(function (session) { if (session.key !== key) session.pause('Paused while another practice is open. Ease pressure off and rest.'); });
+      activeCoachedSessionKey = key;
       clear();
       updateStage();
       mode = 'running'; toggle.hidden = false; toggle.textContent = 'Pause'; onward.hidden = true; end.hidden = false; previous.hidden = true; forward.hidden = true;
@@ -201,6 +205,7 @@ function bindGuidedPractices() {
       if (direction > 0 && mode === 'waiting') { onward.click(); return true; }
       const nextIndex = index + direction;
       if (nextIndex < 0 || nextIndex >= stages.length || mode === 'finished') return false;
+      activeCoachedSessionKey = key;
       clear();
       index = nextIndex;
       remaining = stages[index].seconds;
@@ -224,7 +229,7 @@ function bindGuidedPractices() {
       status.textContent = 'Restarted. Ease pressure off before resetting your position; start when both people are ready.';
     });
     end.addEventListener('click', function () { finish(true); });
-    coachedSessions.set(key, { key, pause, navigate, dispose: clear });
+    coachedSessions.set(key, { key, root, pause, navigate, dispose: clear });
   });
 }
 
