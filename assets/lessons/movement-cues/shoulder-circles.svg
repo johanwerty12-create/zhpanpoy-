@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" role="img" aria-labelledby="title desc">
+  <title id="title">Small shoulder-circle movement</title>
+  <desc id="desc">A small circle is drawn directly around the relaxed palm contact on soft shoulder muscle.</desc>
+  <defs><marker id="arrow" markerWidth="18" markerHeight="18" refX="14" refY="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 17 9 1 17z" fill="#8c3b2e" stroke="#fff" stroke-width="2"/></marker></defs>
+  <path d="M635 376 C635 342 670 321 700 335 C736 350 736 393 704 411 C676 427 642 407 637 383" fill="none" stroke="#14251c" stroke-width="18" stroke-linecap="round" opacity=".76"/>
+  <path d="M635 376 C635 342 670 321 700 335 C736 350 736 393 704 411 C676 427 642 407 637 383" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
+</svg>

@@ -1162,6 +1162,14 @@ body {
 .pp-visual-frame { min-width: 0; align-self: start; margin: 0; padding: 9px; background: #f6f3ed; border: 1px solid #8e9c92; border-radius: 16px; }
 .pp-visual-frame svg { display: block; width: 100%; height: auto; }
 .pp-visual-frame figcaption { padding: 9px 6px 2px; color: #40544a; font-size: 13px; line-height: 1.45; }
+.pp-landmark-map { margin-top: 10px; overflow: clip; background: #fff; border: 1px solid #8e9c92; border-radius: 12px; }
+.pp-landmark-map summary { display: flex; min-height: 46px; justify-content: space-between; align-items: center; gap: 10px; padding: 10px 13px; color: #173d2b; font-size: 15px; font-weight: 850; cursor: pointer; list-style: none; }
+.pp-landmark-map summary::-webkit-details-marker { display: none; }
+.pp-landmark-map summary span:last-child { flex: 0 0 auto; font-size: 20px; transition: transform .16s ease; }
+.pp-landmark-map[open] summary { border-bottom: 1px solid #c4cec6; }
+.pp-landmark-map[open] summary span:last-child { transform: rotate(45deg); }
+.pp-landmark-map > svg { width: 100%; padding: 6px; }
+.pp-landmark-map:focus-within { outline: 3px solid #285b40; outline-offset: 2px; }
 .pp-svg-kicker { fill: #254334; font: 800 13px/1.2 system-ui, sans-serif; letter-spacing: 1.5px; }
 .pp-svg-label { fill: #263a30; font: 700 14px/1.25 system-ui, sans-serif; }
 .pp-svg-point { fill: #6a4200; font: 850 15px/1.2 system-ui, sans-serif; }

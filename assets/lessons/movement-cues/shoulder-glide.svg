@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" role="img" aria-labelledby="title desc">
+  <title id="title">Gentle shoulder gliding direction</title>
+  <desc id="desc">Two broad strokes move outward over the soft shoulder muscles, away from the neck.</desc>
+  <defs><marker id="arrow" markerWidth="18" markerHeight="18" refX="14" refY="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 17 9 1 17z" fill="#8c3b2e" stroke="#fff" stroke-width="2"/></marker></defs>
+  <path d="M485 430 C430 424 370 420 310 416 M565 430 C625 424 690 420 755 416" fill="none" stroke="#14251c" stroke-width="18" stroke-linecap="round" opacity=".76"/>
+  <path d="M485 430 C430 424 370 420 310 416 M565 430 C625 424 690 420 755 416" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
+</svg>

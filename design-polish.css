@@ -165,9 +165,11 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
 .hand-visual-wrap, .coach-stage-photo-wrap { position: relative; }
 .hand-page-hero img, .hand-technique-card img { display: block; width: 100%; height: auto; border-radius: 16px; }
 .hand-visual-wrap > img, .coach-stage-photo-wrap > img { display: block; width: 100%; height: auto; }
-.hand-motion-cue, .coach-motion-cue, .follow-motion-cue { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.hand-motion-cue, .coach-motion-cue, .follow-motion-cue { position: absolute; z-index: 2; inset: 0; display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .hand-motion-cue[hidden], .coach-motion-cue[hidden], .follow-motion-cue[hidden] { display: none; }
-.hand-motion-cue path, .coach-motion-cue path, .follow-motion-cue path { fill: none; stroke: #fff; stroke-width: 10; stroke-linecap: round; filter: drop-shadow(0 1px 3px #31251e); }
+.hand-motion-cue .movement-trail-shadow, .coach-motion-cue .movement-trail-shadow, .follow-motion-cue .movement-trail-shadow { fill: none; stroke: #14251c; stroke-width: 17; stroke-linecap: round; opacity: .72; }
+.hand-motion-cue .movement-trail, .coach-motion-cue .movement-trail, .follow-motion-cue .movement-trail { fill: none; stroke: #fff; stroke-width: 8; stroke-linecap: round; filter: drop-shadow(0 1px 2px #14251c); }
+.hand-motion-cue .movement-arrowhead, .coach-motion-cue .movement-arrowhead, .follow-motion-cue .movement-arrowhead { fill: #8c3b2e; stroke: #fff; stroke-width: 1.5; }
 .hand-page-hero figcaption, .hand-technique-card figcaption { padding-top: 9px; color: #4a6055; font-size: 14px; line-height: 1.5; }
 .hand-hero-facts { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 21px; }
 .hand-hero-facts span { padding: 7px 10px; color: #36533e; background: #eaf2e5; border: 1px solid #cbdcca; border-radius: 8px; font-size: 14px; }
@@ -459,8 +461,9 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
 .pp-photo-target-core { fill: #8c3b2e; }
 .pp-photo-marker-label { position: absolute; right: 9px; bottom: 9px; padding: 6px 9px; color: #fff; background: rgb(35 48 40 / 92%); border-radius: 999px; font-size: 12px; font-weight: 800; line-height: 1.25; }
 .pp-point-card:target { scroll-margin-top: 18px; }
-.follow-along-photo-wrap { position: relative; width: 100%; aspect-ratio: 4 / 3; max-height: 61dvh; overflow: hidden; border-radius: 12px; background: #f8f6f0; }
+.follow-along-photo-wrap { position: relative; width: min(100%, calc(61dvh * 4 / 3)); aspect-ratio: 4 / 3; overflow: hidden; border-radius: 12px; background: #f8f6f0; }
 .follow-along-photo-wrap .follow-along-image { width: 100%; height: 100%; max-height: none; object-fit: contain; }
+.follow-along-photo-wrap > .follow-motion-cue { object-fit: fill; }
 .follow-point-marker { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .follow-point-marker[hidden] { display: none; }
 @media (max-width: 760px) {
@@ -470,7 +473,7 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
   .hand-technique-nav .button, .point-sequence-nav .button, .practice-sequence-nav .button { flex: 1 1 132px; }
 }
 @media (max-width: 520px) {
-  .follow-along-photo-wrap { max-height: 18dvh; }
+  .follow-along-photo-wrap { width: min(100%, calc(58dvh * 4 / 3)); }
   .follow-along-header .sequence-key-hint { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {

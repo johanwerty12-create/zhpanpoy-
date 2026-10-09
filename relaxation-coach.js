@@ -24,53 +24,83 @@ function scalpCoachedStages(technique) {
 }
 
 function handMovementCueSvg(techniqueId, className) {
-  if (techniqueId !== 'gentle-wrist-circles') return '';
-  const markerId = 'hand-circle-arrow-' + (className || 'visual');
-  return '<svg class="' + (className || 'hand-motion-cue') + '" viewBox="0 0 1000 750" aria-hidden="true"><defs><marker id="' + markerId + '" markerWidth="12" markerHeight="12" refX="6" refY="6" orient="auto"><path d="M0 0L12 6L0 12z" fill="#8c3b2e"/></marker></defs><path d="M480 218 A42 42 0 1 1 478 217" marker-end="url(#' + markerId + ')"/></svg>';
+  const paths = {
+    'gentle-wrist-circles': ['M480 218 A42 42 0 1 1 478 217'],
+    'forearm-glide': ['M290 436 C395 429 500 420 615 410'],
+    'shoulder-glide': ['M485 430 C430 424 370 420 310 416', 'M565 430 C625 424 690 420 755 416'],
+    'shoulder-circles': ['M635 376 C635 342 670 321 700 335 C736 350 736 393 704 411 C676 427 642 407 637 383'],
+    'upper-back-glide': ['M360 470 C350 425 337 382 318 340', 'M640 470 C650 425 663 382 682 340'],
+    'forearm-circles': ['M395 338 C395 315 417 296 441 307 C465 318 464 346 442 359 C420 372 396 356 395 338'],
+    'scalp-circles': ['M345 310 C345 286 371 271 393 281 C418 292 417 317 395 330 C372 343 348 328 345 310', 'M655 310 C655 286 629 271 607 281 C582 292 583 317 605 330 C628 343 652 328 655 310'],
+    'scalp-glide': ['M362 316 C357 275 352 233 348 190', 'M638 316 C643 275 648 233 652 190']
+  }[techniqueId];
+  if (!paths) return '';
+  const cueClass = className || 'hand-motion-cue';
+  const markerId = 'movement-arrow-' + cueClass + '-' + techniqueId;
+  const arrows = paths.map(function (path) {
+    return '<path class="movement-trail-shadow" d="' + path + '"/><path class="movement-trail" d="' + path + '" marker-end="url(#' + markerId + ')"/>';
+  }).join('');
+  return '<svg class="' + cueClass + '" viewBox="0 0 1000 750" aria-hidden="true"><defs><marker id="' + markerId + '" markerWidth="15" markerHeight="15" refX="12" refY="7.5" markerUnits="userSpaceOnUse" orient="auto"><path class="movement-arrowhead" d="M0 0L15 7.5L0 15z"/></marker></defs>' + arrows + '</svg>';
+}
+
+const routineMotionCueImages = {
+  'forearm-glide': 'forearm-glide.svg',
+  'shoulder-glide': 'shoulder-glide.svg',
+  'shoulder-circles': 'shoulder-circles.svg',
+  'upper-back-glide': 'upper-back-glide.svg',
+  'forearm-circles': 'forearm-circles.svg',
+  'scalp-circles': 'scalp-circles.svg',
+  'scalp-glide': 'scalp-glide.svg',
+  'gentle-wrist-circles': 'gentle-wrist-circles.svg'
+};
+
+function routineMotionCueSrc(techniqueId) {
+  const image = routineMotionCueImages[techniqueId];
+  return image ? '/assets/lessons/movement-cues/' + image : '';
 }
 
 const routineFollowAlongGuides = [
   [
     { area: 'Forearm', technique: 'Still palm contact', short: 'Support the elbow and wrist. Lower a relaxed palm only after permission.', direction: 'Rest in place; keep the wrist comfortably supported.', pressure: 'Light resting contact. Do not press down.', image: 'lesson-10-arm-hand.webp', alt: 'A relaxed palm rests on a cushioned forearm while the wrist is supported.' },
-    { area: 'Forearm', technique: 'Broad forearm gliding', short: 'Use a broad, relaxed palm and a slow, easy stroke.', direction: 'Glide from wrist toward elbow; soften as you return.', pressure: 'Light to comfortable. No pressure on the wrist or elbow.', image: 'lesson-03-gliding.webp', alt: 'A broad palm glides along a supported forearm.' },
+    { area: 'Forearm', technique: 'Broad forearm gliding', short: 'Use a broad, relaxed palm and a slow, easy stroke.', direction: 'Glide from wrist toward elbow; soften as you return.', pressure: 'Light to comfortable. No pressure on the wrist or elbow.', image: 'lesson-03-gliding.webp', alt: 'A broad palm glides along a supported forearm.', techniqueId: 'forearm-glide' },
     { area: 'Forearm', technique: 'Lighter finishing strokes', short: 'Repeat a familiar stroke more slowly, then let the hand rest.', direction: 'Short glides toward the elbow; ease off on the return.', pressure: 'Lighten gradually, then still contact.', image: 'lesson-03-gliding.webp', alt: 'A broad palm rests along the forearm for a gentle finishing stroke.' }
   ],
   [
     { area: 'Shoulders', technique: 'Still shoulder contact', short: 'Support the arms and rest open palms on soft shoulder muscle.', direction: 'Settle in place; keep away from the neck and shoulder tips.', pressure: 'Light resting contact. Do not push down.', image: 'lesson-06-shoulders.webp', alt: 'Open relaxed palms rest on the soft back shoulder muscles.' },
-    { area: 'Shoulders', technique: 'Broad shoulder gliding', short: 'Move slowly over soft muscle and pause before the bony shoulder tip.', direction: 'Glide outward across the shoulder; soften on each return.', pressure: 'Light to comfortable. Keep clear of the neck and bones.', image: 'lesson-06-shoulders.webp', alt: 'Broad palm contact is placed on supported shoulder muscle.' },
-    { area: 'Shoulders', technique: 'Small palm circles', short: 'If welcomed, make a few tiny circles with a relaxed palm.', direction: 'Circle gently in one small area; release before shifting.', pressure: 'Light, broad contact. Skip if the person braces.', image: 'lesson-04-circles-relaxed.webp', alt: 'A relaxed palm rests on soft back shoulder muscle for small circles.' },
+    { area: 'Shoulders', technique: 'Broad shoulder gliding', short: 'Move slowly over soft muscle and pause before the bony shoulder tip.', direction: 'Glide outward across the shoulder; soften on each return.', pressure: 'Light to comfortable. Keep clear of the neck and bones.', image: 'lesson-06-shoulders.webp', alt: 'Broad palm contact is placed on supported shoulder muscle.', techniqueId: 'shoulder-glide' },
+    { area: 'Shoulders', technique: 'Small palm circles', short: 'If welcomed, make a few tiny circles with a relaxed palm.', direction: 'Circle gently in one small area; release before shifting.', pressure: 'Light, broad contact. Skip if the person braces.', image: 'lesson-04-circles-relaxed.webp', alt: 'A relaxed palm rests on soft back shoulder muscle for small circles.', techniqueId: 'shoulder-circles' },
     { area: 'Shoulders', technique: 'Lighter shoulder strokes', short: 'Return to the familiar broad stroke and slow it down.', direction: 'Glide outward across soft shoulder muscle; ease off as you return.', pressure: 'Lighten gradually, then rest your hands.', image: 'lesson-06-shoulders.webp', alt: 'Broad relaxed hand contact rests over the shoulders for a gentle finish.' }
   ],
   [
     { area: 'Upper back', technique: 'Settle and warm', short: 'Ask permission, support the body, and lower broad hands gently.', direction: 'Rest beside the spine; begin with slow, short glides toward the shoulders.', pressure: 'Light, broad contact. Never press on the spine.', image: 'lesson-07-upper-back.webp', alt: 'Both relaxed palms rest on the upper back beside the spine.' },
-    { area: 'Upper back', technique: 'Broad upper-back gliding', short: 'Follow a wide, easy path over the back muscles.', direction: 'Glide from beside the shoulder blades toward the shoulders; soften on return.', pressure: 'Light to comfortable. Stay off the spine and neck.', image: 'lesson-07-upper-back.webp', alt: 'Broad palms contact the upper-back muscles on either side of the spine.' },
-    { area: 'Back of shoulder', technique: 'Optional palm circles', short: 'If wanted, add a few small circles, alternating with broad strokes.', direction: 'Circle in place on soft shoulder muscle; release before changing zones.', pressure: 'Light and brief. Skip focused work if it is unwelcome.', image: 'lesson-04-circles-relaxed.webp', alt: 'A relaxed broad palm rests on the back shoulder muscle.' },
+    { area: 'Upper back', technique: 'Broad upper-back gliding', short: 'Follow a wide, easy path over the back muscles.', direction: 'Glide from beside the shoulder blades toward the shoulders; soften on return.', pressure: 'Light to comfortable. Stay off the spine and neck.', image: 'lesson-07-upper-back.webp', alt: 'Broad palms contact the upper-back muscles on either side of the spine.', techniqueId: 'upper-back-glide' },
+    { area: 'Back of shoulder', technique: 'Optional palm circles', short: 'If wanted, add a few small circles, alternating with broad strokes.', direction: 'Circle in place on soft shoulder muscle; release before changing zones.', pressure: 'Light and brief. Skip focused work if it is unwelcome.', image: 'lesson-04-circles-relaxed.webp', alt: 'A relaxed broad palm rests on the back shoulder muscle.', techniqueId: 'shoulder-circles' },
     { area: 'Upper back', technique: 'Reconnect with broad strokes', short: 'Return to the easiest familiar contact and check comfort.', direction: 'Glide toward the shoulders beside the spine; ease off on return.', pressure: 'Comfortable and light; reduce it if asked.', image: 'lesson-07-upper-back.webp', alt: 'Both palms rest broadly on the upper back beside the spine.' },
     { area: 'Upper back', technique: 'Slow closing strokes', short: 'Slow and lighten familiar strokes, then rest before easing away.', direction: 'Use a shorter, softer path toward the shoulders; release gradually.', pressure: 'Very light by the end.', image: 'lesson-07-upper-back.webp', alt: 'Soft, broad hand contact on the upper back for a gradual finish.' }
   ],
   [
     { area: 'Scalp', technique: 'Still fingertip contact', short: 'Support the head with a pillow and settle soft finger pads gently.', direction: 'Rest in place; keep the head still and do not tug hair.', pressure: 'Feather-light. No digging or nail contact.', image: 'scalp-whole-sequence.webp', alt: 'Both relaxed hands make soft, supported contact around the scalp.' },
-    { area: 'Scalp', technique: 'Small scalp circles', short: 'Use soft pads for tiny circles, then release before changing zones.', direction: 'Circle in one small area; lift or lighten before moving.', pressure: 'Very light. Stop if hair catches or the scalp feels tender.', image: 'scalp-small-circles.webp', alt: 'Soft finger pads make small circles on the scalp.' },
-    { area: 'Scalp', technique: 'Gentle scalp gliding', short: 'Return to soft pads and glide only if the scalp and hair are comfortable.', direction: 'Move lightly from the hairline toward the crown; ease off before returning.', pressure: 'Feather-light. Skip if hair drags.', image: 'scalp-gliding.webp', alt: 'Soft finger pads glide gently along the scalp near the hairline.' },
+    { area: 'Scalp', technique: 'Small scalp circles', short: 'Use soft pads for tiny circles, then release before changing zones.', direction: 'Circle in one small area; lift or lighten before moving.', pressure: 'Very light. Stop if hair catches or the scalp feels tender.', image: 'scalp-small-circles.webp', alt: 'Soft finger pads make small circles on the scalp.', techniqueId: 'scalp-circles' },
+    { area: 'Scalp', technique: 'Gentle scalp gliding', short: 'Return to soft pads and glide only if the scalp and hair are comfortable.', direction: 'Move lightly from the hairline toward the crown; ease off before returning.', pressure: 'Feather-light. Skip if hair drags.', image: 'scalp-gliding.webp', alt: 'Soft finger pads glide gently along the scalp near the hairline.', techniqueId: 'scalp-glide' },
     { area: 'Scalp', technique: 'Still contact and slow release', short: 'Let movement become quiet, rest softly, then ease your hands away.', direction: 'Pause in place; release without moving the head.', pressure: 'Feather-light, then no pressure.', image: 'scalp-whole-sequence.webp', alt: 'Two relaxed hands rest gently on the supported scalp before release.' }
   ],
   [
     { area: 'Arm and hand', technique: 'Support and settle', short: 'Rest the elbow and wrist on cushions before asking about contact.', direction: 'Lower a broad palm gently; keep the wrist neutral.', pressure: 'Light resting contact. No squeezing.', image: 'lesson-10-arm-hand.webp', alt: 'A broad relaxed hand rests on a fully supported forearm.' },
-    { area: 'Forearm', technique: 'Forearm gliding', short: 'Make slow, broad strokes along the supported forearm.', direction: 'Move toward the elbow; soften on the return and stop before the joint.', pressure: 'Light to comfortable; check in.', image: 'lesson-10-arm-hand.webp', alt: 'A relaxed palm glides along a cushioned forearm.' },
+    { area: 'Forearm', technique: 'Forearm gliding', short: 'Make slow, broad strokes along the supported forearm.', direction: 'Move toward the elbow; soften on the return and stop before the joint.', pressure: 'Light to comfortable; check in.', image: 'lesson-03-gliding.webp', alt: 'A relaxed palm glides along a cushioned forearm.', techniqueId: 'forearm-glide' },
     { area: 'Palm', technique: 'Optional palm circles', short: 'Turn the palm up only if comfortable; support it and make tiny circles.', direction: 'Circle lightly on the fleshy palm; keep off creases and joints.', pressure: 'Soft finger pads; almost no squeeze.', image: 'hand-palm-contact.webp', alt: 'Soft finger pads rest on the fleshy palm while the wrist is supported.' },
     { area: 'Fingers', technique: 'Optional finger strokes', short: 'Lay soft pads along one relaxed finger; lift before its tip.', direction: 'Stroke from base toward tip. Never pinch, bend, or pull.', pressure: 'Almost weightless; stop if skin drags.', image: 'hand-finger-stroke.webp', alt: 'Soft flat finger pads contact one relaxed finger near its base.' },
     { area: 'Forearm', technique: 'Quiet finishing strokes', short: 'Return to lighter strokes, rest the hand, then release gradually.', direction: 'Use short strokes toward the elbow; ease off on return.', pressure: 'Lighten to still contact, then lift.', image: 'lesson-10-arm-hand.webp', alt: 'A supported forearm receives a final broad, light stroke.' }
   ],
   [
     { area: 'Shoulders', technique: 'Still shoulder contact', short: 'Ask permission, support the arms, and settle relaxed palms on soft muscle.', direction: 'Rest away from the neck and the bony shoulder tips.', pressure: 'Light resting contact; do not push.', image: 'lesson-06-shoulders.webp', alt: 'Relaxed palms rest on soft back shoulder muscles.' },
-    { area: 'Shoulders', technique: 'Broad outward gliding', short: 'Warm the soft shoulder muscle with slow, broad strokes.', direction: 'Glide outward, clear of the neck; soften before returning.', pressure: 'Light to comfortable, never on bone.', image: 'lesson-06-shoulders.webp', alt: 'Broad palm contact is placed over supported shoulders.' },
-    { area: 'Shoulders', technique: 'Optional small circles', short: 'Check comfort, then alternate a few tiny circles with broad strokes.', direction: 'Circle gently on soft muscle; release before shifting.', pressure: 'Light and brief; skip if the person braces.', image: 'lesson-04-circles-relaxed.webp', alt: 'A relaxed palm rests on soft back shoulder muscle for small circles.' },
+    { area: 'Shoulders', technique: 'Broad outward gliding', short: 'Warm the soft shoulder muscle with slow, broad strokes.', direction: 'Glide outward, clear of the neck; soften before returning.', pressure: 'Light to comfortable, never on bone.', image: 'lesson-06-shoulders.webp', alt: 'Broad palm contact is placed over supported shoulders.', techniqueId: 'shoulder-glide' },
+    { area: 'Shoulders', technique: 'Optional small circles', short: 'Check comfort, then alternate a few tiny circles with broad strokes.', direction: 'Circle gently on soft muscle; release before shifting.', pressure: 'Light and brief; skip if the person braces.', image: 'lesson-04-circles-relaxed.webp', alt: 'A relaxed palm rests on soft back shoulder muscle for small circles.', techniqueId: 'shoulder-circles' },
     { area: 'Shoulders', technique: 'Soften and close', short: 'Slow and lighten the familiar strokes, then settle into still contact.', direction: 'Glide outward across soft muscle; ease pressure on return.', pressure: 'Very light by the end; release gradually.', image: 'lesson-06-shoulders.webp', alt: 'Soft, broad hand contact rests over the shoulders for a gentle finish.' }
   ],
   [
     { area: 'Forearm', technique: 'Supported still contact', short: 'Support the forearm and wrist, ask permission, then rest a relaxed palm.', direction: 'Stay still until contact feels comfortable.', pressure: 'Light resting contact; no downward push.', image: 'lesson-10-arm-hand.webp', alt: 'A broad relaxed palm rests on a fully supported forearm.' },
-    { area: 'Forearm', technique: 'Broad, easy forearm strokes', short: 'Repeat calm strokes and keep your own shoulders loose.', direction: 'Glide toward the elbow; lighten on every return.', pressure: 'Light to comfortable. Ask whether it still feels easy.', image: 'lesson-10-arm-hand.webp', alt: 'A relaxed palm glides along a cushioned forearm.' },
-    { area: 'Forearm', technique: 'Optional forearm circles', short: 'If wanted, alternate a few tiny finger-pad circles with easy gliding.', direction: 'Circle gently on mid-forearm muscle; move away from wrist and elbow creases.', pressure: 'Light finger-pad contact. Change zones; do not dig.', image: 'follow-along-forearm-circles.webp', alt: 'Soft finger pads rest on mid-forearm while the wrist is supported.' },
+    { area: 'Forearm', technique: 'Broad, easy forearm strokes', short: 'Repeat calm strokes and keep your own shoulders loose.', direction: 'Glide toward the elbow; lighten on every return.', pressure: 'Light to comfortable. Ask whether it still feels easy.', image: 'lesson-03-gliding.webp', alt: 'A relaxed palm glides along a cushioned forearm.', techniqueId: 'forearm-glide' },
+    { area: 'Forearm', technique: 'Optional forearm circles', short: 'If wanted, alternate a few tiny finger-pad circles with easy gliding.', direction: 'Circle gently on mid-forearm muscle; move away from wrist and elbow creases.', pressure: 'Light finger-pad contact. Change zones; do not dig.', image: 'follow-along-forearm-circles.webp', alt: 'Soft finger pads rest on mid-forearm while the wrist is supported.', techniqueId: 'forearm-circles' },
     { area: 'Forearm', technique: 'Blend into broad contact', short: 'Let circles soften into familiar strokes and check comfort.', direction: 'Return to easy strokes toward the elbow; ease off as you return.', pressure: 'Light, steady, and comfortable.', image: 'lesson-10-arm-hand.webp', alt: 'A relaxed palm returns to broad contact along a supported forearm.' },
     { area: 'Forearm', technique: 'Slow finishing strokes', short: 'Slow and lighten the strokes, rest your hand, then ease away.', direction: 'Short strokes toward the elbow, gradually becoming still.', pressure: 'Very light, then none.', image: 'lesson-10-arm-hand.webp', alt: 'A supported forearm receives a final light palm stroke.' }
   ]
@@ -275,9 +305,10 @@ function bindRoutineFollowAlong() {
     ui.image.alt = stage.alt;
     ui.image.loading = 'eager';
     if (ui.motionCue) {
-      const motion = handMovementCueSvg(stage.techniqueId, 'follow-motion-cue');
-      ui.motionCue.innerHTML = motion.replace(/^<svg[^>]*>|<\/svg>$/g, '');
-      ui.motionCue.hidden = !motion;
+      const motionImage = routineMotionCueSrc(stage.techniqueId);
+      if (motionImage) ui.motionCue.src = motionImage;
+      else ui.motionCue.removeAttribute('src');
+      ui.motionCue.hidden = !motionImage;
     }
     if (ui.pointMarker) {
       const pointVisual = stage.pointId && typeof pressurePointVisualSpecs !== 'undefined' ? pressurePointVisualSpecs[stage.pointId] : null;

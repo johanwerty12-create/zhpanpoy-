@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 750" role="img" aria-labelledby="title desc">
+  <title id="title">Small forearm circles</title>
+  <desc id="desc">A tiny circle marks the finger-pad contact on mid-forearm muscle, away from wrist and elbow creases.</desc>
+  <defs><marker id="arrow" markerWidth="18" markerHeight="18" refX="14" refY="9" markerUnits="userSpaceOnUse" orient="auto"><path d="M1 1 17 9 1 17z" fill="#8c3b2e" stroke="#fff" stroke-width="2"/></marker></defs>
+  <path d="M395 400 C395 377 417 358 441 369 C465 380 464 408 442 421 C420 434 396 418 395 400" fill="none" stroke="#14251c" stroke-width="18" stroke-linecap="round" opacity=".76"/>
+  <path d="M395 400 C395 377 417 358 441 369 C465 380 464 408 442 421 C420 434 396 418 395 400" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" marker-end="url(#arrow)"/>
+</svg>

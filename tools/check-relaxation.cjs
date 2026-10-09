@@ -124,7 +124,21 @@ for (let i = 0; i < 9; i++) {
     'Missing visual for ' + stage.technique + ': ' + stage.image
   ));
 }
+for (const [routineIndex, stageIndex, techniqueId] of [
+  [0, 1, 'forearm-glide'], [1, 1, 'shoulder-glide'], [1, 2, 'shoulder-circles'],
+  [2, 1, 'upper-back-glide'], [2, 2, 'shoulder-circles'], [3, 1, 'scalp-circles'],
+  [3, 2, 'scalp-glide'], [4, 1, 'forearm-glide'], [5, 1, 'shoulder-glide'],
+  [5, 2, 'shoulder-circles'], [6, 1, 'forearm-glide'], [6, 2, 'forearm-circles']
+]) {
+  const stage = evaluate(`routineCoachedStages(routineData[${routineIndex}])[${stageIndex}]`);
+  assert.equal(stage.techniqueId, techniqueId, 'Routine movement cue matches the action and specific visual');
+  assert.match(evaluate(`handMovementCueSvg(${JSON.stringify(techniqueId)}, 'follow-motion-cue')`), /marker-end=/);
+  const cuePath = evaluate(`routineMotionCueSrc(${JSON.stringify(techniqueId)})`);
+  assert.ok(cuePath, 'Every mapped routine movement has a dedicated aligned cue image');
+  assert.ok(fs.existsSync(path.join(project, cuePath.slice(1))));
+}
 const routineMarkup = evaluate('routines()');
+assert.match(routineMarkup, /<img class="follow-motion-cue" alt="" aria-hidden="true" hidden/, 'Follow Along provides a photo-aligned movement-image layer');
 assert.equal((routineMarkup.match(/START FOLLOW ALONG/g) || []).length, 9);
 assert.match(routineMarkup, /Hand &amp; Fingers · 8 min/);
 assert.equal((routineMarkup.match(/class="routine-preview"/g) || []).length, 9, 'All nine routine outlines stay available as optional previews');
@@ -152,6 +166,10 @@ assert.equal((scalpMarkup.match(/data-sequence-item=/g) || []).length, 13);
 assert.match(scalpMarkup, /data-sequence-picker="scalp-techniques"/);
 assert.equal((scalpMarkup.match(/class="scalp-technique-card[^"]*"[^>]* hidden/g) || []).length, 12, 'Scalp learning opens on one technique and keeps the other 12 selectable');
 checkAssets(scalpMarkup);
+const scalpLift = evaluate("scalpTechniques.find(item => item.id === 'scalp-lifting')");
+assert.equal(scalpLift.image, 'scalp-skin-shift.webp', 'Scalp lifting must use the audited no-grip visual');
+assert.match(scalpLift.alt, /without gripping or lifting strands/);
+assert.ok(fs.existsSync(path.join(project, 'assets', 'lessons', scalpLift.image)));
 
 const pickerGroups = [{ hidden: false }, { hidden: true }];
 const picker = { value: 'scalp-gliding' };
@@ -216,6 +234,8 @@ for (let i = 0; i < 6; i++) {
   const card = evaluate(`pressurePointCard(pressurePoints[${i}], ${i})`);
   assert.match(visual, new RegExp(point.id + '\\.webp'));
   assert.match(visual, /pp-photo-marker/);
+  assert.match(visual, /View labeled landmark map/);
+  assert.match(visual, new RegExp('aria-labelledby="' + point.id + '-title ' + point.id + '-desc"'), 'Each point reveals its own named, accessible landmark diagram');
   checkAssets(visual);
   if (i > 0) assert.ok(card.includes('aria-label="Previous point: ' + evaluate(`pressurePoints[${i - 1}].name`) + '"'));
   if (i < 5) assert.ok(card.includes('aria-label="Next point: ' + evaluate(`pressurePoints[${i + 1}].name`) + '"'));
@@ -240,7 +260,7 @@ const visualKeys = Array.from(evaluate(`[
   ...pressurePoints.map(item => 'point:' + item.id)
 ]`));
 assert.equal(visualKeys.length, 47, 'Every lesson, scalp technique, hand technique, and pressure point gets a guide');
-assert.deepEqual(Array.from(evaluate('Array.from(movementCueLessons)')), [3, 7, 10], 'Only photo-verified paths receive movement arrows');
+assert.deepEqual(Array.from(evaluate('Array.from(movementCueLessons)')), [3, 4, 7, 10], 'Only photo-verified paths receive movement arrows');
 const visualDialogMarkup = evaluate('window.CraftVisualLearning.dialogMarkup()');
 assert.match(visualDialogMarkup, /Technique-matched photo/);
 assert.match(visualDialogMarkup, /<strong>CHECK<\/strong>/, 'The guide gives one action and a concise check');
@@ -249,6 +269,7 @@ assert.match(visualDialogMarkup, /<summary>Technique safety and boundaries<\/sum
 assert.doesNotMatch(visualDialogMarkup, /visual-learning-body|visual-learning-direction/, 'Area is already in the step header; direction stays in the action, not a duplicate cue card');
 assert.match(evaluate('practiceMotionByLesson[3]'), /markerUnits="userSpaceOnUse" markerWidth="38"/);
 assert.match(evaluate('practiceMotionByLesson[3]'), /M230 662 C300 650 380 635 460 623/);
+assert.match(evaluate('practiceMotionByLesson[4]'), /M920 545 C920 495 970 465 1015 485/);
 const armGuide = evaluate("window.CraftVisualLearning.getSequence('lesson:10')");
 assert.match(armGuide.steps[0].instruction, /Support the elbow and wrist/);
 assert.doesNotMatch(armGuide.steps[0].instruction, /glide/i, 'The setup slide no longer repeats the movement before its visual cue');
@@ -273,7 +294,7 @@ for (const key of visualKeys) {
     if (key.startsWith('lesson:')) {
       const lessonId = Number(key.slice(7));
       const stepData = sequence.steps[step - 1];
-      const shouldShowMotion = [3, 7, 10].includes(lessonId) && stepData.phase === 1;
+      const shouldShowMotion = [3, 4, 7, 10].includes(lessonId) && stepData.phase === 1;
       assert.equal(markup.includes('class="visual-learning-motion"'), shouldShowMotion,
         'Only matching movement steps show verified arrows: ' + key + ' step ' + step);
       if (shouldShowMotion) assert.match(markup, /markerUnits="userSpaceOnUse"/);
@@ -388,6 +409,7 @@ function makeUiElement() {
   return {
     hidden: false, disabled: false, textContent: '', src: '', alt: '', loading: '', open: false, dataset: {},
     listeners: {}, addEventListener(name, callback) { this.listeners[name] = callback; },
+    removeAttribute(name) { if (name === 'src') this.src = ''; },
     focus() {}, click() { if (this.listeners.click) this.listeners.click({ target: this }); }
   };
 }
@@ -488,9 +510,14 @@ for (let routineId = 0; routineId < 9; routineId++) {
     assert.equal(followDialog.querySelector('.follow-instruction').textContent, stage.short);
     assert.equal(followDialog.querySelector('.follow-direction').textContent, stage.direction);
     assert.equal(followDialog.querySelector('.follow-pressure').textContent, stage.pressure);
+    if (routineId < 7 && stage.techniqueId) {
+      const cue = followDialog.querySelector('.follow-motion-cue');
+      assert.equal(cue.hidden, false, 'Matching routine movement cues become visible for ' + stage.technique);
+      assert.equal(cue.src, evaluate(`routineMotionCueSrc(${JSON.stringify(stage.techniqueId)})`), 'Visible routine cue uses its technique-matched vector image');
+    }
     if (routineId === 7 && stage.techniqueId === 'gentle-wrist-circles') {
       assert.equal(followDialog.querySelector('.follow-motion-cue').hidden, false);
-      assert.match(followDialog.querySelector('.follow-motion-cue').innerHTML, /A42 42/);
+      assert.equal(followDialog.querySelector('.follow-motion-cue').src, '/assets/lessons/movement-cues/gentle-wrist-circles.svg');
     }
     if (routineId === 8) {
       const marker = followDialog.querySelector('.follow-point-marker');
