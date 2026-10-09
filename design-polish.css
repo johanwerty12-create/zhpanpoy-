@@ -522,6 +522,13 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
 .visual-learning-avoid { padding: 10px 12px; margin: 10px 0; color: #573d25; background: #fff2dd; border-radius: 9px; font-size: 14px; line-height: 1.45; }
 .visual-learning-avoid strong { color: #744b16; }
 .visual-learning-safety { padding: 10px 12px; margin: 10px 0; color: #63362f; background: #f8e9e4; border: 1px solid #e9c8bd; border-radius: 9px; font-size: 13px; line-height: 1.45; }
+.visual-learning-stop { padding: 8px 11px; margin: 10px 0; color: #63362f; background: #f8e9e4; border: 1px solid #e9c8bd; border-radius: 9px; font-size: 13px; font-weight: 750; line-height: 1.4; }
+.visual-learning-safety-details { padding: 0 11px; margin: 8px 0 10px; color: #573d25; background: #fff8ed; border: 1px solid #ead6b8; border-radius: 9px; }
+.visual-learning-safety-details summary { min-height: 40px; display: flex; align-items: center; color: #674414; cursor: pointer; font-size: 13px; font-weight: 800; }
+.visual-learning-safety-details summary::after { content: '+'; margin-left: auto; padding-left: 12px; color: #674414; font-size: 19px; line-height: 1; }
+.visual-learning-safety-details[open] summary { border-bottom: 1px solid #ead6b8; }
+.visual-learning-safety-details[open] summary::after { content: '−'; }
+.visual-learning-safety-details .visual-learning-avoid, .visual-learning-safety-details .visual-learning-safety { margin: 9px 0; }
 .visual-learning-timer { display: flex; align-items: center; gap: 12px; padding: 12px 14px; margin-top: 14px; background: #fff; border: 1px solid #dbe4dc; border-radius: 12px; }
 .visual-learning-timer > div { display: grid; gap: 2px; }
 .visual-learning-timer .eyebrow { margin: 0; color: #52675b; font-size: 10px; font-weight: 850; letter-spacing: .07em; }

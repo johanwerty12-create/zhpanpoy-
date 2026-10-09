@@ -614,16 +614,26 @@ const quickPracticeGuides = {
 };
 
 const practiceMotionByLesson = {
-  3: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-3\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M460 735 C600 680 760 645 930 600\" marker-end=\"url(#motion-arrow-3)\"/><path class=\"motion-path motion-path-return\" d=\"M945 650 C790 704 630 735 505 780\" marker-end=\"url(#motion-arrow-3)\"/></svg>",
+  3: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-3\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M230 662 C300 650 380 635 460 623\" marker-end=\"url(#motion-arrow-3)\"/></svg>",
   4: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-4\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path motion-loop\" d=\"M680 490 C665 405 760 365 825 410 C890 455 875 535 810 558 C740 583 680 540 688 485\" marker-end=\"url(#motion-arrow-4)\"/></svg>",
   5: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-5\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M500 690 C555 685 615 670 670 650\" marker-end=\"url(#motion-arrow-5)\"/><path class=\"motion-path\" d=\"M850 615 C800 625 755 642 710 655\" marker-end=\"url(#motion-arrow-5)\"/><path class=\"motion-path motion-path-return\" d=\"M685 710 C640 725 590 730 555 720\"/></svg>",
   6: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-6\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M720 690 C640 660 550 635 450 620\" marker-end=\"url(#motion-arrow-6)\"/><path class=\"motion-path\" d=\"M735 690 C820 660 920 640 1030 620\" marker-end=\"url(#motion-arrow-6)\"/></svg>",
   7: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-7\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M555 690 C535 615 505 545 455 465\" marker-end=\"url(#motion-arrow-7)\"/><path class=\"motion-path\" d=\"M895 690 C920 610 955 535 1005 465\" marker-end=\"url(#motion-arrow-7)\"/></svg>",
   9: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-9\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path motion-loop\" d=\"M900 430 C865 385 910 345 950 370 C990 395 970 445 932 450 C900 454 880 432 890 405\" marker-end=\"url(#motion-arrow-9)\"/><path class=\"motion-path motion-loop motion-loop-secondary\" d=\"M1050 485 C1025 445 1065 415 1098 438 C1133 462 1113 505 1080 508\" marker-end=\"url(#motion-arrow-9)\"/></svg>",
-  10: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-10\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M910 760 C810 690 700 625 570 575\" marker-end=\"url(#motion-arrow-10)\"/><path class=\"motion-path motion-path-return\" d=\"M555 630 C670 680 780 735 870 795\" marker-end=\"url(#motion-arrow-10)\"/></svg>",
+  10: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-10\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M910 760 C810 690 700 625 570 575\" marker-end=\"url(#motion-arrow-10)\"/></svg>",
   11: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-11\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path\" d=\"M760 610 C665 590 555 585 455 610\" marker-end=\"url(#motion-arrow-11)\"/><path class=\"motion-path motion-path-return\" d=\"M440 665 C550 650 660 660 748 680\" marker-end=\"url(#motion-arrow-11)\"/></svg>",
   12: "<svg class=\"practice-motion\" viewBox=\"0 0 1448 1086\" aria-hidden=\"true\" focusable=\"false\"><defs><marker id=\"motion-arrow-12\" markerWidth=\"12\" markerHeight=\"12\" refX=\"9\" refY=\"6\" orient=\"auto\"><path d=\"M0 0 12 6 0 12z\" class=\"motion-arrowhead\"/></marker></defs><path class=\"motion-path motion-loop\" d=\"M720 450 C685 410 715 375 755 385 C790 394 790 438 760 452 C735 465 710 445 720 420\" marker-end=\"url(#motion-arrow-12)\"/></svg>"
 };
+
+// Keep only direction cues whose route is visibly supported by the matching photograph.
+// Use fixed-size markers: SVG's default stroke-width scaling made the arrowheads dominate.
+const movementCueLessons = new Set([3, 7, 10]);
+Object.keys(practiceMotionByLesson).forEach(function (id) {
+  practiceMotionByLesson[id] = practiceMotionByLesson[id]
+    .replace(/markerWidth="12" markerHeight="12" refX="9" refY="6"/g,
+      'markerUnits="userSpaceOnUse" markerWidth="38" markerHeight="38" refX="38" refY="19"')
+    .replace(/d="M0 0 12 6 0 12z"/g, 'd="M0 0 38 19 0 38z"');
+});
 
 const scalpTechniqueGroups = [
   { id: "scalp", title: "Scalp", intro: "Keep the scalp moving gently; let the hair stay relaxed." },
@@ -882,7 +892,7 @@ function quickVersion(lesson) {
   if (lesson.id === 10 && typeof handMassageQuickPracticeMarkup === "function") return handMassageQuickPracticeMarkup(lesson);
   const guide = quickPracticeGuides[lesson.id];
   const artwork = lessonArtworkForId(lesson.id === 13 ? 10 : lesson.id);
-  const motion = [4, 5, 6, 12].includes(lesson.id) ? "" : (practiceMotionByLesson[lesson.id] || "");
+  const motion = movementCueLessons.has(lesson.id) ? (practiceMotionByLesson[lesson.id] || "") : "";
   const modalMotion = motion.replace(new RegExp("motion-arrow-" + lesson.id, "g"), "motion-arrow-" + lesson.id + "-modal");
   const complete = isPracticeComplete(lesson.id);
   const completedCount = (progress.practiceCompleted || []).length;

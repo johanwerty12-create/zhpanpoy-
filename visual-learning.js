@@ -20,7 +20,28 @@
   }
 
   function combine(first, second, title) {
+    if (title === 'Prepare & locate') {
+      return action(title, second.instruction, first.what, Math.max(first.seconds, second.seconds));
+    }
+    if (title === 'Place & check') {
+      return action(title, first.instruction, second.what, Math.max(first.seconds, second.seconds));
+    }
+    if (title === 'Release & finish') {
+      return action(title, first.instruction, second.what, Math.max(first.seconds, second.seconds));
+    }
+    if (title === 'Area & landmarks' || title === 'Locate & confirm') {
+      return action(title, first.instruction + ' ' + second.instruction, second.what, Math.max(first.seconds, second.seconds));
+    }
     return action(title, first.instruction + ' ' + second.instruction, first.what + ' ' + second.what, Math.max(first.seconds, second.seconds));
+  }
+
+  function phaseForAction(title) {
+    if (/^(prepare & locate|place & check|area & landmarks|locate & confirm)$/i.test(title)) return 0;
+    if (/release/i.test(title)) return 2;
+    if (/check/i.test(title) && title !== 'Check pressure') return 3;
+    if (title === 'Check pressure' || title === 'Start' || title === 'Start contact') return title === 'Check pressure' ? 3 : 0;
+    if (/move a little|complete the movement|choose direction|hold briefly/i.test(title)) return 1;
+    return 0;
   }
 
   function focusedActions(kind, actions) {
@@ -64,7 +85,7 @@
           direction: values.direction,
           pressure: item.pressure || values.pressure,
           avoid: values.avoid,
-          phase: index < 2 ? 0 : index < steps.length - 2 ? 1 : index === steps.length - 2 ? 2 : 3,
+          phase: phaseForAction(item.title || slideTitles[index]),
           zoom: zooms[index] || 1
         });
       })
@@ -105,8 +126,12 @@
     const gentle = lesson.pressure[0];
     const movement = id === 8
       ? 'No neck movement. Keep the head resting on its support.'
-      : (steps[1] ? steps[1][1] : lesson.short);
-    const continuation = steps[2] ? steps[2][1] : lesson.short;
+      : id === 10
+        ? 'Glide from just above the wrist toward the elbow; stop before the joint and soften the return.'
+        : (steps[1] ? steps[1][1] : lesson.short);
+    const continuation = id === 10
+      ? 'Repeat the same smooth forearm path once or twice. Shorten it if skin or fabric drags.'
+      : (steps[2] ? steps[2][1] : lesson.short);
     const finish = steps[steps.length - 1][1];
     let actions;
     if (id === 8) {
@@ -125,12 +150,16 @@
     } else {
       actions = [
         action('Prepare', lesson.before[0], 'Agree on the area, ask permission, and make the position comfortable.'),
-        action('Find the area', steps[0][1], 'Identify the soft, comfortable contact area before moving.'),
+        action('Find the area', id === 10
+          ? 'Support the elbow and wrist; choose a comfortable forearm muscle area.'
+          : steps[0][1], 'Identify the soft, comfortable contact area before moving.'),
         action('Position your hand', lesson.position[1][1], 'Set your body close enough to stay relaxed; do not reach or lean hard.'),
         action('Check your position', 'Check: the area is supported, the hand is relaxed, and pressure starts light.', 'Yes—hand, body, and receiving area are ready.'),
-        action('Start', steps[0][1], 'Begin with settled contact; give the person time to notice it.', 15),
+        action('Start', id === 10
+          ? 'Settle a broad, relaxed palm on the supported forearm and let the person notice the contact.'
+          : steps[0][1], 'Begin with settled contact; give the person time to notice it.', 15),
         action('Move a little', movement, 'Use a small, slow action. Keep the movement on the named area.', 15),
-        action('Check pressure', gentle, 'Start light. Ask about comfort; adjust only a little if requested.', 15),
+        action('Check pressure', 'Pause and ask whether the contact feels comfortable. Adjust only a little if asked.', 'Stay on the named soft area; never press through discomfort.', 15),
         action('Complete the movement', continuation, 'Follow the same safe path and stop before nearby bones or joints.', 15),
         action('Release and return', finish, 'Soften to no pressure before repositioning; never drag or force a joint.'),
         action('Finish and check', lesson.feel + ' ' + lesson.pressure[2], 'Notice comfort. Stop if it feels sharp, painful, numb, tingly, or unusual.')
@@ -142,7 +171,8 @@
       pressure: id === 8 ? 'Optional feather-light resting contact only; shoulders-only is fine.' : gentle,
       avoid: id === 8 ? 'Never touch the throat/front or sides of the neck, lift or steer the head, or manipulate the neck.' : lesson.safety,
       safety: lesson.safety,
-      motion: typeof practiceMotionByLesson !== 'undefined' ? practiceMotionByLesson[id] || '' : ''
+      motion: typeof movementCueLessons !== 'undefined' && movementCueLessons.has(id)
+        ? practiceMotionByLesson[id] || '' : ''
     }, actions);
   }
 
@@ -332,28 +362,24 @@
     return '<svg class="visual-point-marker" viewBox="0 0 1000 750" aria-hidden="true"' + (stepNumber === 1 ? ' hidden' : '') + '><defs><marker id="' + marker + '" markerWidth="10" markerHeight="10" refX="5" refY="5" orient="auto"><path d="M0 0L10 5L0 10z" fill="#8c3b2e"/></marker></defs><path d="M' + x + ' ' + (y - 76) + 'V' + (y - 29) + '" class="pp-photo-direction" marker-end="url(#' + marker + ')"/><circle cx="' + x + '" cy="' + y + '" r="18" class="pp-photo-target"/><circle cx="' + x + '" cy="' + y + '" r="5" class="pp-photo-target-core"/></svg>';
   }
 
-  function motionForStep(sequence, stepNumber) {
-    if (!sequence.motion) return '';
+  function motionForStep(sequence, step) {
+    if (!sequence.motion || step.phase !== 1 || !/move a little|complete the movement/i.test(step.title)) return '';
     let motion = sequence.motion;
     const suffix = sequence.key.replace(/[^a-z0-9-]/gi, '-');
     motion = motion.replace(/motion-arrow-(\d+)/g, 'vl-motion-' + suffix + '-$1');
     motion = motion.replace(/<svg\b([^>]*)class="[^"]*"/i, '<svg$1class="visual-learning-motion"');
-    motion = motion.replace(/<path\b/g, '<path pathLength="100"');
-    const progress = stepNumber <= 3 ? 0 : Math.round((stepNumber - 3) / (sequence.steps.length - 3) * 100);
-    motion = motion.replace(/class="([^"]*motion-path[^"]*)"/g, 'class="$1" style="stroke-dasharray:100;stroke-dashoffset:' + (100 - progress) + '"');
-    return motion.replace('<svg ', '<svg data-motion-progress="' + progress + '" ');
+    return motion.replace('<svg ', '<svg data-motion-phase="move" ');
   }
 
   function stageVisualMarkup(sequence, step) {
     const stageId = step.number;
     const phase = phaseForStep(step);
-    const motionProgress = stageId <= 3 ? 0 : Math.round((stageId - 3) / (sequence.steps.length - 3) * 100);
-    const style = '--vl-zoom:' + step.zoom + ';--vl-motion-progress:' + motionProgress + '%';
-    return '<div class="visual-learning-frame" data-visual-kind="' + escapeHtml(sequence.kind) + '" data-visual-step="' + stageId + '" data-visual-phase="' + phase + '" style="' + style + '"><img class="visual-learning-image" src="/assets/lessons/' + escapeHtml(sequence.image) + '" alt="' + escapeHtml(sequence.alt) + '" width="1448" height="1086" decoding="async" />' + motionForStep(sequence, stageId) + pointMarker(sequence, stageId) + '<span class="visual-learning-frame-label">' + String(stageId).padStart(2, '0') + ' · ' + phaseNames[phase] + ' · ' + escapeHtml(step.title) + '</span></div>';
+    const style = '--vl-zoom:' + step.zoom;
+    return '<div class="visual-learning-frame" data-visual-kind="' + escapeHtml(sequence.kind) + '" data-visual-step="' + stageId + '" data-visual-phase="' + phase + '" style="' + style + '"><img class="visual-learning-image" src="/assets/lessons/' + escapeHtml(sequence.image) + '" alt="' + escapeHtml(sequence.alt) + '" width="1448" height="1086" decoding="async" />' + motionForStep(sequence, step) + pointMarker(sequence, stageId) + '<span class="visual-learning-frame-label">' + String(stageId).padStart(2, '0') + ' · ' + phaseNames[phase] + ' · ' + escapeHtml(step.title) + '</span></div>';
   }
 
   function dialogMarkup() {
-    return '<dialog class="visual-learning-dialog" aria-labelledby="visual-learning-title"><div class="visual-learning-shell"><header class="visual-learning-header"><div><p class="eyebrow">Visual guide</p><p class="visual-learning-count" aria-live="polite" aria-atomic="true"></p><p class="sequence-key-hint visual-learning-key-hint">← Previous slide · → Next slide · Esc to close</p></div><button class="button subtle visual-learning-close" type="button">Exit guide</button></header><div class="visual-learning-layout"><figure class="visual-learning-figure"><div class="visual-learning-art"></div><figcaption class="visual-learning-caption">Technique-specific photo and location marker · the slide framing and action cue change at each step.</figcaption><ol class="visual-phase-track" aria-label="Learning phases"><li>SET UP</li><li>MOVE</li><li>RELEASE</li><li>CHECK</li></ol></figure><section class="visual-learning-guide"><p class="visual-learning-area"></p><h2 id="visual-learning-title" tabindex="-1"></h2><h3 class="visual-learning-step-title" aria-live="polite" aria-atomic="true"></h3><p class="visual-learning-instruction"></p><div class="visual-learning-what"><strong>WHAT AM I DOING?</strong><p></p></div><dl class="visual-learning-cues"><div><dt>BODY AREA</dt><dd class="visual-learning-body"></dd></div><div><dt>HAND POSITION</dt><dd class="visual-learning-hand"></dd></div><div><dt>MOVEMENT</dt><dd class="visual-learning-direction"></dd></div><div><dt>PRESSURE</dt><dd class="visual-learning-pressure"></dd></div></dl><p class="visual-learning-avoid"><strong>AVOID:</strong> <span></span></p><p class="visual-learning-safety">If this feels sharp, painful, numb, tingly, or unusually uncomfortable, stop. Reposition only if comfortable; stop if symptoms continue. Do not push through.</p><p class="visual-learning-tradition" hidden>Traditional point-location practice only; not a medical treatment or cure.</p><div class="visual-learning-timer"><div><span class="eyebrow">OPTIONAL STEP TIMER</span><output class="visual-learning-time" aria-live="off">—:—</output></div><button class="button small visual-learning-timer-toggle" type="button">Start timer</button><span class="visual-learning-timer-note"></span></div><p class="visual-learning-status" role="status" aria-live="polite">Move at your own pace. Timer is a guide—not a pressure dose.</p><div class="visual-learning-controls"><button class="button visual-learning-previous" type="button">← Previous</button><button class="button subtle visual-learning-restart" type="button">Restart</button><button class="button primary visual-learning-next" type="button">Next →</button></div><p class="visual-learning-completed" hidden>Sequence complete · saved on this device.</p></section></div></div></dialog>';
+    return '<dialog class="visual-learning-dialog" aria-labelledby="visual-learning-title"><div class="visual-learning-shell"><header class="visual-learning-header"><div><p class="eyebrow">Visual guide</p><p class="visual-learning-count" aria-live="polite" aria-atomic="true"></p><p class="sequence-key-hint visual-learning-key-hint">← Previous slide · → Next slide · Esc to close</p></div><button class="button subtle visual-learning-close" type="button">Exit guide</button></header><div class="visual-learning-layout"><figure class="visual-learning-figure"><div class="visual-learning-art"></div><figcaption class="visual-learning-caption">Technique-matched photo · arrows appear only during movement steps.</figcaption><ol class="visual-phase-track" aria-label="Learning phases"><li>SET UP</li><li>MOVE</li><li>RELEASE</li><li>CHECK</li></ol></figure><section class="visual-learning-guide"><p class="visual-learning-area"></p><h2 id="visual-learning-title" tabindex="-1"></h2><h3 class="visual-learning-step-title" aria-live="polite" aria-atomic="true"></h3><p class="visual-learning-instruction"></p><div class="visual-learning-what"><strong>CHECK</strong><p></p></div><dl class="visual-learning-cues"><div><dt>HAND</dt><dd class="visual-learning-hand"></dd></div><div><dt>PRESSURE</dt><dd class="visual-learning-pressure"></dd></div></dl><p class="visual-learning-stop">Stop for pain, numbness, tingling, dizziness, or anything unusual.</p><details class="visual-learning-safety-details"><summary>Technique safety and boundaries</summary><p class="visual-learning-avoid"><strong>Avoid:</strong> <span></span></p><p class="visual-learning-safety"></p></details><p class="visual-learning-tradition" hidden>Traditional point-location practice only; not a medical treatment or cure.</p><div class="visual-learning-timer"><div><span class="eyebrow">OPTIONAL STEP TIMER</span><output class="visual-learning-time" aria-live="off">—:—</output></div><button class="button small visual-learning-timer-toggle" type="button">Start timer</button><span class="visual-learning-timer-note"></span></div><p class="visual-learning-status" role="status" aria-live="polite">Move at your own pace. Timer is a guide—not a pressure dose.</p><div class="visual-learning-controls"><button class="button visual-learning-previous" type="button">← Previous</button><button class="button subtle visual-learning-restart" type="button">Restart</button><button class="button primary visual-learning-next" type="button">Next →</button></div><p class="visual-learning-completed" hidden>Sequence complete · saved on this device.</p></section></div></div></dialog>';
   }
 
   function triggerMarkup(key, completed) {
@@ -451,10 +477,11 @@
       count: dialog.querySelector('.visual-learning-count'), keyHint: dialog.querySelector('.visual-learning-key-hint'), image: dialog.querySelector('.visual-learning-art'),
       area: dialog.querySelector('.visual-learning-area'), title: dialog.querySelector('#visual-learning-title'),
       stepTitle: dialog.querySelector('.visual-learning-step-title'), instruction: dialog.querySelector('.visual-learning-instruction'),
-      what: dialog.querySelector('.visual-learning-what p'), body: dialog.querySelector('.visual-learning-body'),
-      hand: dialog.querySelector('.visual-learning-hand'), direction: dialog.querySelector('.visual-learning-direction'),
+      what: dialog.querySelector('.visual-learning-what p'),
+      hand: dialog.querySelector('.visual-learning-hand'),
       pressure: dialog.querySelector('.visual-learning-pressure'), avoid: dialog.querySelector('.visual-learning-avoid span'),
-      safety: dialog.querySelector('.visual-learning-safety'), tradition: dialog.querySelector('.visual-learning-tradition'),
+      safety: dialog.querySelector('.visual-learning-safety'), safetyDetails: dialog.querySelector('.visual-learning-safety-details'),
+      tradition: dialog.querySelector('.visual-learning-tradition'),
       phases: Array.from(dialog.querySelectorAll('.visual-phase-track li')), time: dialog.querySelector('.visual-learning-time'),
       timerToggle: dialog.querySelector('.visual-learning-timer-toggle'), timerNote: dialog.querySelector('.visual-learning-timer-note'),
       status: dialog.querySelector('.visual-learning-status'), previous: dialog.querySelector('.visual-learning-previous'),
@@ -474,6 +501,7 @@
     function renderSlide() {
       if (!current) return;
       const step = current.steps[index];
+      ui.safetyDetails.open = false;
       const position = sequencePosition(current.key);
       ui.count.textContent = (position ? position.label.toUpperCase() + ' ' + position.index + ' OF ' + position.total + ' · ' : '') + 'STEP ' + step.number + ' OF ' + current.steps.length;
       ui.area.textContent = current.area.toUpperCase();
@@ -481,14 +509,10 @@
       ui.stepTitle.textContent = step.title.toUpperCase();
       ui.instruction.textContent = step.instruction;
       ui.what.textContent = step.what;
-      ui.body.textContent = step.area;
       ui.hand.textContent = step.hand;
-      ui.direction.textContent = step.direction;
       ui.pressure.textContent = step.pressure;
       ui.avoid.textContent = step.avoid;
-      ui.safety.textContent = current.kind === 'point'
-        ? 'If this feels sharp, painful, numb, tingly, or unusually uncomfortable, stop. ' + current.safety
-        : 'If this feels sharp, painful, numb, tingly, or unusually uncomfortable, stop. Reposition only if comfortable; stop if symptoms continue. Do not push through.';
+      ui.safety.textContent = current.safety;
       ui.tradition.hidden = current.kind !== 'point';
       ui.image.innerHTML = stageVisualMarkup(current, step);
       ui.phases.forEach(function (phase, phaseIndex) {
@@ -522,6 +546,8 @@
       const next = index + direction;
       if (next < 0 || next >= current.steps.length) return false;
       clock.reset(); index = next; renderSlide();
+      dialog.scrollTop = 0;
+      ui.title.focus({ preventScroll: true });
       return true;
     }
 
@@ -555,6 +581,7 @@
       clock.reset();
       renderSlide();
       ui.status.textContent = (direction > 0 ? 'Guide complete. Next: ' : 'Previous guide: ') + current.title + '. Continue at your own pace.';
+      dialog.scrollTop = 0;
       ui.title.focus({ preventScroll: true });
       return true;
     }
@@ -569,6 +596,7 @@
       clock.setDuration(0);
       renderSlide();
       if (!dialog.open) dialog.showModal();
+      dialog.scrollTop = 0;
       ui.title.focus({ preventScroll: true });
     }
 
@@ -602,7 +630,11 @@
     dialog.querySelector('.visual-learning-close').addEventListener('click', function () { dialog.close(); });
     ui.previous.addEventListener('click', function () { navigate(-1); });
     ui.next.addEventListener('click', function () { navigate(1); });
-    ui.restart.addEventListener('click', function () { clock.reset(); index = 0; renderSlide(); });
+    ui.restart.addEventListener('click', function () {
+      clock.reset(); index = 0; renderSlide();
+      dialog.scrollTop = 0;
+      ui.title.focus({ preventScroll: true });
+    });
     ui.timerToggle.addEventListener('click', function () {
       const state = clock.state();
       if (state.running) clock.pause();

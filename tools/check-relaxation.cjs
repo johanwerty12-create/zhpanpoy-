@@ -240,6 +240,23 @@ const visualKeys = Array.from(evaluate(`[
   ...pressurePoints.map(item => 'point:' + item.id)
 ]`));
 assert.equal(visualKeys.length, 47, 'Every lesson, scalp technique, hand technique, and pressure point gets a guide');
+assert.deepEqual(Array.from(evaluate('Array.from(movementCueLessons)')), [3, 7, 10], 'Only photo-verified paths receive movement arrows');
+const visualDialogMarkup = evaluate('window.CraftVisualLearning.dialogMarkup()');
+assert.match(visualDialogMarkup, /Technique-matched photo/);
+assert.match(visualDialogMarkup, /<strong>CHECK<\/strong>/, 'The guide gives one action and a concise check');
+assert.match(visualDialogMarkup, /<dt>HAND<\/dt>[\s\S]*<dt>PRESSURE<\/dt>/);
+assert.match(visualDialogMarkup, /<summary>Technique safety and boundaries<\/summary>/);
+assert.doesNotMatch(visualDialogMarkup, /visual-learning-body|visual-learning-direction/, 'Area is already in the step header; direction stays in the action, not a duplicate cue card');
+assert.match(evaluate('practiceMotionByLesson[3]'), /markerUnits="userSpaceOnUse" markerWidth="38"/);
+assert.match(evaluate('practiceMotionByLesson[3]'), /M230 662 C300 650 380 635 460 623/);
+const armGuide = evaluate("window.CraftVisualLearning.getSequence('lesson:10')");
+assert.match(armGuide.steps[0].instruction, /Support the elbow and wrist/);
+assert.doesNotMatch(armGuide.steps[0].instruction, /glide/i, 'The setup slide no longer repeats the movement before its visual cue');
+assert.match(armGuide.steps[3].instruction, /Glide from just above the wrist toward the elbow/);
+assert.match(armGuide.steps[5].instruction, /Repeat the same smooth forearm path/);
+assert.match(armGuide.steps[4].instruction, /Pause and ask whether the contact feels comfortable/);
+assert.match(armGuide.steps[4].what, /Stay on the named soft area/);
+assert.doesNotMatch(evaluate('quickVersion(lessons[10])'), /class="practice-motion"/, 'The calf image no longer carries a misaligned arrow');
 const visualImages = [];
 for (const key of visualKeys) {
   const sequence = evaluate(`window.CraftVisualLearning.getSequence(${JSON.stringify(key)})`);
@@ -253,6 +270,14 @@ for (const key of visualKeys) {
   for (let step = 1; step <= sequence.steps.length; step++) {
     const markup = evaluate(`window.CraftVisualLearning.stageVisualMarkup(window.CraftVisualLearning.getSequence(${JSON.stringify(key)}), window.CraftVisualLearning.getSequence(${JSON.stringify(key)}).steps[${step - 1}])`);
     assert.match(markup, new RegExp('data-visual-step="' + step + '"'));
+    if (key.startsWith('lesson:')) {
+      const lessonId = Number(key.slice(7));
+      const stepData = sequence.steps[step - 1];
+      const shouldShowMotion = [3, 7, 10].includes(lessonId) && stepData.phase === 1;
+      assert.equal(markup.includes('class="visual-learning-motion"'), shouldShowMotion,
+        'Only matching movement steps show verified arrows: ' + key + ' step ' + step);
+      if (shouldShowMotion) assert.match(markup, /markerUnits="userSpaceOnUse"/);
+    }
     checkAssets(markup);
   }
 }
@@ -706,10 +731,16 @@ assert.equal(clock.intervals.size, 0, 'Escape stops the active routine timer');
 // Exercise the actual visual dialog's slide and next-technique keyboard transitions.
 function makeVisualDialog() {
   const elements = new Map();
+  const title = element();
+  title.focus = function (options) { this.focused = true; this.focusOptions = options; };
   const phases = Array.from({ length: 4 }, () => element());
   return {
-    open: false, listeners: {},
-    querySelector(selector) { if (!elements.has(selector)) elements.set(selector, element()); return elements.get(selector); },
+    open: false, scrollTop: 80, listeners: {},
+    querySelector(selector) {
+      if (selector === '#visual-learning-title') return title;
+      if (!elements.has(selector)) elements.set(selector, element());
+      return elements.get(selector);
+    },
     querySelectorAll(selector) { return selector === '.visual-phase-track li' ? phases : []; },
     contains(target) { return Boolean(target && target.inVisualDialog); },
     addEventListener(name, callback) { this.listeners[name] = callback; },
@@ -728,8 +759,12 @@ const visualTarget = { inVisualDialog: false, closest() { return null; } };
 assert.equal(sendArrow('ArrowRight', visualTarget), true);
 assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /TECHNIQUE 1 OF 15 · STEP 2 OF 7/);
 assert.match(visualDialog.querySelector('.visual-learning-art').innerHTML, /data-visual-step="2"/);
+visualDialog.querySelector('.visual-learning-safety-details').open = true;
 visualDialog.querySelector('.visual-learning-next').click();
 assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /STEP 3 OF 7/, 'The visible Next button uses the same visual-step action');
+assert.equal(visualDialog.querySelector('.visual-learning-safety-details').open, false, 'Moving to a new slide closes expanded safety detail so the current step remains easy to scan');
+assert.equal(visualDialog.scrollTop, 0, 'Moving to a new slide restores the visual-first top on narrow screens');
+assert.equal(visualDialog.querySelector('#visual-learning-title').focusOptions.preventScroll, true, 'Slide changes keep keyboard focus accessible without forcing scroll to the controls');
 assert.equal(sendArrow('ArrowLeft', visualTarget), true);
 assert.match(visualDialog.querySelector('.visual-learning-count').textContent, /STEP 2 OF 7/, 'ArrowLeft reverses the visible Next action');
 visualDialog.querySelector('.visual-learning-previous').click();
@@ -761,4 +796,4 @@ assert.equal(sendArrow('ArrowRight', visualTarget), true);
 assert.equal(visualDialog.open, false, 'The final guide closes instead of jumping into an unrelated group');
 assert.ok(evaluate('progress.visualSequencesCompleted.includes("hand:" + handMassageTechniques[14].id)'));
 
-console.log('PASS: all 47 visual guides (41 × 7 steps, 6 × 8 point steps) and 335 step frames; 47 unique technique visuals; cross-guide slide navigation and progress; all routine-stage mappings and image assets; timer start/pause/resume/complete; all 9 Follow Along routines; keyboard boundaries, repeat protection, input protection, guided stages, Space pause/resume, modal priority, exit, repeat, and local progress preservation.');
+console.log('PASS: all 47 visual guides (41 × 7 steps, 6 × 8 point steps) and 335 step frames; 47 unique technique visuals; photo-verified, movement-only arrows; concise, non-repetitive guide cues; mobile visual-first scroll and focus reset; cross-guide slide navigation and progress; all routine-stage mappings and image assets; timer start/pause/resume/complete; all 9 Follow Along routines; keyboard boundaries, repeat protection, input protection, guided stages, Space pause/resume, modal priority, exit, repeat, and local progress preservation.');

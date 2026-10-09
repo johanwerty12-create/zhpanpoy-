@@ -21,6 +21,13 @@ Sources: [NCCIH massage safety](https://www.nccih.nih.gov/health/massage-therapy
 
 The shared controller supports start, pause/resume with preserved time, restart, early finish, completion, and a manual comfort confirmation between stages. It pauses when the page is hidden or another practice starts and clears timers on navigation. Countdown values are not announced every second to screen readers. Completion/progress remains a learner-controlled check.
 
+### Follow-up visual-guide pass — 9 October 2026
+
+- Reduced repeated guide copy by keeping the area in the heading, the movement in the current action, and safety details in a collapsed disclosure; the immediate stop cue stays visible.
+- Corrected the forearm-glide arrow to follow the pictured wrist-to-elbow path, normalized arrowhead size, and retained arrows only for the photo-checked gliding, upper-back, and forearm lessons. The arm guide now teaches the pictured glide; the 15 separate hand techniques remain intact.
+- On mobile, each guide step change/restart returns to the top so the matched visual is visible first; heading focus updates without browser auto-scrolling to bottom controls.
+- Rendered local mobile checks at 390 px for Home, Lesson 1, Hand Massage, Head & Scalp, Pressure Points, Quick Practice, and Follow Along. No horizontal overflow, broken loaded images, or browser console errors were observed. Actual routine pause/resume, transition, previous/next, and exit controls responded; the regression harness covers full timer/completion and all nine routines.
+
 Run `node tools/check-relaxation.cjs` for dependency-free render, local asset, duration, and timer regressions. JavaScript syntax and Git whitespace checks also apply. There is no compilation/build step in this static app; Vercel serves the root and uses the existing clean-route rewrites. `relaxation-coach.js` loads after the data/rendering scripts. Asset versions prevent old cached instructions from surviving this update.
 
 Browser verification: 36 desktop and 36 mobile routes (390 px), including all lessons, main pages, and each Quick Practice choice, rendered without horizontal overflow or broken loaded images. New practice controls met the 44 px minimum tap height. Scalp lightbox, quiz answer checking, and practice-progress persistence across reload passed. Browser console had no errors. Generated images and all rendered local asset references passed file checks. A second editorial pass checked the revised start/action/finish flow and optional alternatives throughout.
