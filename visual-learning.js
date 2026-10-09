@@ -1,12 +1,11 @@
-// Technique-specific 10-slide learning system. It reuses each technique's
+// Technique-specific visual learning system. It reuses each technique's
 // matching photograph and adds stage-aware framing, movement cues, and copy.
 (function () {
   const slideTitles = [
-    'Prepare', 'Find the area', 'Position your hand', 'Check your position',
-    'Start', 'Move a little', 'Check pressure', 'Complete the movement',
-    'Release and return', 'Finish and check'
+    'Prepare & locate', 'Place & check', 'Begin contact', 'Move a little',
+    'Check pressure', 'Complete the movement', 'Release & finish'
   ];
-  const zooms = [1, 1.03, 1.06, 1.06, 1.08, 1.1, 1.1, 1.08, 1.04, 1];
+  const zooms = [1, 1.04, 1.07, 1.1, 1.08, 1.06, 1];
   const phaseNames = ['SET UP', 'MOVE', 'RELEASE', 'CHECK'];
   let activeController = null;
 
@@ -20,7 +19,28 @@
     return { title, instruction, what, seconds: seconds || 0 };
   }
 
+  function combine(first, second, title) {
+    return action(title, first.instruction + ' ' + second.instruction, first.what + ' ' + second.what, Math.max(first.seconds, second.seconds));
+  }
+
+  function focusedActions(kind, actions) {
+    if (kind === 'point') {
+      return [
+        combine(actions[0], actions[1], 'Area & landmarks'),
+        combine(actions[2], actions[3], 'Locate & confirm'),
+        actions[4], actions[5], actions[6], actions[7], actions[8], actions[9]
+      ];
+    }
+    return [
+      combine(actions[0], actions[1], 'Prepare & locate'),
+      combine(actions[2], actions[3], 'Place & check'),
+      actions[4], actions[5], actions[6], actions[7],
+      combine(actions[8], actions[9], 'Release & finish')
+    ];
+  }
+
   function sequence(key, values, actions) {
+    const steps = focusedActions(values.kind, actions);
     return {
       key,
       kind: values.kind,
@@ -35,7 +55,7 @@
       safety: values.safety,
       pointId: values.pointId || '',
       motion: values.motion || '',
-      steps: actions.map(function (item, index) {
+      steps: steps.map(function (item, index) {
         return Object.assign({}, item, {
           number: index + 1,
           title: item.title || slideTitles[index],
@@ -44,8 +64,8 @@
           direction: values.direction,
           pressure: item.pressure || values.pressure,
           avoid: values.avoid,
-          phase: index < 4 ? 0 : index < 8 ? 1 : index === 8 ? 2 : 3,
-          zoom: zooms[index]
+          phase: index < 2 ? 0 : index < steps.length - 2 ? 1 : index === steps.length - 2 ? 2 : 3,
+          zoom: zooms[index] || 1
         });
       })
     };
@@ -319,7 +339,7 @@
     motion = motion.replace(/motion-arrow-(\d+)/g, 'vl-motion-' + suffix + '-$1');
     motion = motion.replace(/<svg\b([^>]*)class="[^"]*"/i, '<svg$1class="visual-learning-motion"');
     motion = motion.replace(/<path\b/g, '<path pathLength="100"');
-    const progress = stepNumber <= 4 ? 0 : stepNumber === 5 ? 24 : stepNumber === 6 ? 48 : stepNumber === 7 ? 72 : 100;
+    const progress = stepNumber <= 3 ? 0 : Math.round((stepNumber - 3) / (sequence.steps.length - 3) * 100);
     motion = motion.replace(/class="([^"]*motion-path[^"]*)"/g, 'class="$1" style="stroke-dasharray:100;stroke-dashoffset:' + (100 - progress) + '"');
     return motion.replace('<svg ', '<svg data-motion-progress="' + progress + '" ');
   }
@@ -327,17 +347,17 @@
   function stageVisualMarkup(sequence, step) {
     const stageId = step.number;
     const phase = phaseForStep(step);
-    const motionProgress = stageId <= 4 ? 0 : stageId === 5 ? 24 : stageId === 6 ? 48 : stageId === 7 ? 72 : 100;
+    const motionProgress = stageId <= 3 ? 0 : Math.round((stageId - 3) / (sequence.steps.length - 3) * 100);
     const style = '--vl-zoom:' + step.zoom + ';--vl-motion-progress:' + motionProgress + '%';
     return '<div class="visual-learning-frame" data-visual-kind="' + escapeHtml(sequence.kind) + '" data-visual-step="' + stageId + '" data-visual-phase="' + phase + '" style="' + style + '"><img class="visual-learning-image" src="/assets/lessons/' + escapeHtml(sequence.image) + '" alt="' + escapeHtml(sequence.alt) + '" width="1448" height="1086" decoding="async" />' + motionForStep(sequence, stageId) + pointMarker(sequence, stageId) + '<span class="visual-learning-frame-label">' + String(stageId).padStart(2, '0') + ' · ' + phaseNames[phase] + ' · ' + escapeHtml(step.title) + '</span></div>';
   }
 
   function dialogMarkup() {
-    return '<dialog class="visual-learning-dialog" aria-labelledby="visual-learning-title"><div class="visual-learning-shell"><header class="visual-learning-header"><div><p class="eyebrow">10-step visual lesson</p><p class="visual-learning-count" aria-live="polite" aria-atomic="true"></p><p class="sequence-key-hint visual-learning-key-hint">← Previous slide · → Next slide · Esc to close</p></div><button class="button subtle visual-learning-close" type="button">Exit guide</button></header><div class="visual-learning-layout"><figure class="visual-learning-figure"><div class="visual-learning-art"></div><figcaption class="visual-learning-caption">Technique-specific photo and location marker · the slide framing and action cue change at each step.</figcaption><ol class="visual-phase-track" aria-label="Learning phases"><li>SET UP</li><li>MOVE</li><li>RELEASE</li><li>CHECK</li></ol></figure><section class="visual-learning-guide"><p class="visual-learning-area"></p><h2 id="visual-learning-title" tabindex="-1"></h2><h3 class="visual-learning-step-title" aria-live="polite" aria-atomic="true"></h3><p class="visual-learning-instruction"></p><div class="visual-learning-what"><strong>WHAT AM I DOING?</strong><p></p></div><dl class="visual-learning-cues"><div><dt>BODY AREA</dt><dd class="visual-learning-body"></dd></div><div><dt>HAND POSITION</dt><dd class="visual-learning-hand"></dd></div><div><dt>MOVEMENT</dt><dd class="visual-learning-direction"></dd></div><div><dt>PRESSURE</dt><dd class="visual-learning-pressure"></dd></div></dl><p class="visual-learning-avoid"><strong>AVOID:</strong> <span></span></p><p class="visual-learning-safety">If this feels sharp, painful, numb, tingly, or unusually uncomfortable, stop. Reposition only if comfortable; stop if symptoms continue. Do not push through.</p><p class="visual-learning-tradition" hidden>Traditional point-location practice only; not a medical treatment or cure.</p><div class="visual-learning-timer"><div><span class="eyebrow">OPTIONAL STEP TIMER</span><output class="visual-learning-time" aria-live="off">—:—</output></div><button class="button small visual-learning-timer-toggle" type="button">Start timer</button><span class="visual-learning-timer-note"></span></div><p class="visual-learning-status" role="status" aria-live="polite">Move at your own pace. Timer is a guide—not a pressure dose.</p><div class="visual-learning-controls"><button class="button visual-learning-previous" type="button">← Previous</button><button class="button subtle visual-learning-restart" type="button">Restart</button><button class="button primary visual-learning-next" type="button">Next →</button></div><p class="visual-learning-completed" hidden>Sequence complete · saved on this device.</p></section></div></div></dialog>';
+    return '<dialog class="visual-learning-dialog" aria-labelledby="visual-learning-title"><div class="visual-learning-shell"><header class="visual-learning-header"><div><p class="eyebrow">Visual guide</p><p class="visual-learning-count" aria-live="polite" aria-atomic="true"></p><p class="sequence-key-hint visual-learning-key-hint">← Previous slide · → Next slide · Esc to close</p></div><button class="button subtle visual-learning-close" type="button">Exit guide</button></header><div class="visual-learning-layout"><figure class="visual-learning-figure"><div class="visual-learning-art"></div><figcaption class="visual-learning-caption">Technique-specific photo and location marker · the slide framing and action cue change at each step.</figcaption><ol class="visual-phase-track" aria-label="Learning phases"><li>SET UP</li><li>MOVE</li><li>RELEASE</li><li>CHECK</li></ol></figure><section class="visual-learning-guide"><p class="visual-learning-area"></p><h2 id="visual-learning-title" tabindex="-1"></h2><h3 class="visual-learning-step-title" aria-live="polite" aria-atomic="true"></h3><p class="visual-learning-instruction"></p><div class="visual-learning-what"><strong>WHAT AM I DOING?</strong><p></p></div><dl class="visual-learning-cues"><div><dt>BODY AREA</dt><dd class="visual-learning-body"></dd></div><div><dt>HAND POSITION</dt><dd class="visual-learning-hand"></dd></div><div><dt>MOVEMENT</dt><dd class="visual-learning-direction"></dd></div><div><dt>PRESSURE</dt><dd class="visual-learning-pressure"></dd></div></dl><p class="visual-learning-avoid"><strong>AVOID:</strong> <span></span></p><p class="visual-learning-safety">If this feels sharp, painful, numb, tingly, or unusually uncomfortable, stop. Reposition only if comfortable; stop if symptoms continue. Do not push through.</p><p class="visual-learning-tradition" hidden>Traditional point-location practice only; not a medical treatment or cure.</p><div class="visual-learning-timer"><div><span class="eyebrow">OPTIONAL STEP TIMER</span><output class="visual-learning-time" aria-live="off">—:—</output></div><button class="button small visual-learning-timer-toggle" type="button">Start timer</button><span class="visual-learning-timer-note"></span></div><p class="visual-learning-status" role="status" aria-live="polite">Move at your own pace. Timer is a guide—not a pressure dose.</p><div class="visual-learning-controls"><button class="button visual-learning-previous" type="button">← Previous</button><button class="button subtle visual-learning-restart" type="button">Restart</button><button class="button primary visual-learning-next" type="button">Next →</button></div><p class="visual-learning-completed" hidden>Sequence complete · saved on this device.</p></section></div></div></dialog>';
   }
 
   function triggerMarkup(key, completed) {
-    return '<button class="button small visual-learning-trigger" type="button" data-visual-learning="' + escapeHtml(key) + '" aria-haspopup="dialog">' + (completed ? 'Review 10 visual steps' : 'START 10-STEP GUIDE') + '</button>';
+    return '<button class="button small visual-learning-trigger" type="button" data-visual-learning="' + escapeHtml(key) + '" aria-haspopup="dialog">' + (completed ? 'Review visual guide' : 'Show me how') + '</button>';
   }
 
   function sequenceIsComplete(key) {
@@ -369,7 +389,8 @@
       const host = section.querySelector('.quick-version-head, .scalp-module-header, .hand-quick-heading');
       mountTrigger(host, 'lesson:' + lessonId);
     });
-    root.querySelectorAll('.routine-card-enhanced').forEach(function (card, routineIndex) {
+    root.querySelectorAll('.routine-card-enhanced').forEach(function (card) {
+      const routineIndex = Number(card.dataset.routineIndex);
       const stages = routineData[routineIndex] && routineCoachedStages(routineData[routineIndex]);
       const items = Array.from(card.querySelectorAll('.routine-step-list li'));
       if (!stages) return;
@@ -454,7 +475,7 @@
       if (!current) return;
       const step = current.steps[index];
       const position = sequencePosition(current.key);
-      ui.count.textContent = (position ? position.label.toUpperCase() + ' ' + position.index + ' OF ' + position.total + ' · ' : '') + 'STEP ' + step.number + ' OF 10';
+      ui.count.textContent = (position ? position.label.toUpperCase() + ' ' + position.index + ' OF ' + position.total + ' · ' : '') + 'STEP ' + step.number + ' OF ' + current.steps.length;
       ui.area.textContent = current.area.toUpperCase();
       ui.title.textContent = current.title;
       ui.stepTitle.textContent = step.title.toUpperCase();
@@ -508,9 +529,10 @@
       if (!current) return;
       if (!Array.isArray(progress.visualSequencesCompleted)) progress.visualSequencesCompleted = [];
       if (!progress.visualSequencesCompleted.includes(current.key)) progress.visualSequencesCompleted.push(current.key);
+      progress.started = true;
       saveProgress();
       ui.completed.hidden = false;
-      if (opener && opener.isConnected) opener.textContent = 'Review 10 visual steps';
+      if (opener && opener.isConnected) opener.textContent = 'Review visual guide';
     }
 
     function finish() {
@@ -541,7 +563,7 @@
       const nextSequence = getSequence(key);
       if (!nextSequence) return;
       if (activeRoutineFollowAlong && dialog !== document.querySelector('.follow-along-dialog')) {
-        activeRoutineFollowAlong.pause('Paused while you review the 10-step visual. Rest your hands; resume when ready.');
+        activeRoutineFollowAlong.pause('Paused while you review the visual guide. Rest your hands; resume when ready.');
       }
       current = nextSequence; index = 0; opener = trigger || null;
       clock.setDuration(0);

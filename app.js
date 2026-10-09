@@ -1,5 +1,5 @@
 const STORAGE_KEY = "kindred-touch-progress-v1";
-const ROUTINE_COUNT = 7;
+const ROUTINE_COUNT = 9;
 
 const lessons = [
   {
@@ -199,10 +199,11 @@ let practiceTimer = null;
 function loadProgress() {
   try {
     const value = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [], visualSequencesCompleted: [] };
+    if (!value || !Array.isArray(value.completed)) return { completed: [], current: 1, started: false, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [], visualSequencesCompleted: [] };
     return {
       completed: value.completed.filter(Number.isInteger),
       current: value.current || 1,
+      started: Boolean(value.started || value.completed.length || value.current > 1 || (value.practiceCompleted || []).length || (value.scalpPracticeCompleted || []).length || (value.routineCompleted || []).length || (value.visualSequencesCompleted || []).length),
       practiceCompleted: Array.isArray(value.practiceCompleted)
         ? value.practiceCompleted.filter(function (id) { return Number.isInteger(id) && id >= 1 && id <= lessons.length; })
         : [],
@@ -217,7 +218,7 @@ function loadProgress() {
         : []
     };
   } catch (error) {
-    return { completed: [], current: 1, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [], visualSequencesCompleted: [] };
+    return { completed: [], current: 1, started: false, practiceCompleted: [], scalpPracticeCompleted: [], routineCompleted: [], visualSequencesCompleted: [] };
   }
 }
 function saveProgress() { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
@@ -226,17 +227,25 @@ function isPracticeComplete(id) { return (progress.practiceCompleted || []).incl
 function markPracticeComplete(id) {
   if (!progress.practiceCompleted) progress.practiceCompleted = [];
   if (!progress.practiceCompleted.includes(id)) progress.practiceCompleted.push(id);
+  progress.started = true;
   saveProgress();
 }
 function isRoutineComplete(id) { return (progress.routineCompleted || []).includes(id); }
 function markRoutineComplete(id) {
   if (!progress.routineCompleted) progress.routineCompleted = [];
   if (!progress.routineCompleted.includes(id)) progress.routineCompleted.push(id);
+  progress.started = true;
   saveProgress();
 }
 function percentComplete() { return Math.round(progress.completed.length / lessons.length * 100); }
 function currentLesson() { return lessons.find(function (item) { return item.id === progress.current; }) || lessons[0]; }
-function setCurrent(id) { progress.current = id; saveProgress(); }
+function nextIncompleteLesson() {
+  const current = currentLesson();
+  if (!isComplete(current.id)) return current;
+  return lessons.find(function (item) { return item.id > current.id && !isComplete(item.id); }) ||
+    lessons.find(function (item) { return !isComplete(item.id); }) || null;
+}
+function setCurrent(id) { progress.current = id; progress.started = true; saveProgress(); }
 function markLesson(id) { if (!isComplete(id)) progress.completed.push(id); setCurrent(Math.min(id + 1, lessons.length)); }
 function route() {
   let path = window.location.pathname.replace(/\/+$/, "") || "/";
@@ -335,11 +344,11 @@ function progressBar(light) {
 }
 function statusMarkup(lesson) {
   if (isComplete(lesson.id)) return "<span class=\"status completed\">Completed</span>";
-  if (progress.current === lesson.id) return "<span class=\"status in-progress\">In progress</span>";
+  if (isPracticeComplete(lesson.id)) return "<span class=\"status practiced\">Practice checked</span>";
   return "<span class=\"status\">Not started</span>";
 }
 function lessonButton(lesson) {
-  const label = isComplete(lesson.id) ? "Review lesson" : progress.current === lesson.id ? "Continue" : "Start lesson";
+  const label = isComplete(lesson.id) ? "Review lesson" : isPracticeComplete(lesson.id) ? "Practice again" : "Start lesson";
   return "<a class=\"button small " + (isComplete(lesson.id) ? "subtle" : "primary") + "\" href=\"#/lesson/" + lesson.id + "\">" + label + " <span aria-hidden=\"true\">→</span></a>";
 }
 

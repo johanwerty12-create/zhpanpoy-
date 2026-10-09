@@ -308,6 +308,121 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
 @media (max-width: 360px) {
   body { min-width: 0; }
 }
+
+/* One focused lesson column; course navigation stays on the course map. */
+.lesson-layout { grid-template-columns: minmax(0, 1fr); }
+.lesson-main { width: 100%; max-width: 1000px; margin-inline: auto; }
+
+/* A single compact picker replaces the second 13-card lesson catalog. */
+.quick-practice-picker-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  margin: 0 0 16px;
+  color: #31563e;
+  background: #f0f5eb;
+  border: 1px solid #cbd9cb;
+  border-radius: 14px;
+  font-weight: 800;
+}
+.quick-practice-picker-row label { display: grid; flex: 1 1 auto; gap: 6px; color: #173d2b; }
+.quick-practice-picker-row select { width: 100%; min-height: 48px; padding: 9px 12px; color: #203a2b; background: #fff; border: 2px solid #b8ccba; border-radius: 10px; font: inherit; font-size: 16px; }
+.quick-practice-picker-row > span { padding-bottom: 12px; white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+/* Routine options are grouped by the learner's intent, not a flat catalog. */
+.routine-stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(26px, 4vw, 42px); }
+.routine-choice-group { scroll-margin-top: 20px; }
+.routine-choice-group > .section-heading { margin: 0 0 14px; }
+.routine-choice-group > .section-heading h2 { margin: 0; }
+.routine-choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; gap: 16px; }
+.routine-choice-group .routine-card-enhanced:first-child:not(.is-recommended) { background: #fff; border-color: #d0ddd0; box-shadow: none; }
+.routine-intent-nav { display: flex; flex-wrap: wrap; gap: 9px; margin: -7px 0 26px; }
+.routine-intent-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 8px 14px; color: #234b35; background: #f0f5eb; border: 1px solid #cbd9cb; border-radius: 999px; font-weight: 750; text-decoration: none; }
+.routine-save-note { margin: 10px 0 0; color: #465b4d; font-size: 14px; }
+
+/* Keep the action controls available while the visual/instructions scroll. */
+.follow-along-dialog[open] {
+  display: flex;
+  width: min(1120px, calc(100vw - 28px));
+  height: min(900px, calc(100dvh - 24px));
+  max-height: calc(100dvh - 24px);
+  overflow: hidden;
+}
+.follow-along-shell { display: flex; flex: 1 1 auto; flex-direction: column; min-height: 0; height: 100%; }
+.follow-along-layout { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.follow-along-guide { align-content: start; }
+.follow-control-dock {
+  display: grid;
+  grid-template-columns: minmax(160px, .7fr) minmax(0, 1.3fr);
+  align-items: center;
+  gap: 8px 16px;
+  flex: 0 0 auto;
+  padding: 10px 14px 12px;
+  background: rgb(251 250 246 / 98%);
+  border-top: 1px solid #cbd9ce;
+  box-shadow: 0 -8px 22px rgb(24 47 33 / 8%);
+}
+.follow-control-dock .follow-transition,
+.follow-control-dock .follow-safety,
+.follow-control-dock .follow-finish { grid-column: 1 / -1; }
+.follow-control-dock .follow-clock { grid-column: 1; grid-row: 2; }
+.follow-control-dock .follow-status { grid-column: 1; grid-row: 3; }
+.follow-control-dock .follow-controls { grid-column: 2; grid-row: 2 / span 2; }
+.follow-control-dock .follow-finish { grid-row: 2 / span 2; }
+.follow-control-dock .follow-safety { grid-row: 4; }
+.follow-control-dock .follow-clock { padding-top: 0; }
+.follow-along-image { max-height: 54dvh; }
+
+/* Honest activity summary without repeating the full course map. */
+.progress-learning-summary { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 22px 0 8px; }
+.progress-learning-summary > div { display: grid; gap: 4px; padding: 16px 18px; background: #f4f6f0; border: 1px solid #d0ddd0; border-radius: 14px; }
+.progress-learning-summary strong { color: #204b35; font-size: 23px; font-variant-numeric: tabular-nums; }
+.progress-learning-summary span { color: #45594c; font-size: 14px; }
+
+/* Collapsed non-point regions keep the reviewed anatomy boundaries available. */
+.pp-area-note { padding: 14px 18px; }
+.pp-area-note > summary { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; cursor: pointer; list-style: none; }
+.pp-area-note > summary::-webkit-details-marker { display: none; }
+.pp-area-note .pp-region-label { grid-column: 1; margin: 0; }
+.pp-area-note > summary strong { grid-column: 1; color: #203a30; font-size: 18px; }
+.pp-area-note-toggle { grid-column: 2; grid-row: 1 / span 2; color: #285b40; font-size: 22px; }
+.pp-area-note[open] .pp-area-note-toggle { transform: rotate(45deg); }
+.pp-area-note > p { margin: 13px 0 0; }
+
+@media (max-width: 760px) {
+  .routine-choice-grid { grid-template-columns: minmax(0, 1fr); }
+  .routine-intent-nav { gap: 7px; }
+  .routine-intent-nav a { padding-inline: 11px; font-size: 14px; }
+  .progress-learning-summary { grid-template-columns: minmax(0, 1fr); }
+  .follow-along-dialog[open] { width: calc(100vw - 16px); height: calc(100dvh - 16px); max-height: calc(100dvh - 16px); }
+  .follow-along-shell { padding: 11px; }
+  .follow-along-layout { grid-template-columns: minmax(0, 1fr); gap: 9px; padding-top: 9px; }
+  .follow-along-image { max-height: clamp(105px, 17dvh, 145px); }
+  .follow-along-visual { padding: 5px; }
+  .follow-along-visual figcaption { display: none; }
+  .follow-along-guide { gap: 7px; }
+  .follow-technique { font-size: 26px; }
+  .follow-instruction { font-size: 15px; }
+  .follow-cues { gap: 6px; }
+  .follow-cues > div { padding: 8px; }
+  .follow-cues dd { font-size: 13px; }
+  .follow-control-dock { grid-template-columns: minmax(0, 1fr); gap: 7px; padding: 8px 4px 0; }
+  .follow-control-dock .follow-transition,
+  .follow-control-dock .follow-safety,
+  .follow-control-dock .follow-finish,
+  .follow-control-dock .follow-clock,
+  .follow-control-dock .follow-status,
+  .follow-control-dock .follow-controls { grid-column: 1; grid-row: auto; }
+  .follow-control-dock .follow-clock { align-items: center; }
+  .follow-time { font-size: 42px; }
+  .follow-controls .button { min-height: 48px; }
+  .follow-safety { margin-top: 2px; padding: 7px 9px; font-size: 12px; line-height: 1.35; }
+  .follow-status { font-size: 12px; }
+  .quick-practice-picker-row { align-items: stretch; flex-direction: column; gap: 4px; }
+  .quick-practice-picker-row > span { padding: 0; }
+}
 /* Hand curriculum, unique photo steps, and keyboard sequence affordances. */
 .hand-technique-card:focus-within,
 .hand-quick-card:focus-within,
@@ -355,13 +470,14 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
   .hand-technique-nav .button, .point-sequence-nav .button, .practice-sequence-nav .button { flex: 1 1 132px; }
 }
 @media (max-width: 520px) {
-  .follow-along-photo-wrap { max-height: 24dvh; }
+  .follow-along-photo-wrap { max-height: 18dvh; }
+  .follow-along-header .sequence-key-hint { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .page :is(.button, .lesson-card, .reference-card, .reference-hub-card, .area-explorer-card) { transition: none; }
 }
 
-/* Focused 10-step visual lessons */
+/* Focused, compact visual lessons */
 .visual-learning-dialog {
   width: min(1160px, calc(100vw - 28px));
   max-width: none;
@@ -481,7 +597,6 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
 .scalp-module .scalp-card-body { grid-column: 2; grid-row: 2; }
 .scalp-module .hand-technique-nav, .scalp-module .sequence-key-hint { grid-column: 1 / -1; }
 
-.routine-stack { grid-template-columns: repeat(2, minmax(0, 1fr)); align-items: start; }
 .page .routine-card-enhanced, .page .routine-card-enhanced:first-child, .page .routine-card-enhanced.is-recommended {
   display: flex; grid-column: auto; flex-direction: column; align-items: stretch; gap: 12px;
   padding: clamp(18px, 2vw, 24px); background: #fff; border: 1px solid #d0ddd0; border-radius: 19px;
