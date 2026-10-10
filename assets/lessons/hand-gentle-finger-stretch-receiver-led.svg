@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1448" height="1086" viewBox="0 0 1448 1086" role="img" aria-labelledby="title desc">
+  <title id="title">Receiver-led gentle finger movement</title>
+  <desc id="desc">Two clear palm-up hand diagrams show a supported, relaxed index finger and then the recipient gently straightening that finger themselves. The practitioner does not grasp or pull the finger.</desc>
+  <defs>
+    <marker id="move-arrow" markerWidth="18" markerHeight="18" refX="14" refY="9" markerUnits="userSpaceOnUse" orient="auto">
+      <path d="M1 1 17 9 1 17z" fill="#a84838" stroke="#fff" stroke-width="2"/>
+    </marker>
+    <style>
+      .panel { fill: #fffefa; stroke: #d9dfd5; stroke-width: 3; }
+      .heading { fill: #193b30; font: 700 44px system-ui, sans-serif; letter-spacing: 1px; }
+      .subheading { fill: #435b50; font: 600 30px system-ui, sans-serif; }
+      .skin { fill: #edc1ac; stroke: #705244; stroke-width: 6; stroke-linejoin: round; }
+      .moving { fill: #d99576; stroke: #705244; stroke-width: 7; stroke-linejoin: round; }
+      .joint { fill: none; stroke: #bd8a73; stroke-width: 4; stroke-linecap: round; }
+      .palm-line { fill: none; stroke: #c9957e; stroke-width: 4; stroke-linecap: round; opacity: .8; }
+    </style>
+  </defs>
+  <rect width="1448" height="1086" fill="#f4f2eb"/>
+  <rect class="panel" x="32" y="28" width="674" height="1030" rx="24"/>
+  <rect class="panel" x="742" y="28" width="674" height="1030" rx="24"/>
+
+  <text class="heading" x="70" y="88">01 · START</text>
+  <text class="subheading" x="70" y="124">Let one finger rest easily.</text>
+  <text class="heading" x="780" y="88">02 · RECIPIENT MOVES</text>
+  <text class="subheading" x="780" y="124">They straighten within comfort.</text>
+
+  <g transform="translate(54 85) scale(1.02)">
+    <ellipse cx="302" cy="764" rx="260" ry="36" fill="#e9e5da"/>
+    <path class="skin" d="M207 780c8-58 6-105 4-155 10-34 213-37 227 0-1 57 2 106 18 155z"/>
+    <path class="skin" d="M276 562c-8-74-8-193-2-307 2-38 22-57 46-56 25 1 42 21 40 59l-8 221c-2 35 2 65 11 91z"/>
+    <path class="skin" d="M347 562c-1-100 5-222 15-303 4-35 24-53 48-49 24 4 37 24 32 58l-25 218c-5 31-5 54 3 76z"/>
+    <path class="skin" d="M416 565c9-91 26-184 43-251 8-31 28-45 50-38 22 7 30 27 21 57l-46 151c-10 31-12 56-3 83z"/>
+    <path class="moving" d="M205 562c-7-61-14-119-10-166 2-24 20-42 43-40 24 2 35 20 31 46l-7 51 14 18-16 22c-1 24 4 49 12 69z"/>
+    <path class="skin" d="M187 493c21-42 60-62 105-64 48-2 103 15 143 43 32 22 47 51 42 93-4 40-11 79-31 104H207c-21-22-31-56-32-91-1-31 1-62 12-85z"/>
+    <path class="skin" d="M193 548c-36-29-68-62-93-101-16-24-12-45 6-57 19-12 39-5 54 16l52 73 7 80z"/>
+    <path class="joint" d="M204 426c14 7 29 9 45 7M275 367c22 6 44 7 66 5M361 354c20 6 40 8 61 6M444 370c18 8 37 12 55 13"/>
+    <path class="palm-line" d="M230 509c46 25 99 31 152 20M237 548c45 17 92 20 138 12"/>
+  </g>
+
+  <g transform="translate(764 85) scale(1.02)">
+    <ellipse cx="302" cy="764" rx="260" ry="36" fill="#e9e5da"/>
+    <path class="skin" d="M207 780c8-58 6-105 4-155 10-34 213-37 227 0-1 57 2 106 18 155z"/>
+    <path class="skin" d="M276 562c-8-74-8-193-2-307 2-38 22-57 46-56 25 1 42 21 40 59l-8 221c-2 35 2 65 11 91z"/>
+    <path class="skin" d="M347 562c-1-100 5-222 15-303 4-35 24-53 48-49 24 4 37 24 32 58l-25 218c-5 31-5 54 3 76z"/>
+    <path class="skin" d="M416 565c9-91 26-184 43-251 8-31 28-45 50-38 22 7 30 27 21 57l-46 151c-10 31-12 56-3 83z"/>
+    <path class="moving" d="M205 562c-6-73-7-163-1-238 3-34 22-53 46-51 24 2 39 22 37 55l-8 234z"/>
+    <path class="skin" d="M187 493c21-42 60-62 105-64 48-2 103 15 143 43 32 22 47 51 42 93-4 40-11 79-31 104H207c-21-22-31-56-32-91-1-31 1-62 12-85z"/>
+    <path class="skin" d="M193 548c-36-29-68-62-93-101-16-24-12-45 6-57 19-12 39-5 54 16l52 73 7 80z"/>
+    <path class="joint" d="M204 426c14 7 29 9 45 7M275 367c22 6 44 7 66 5M361 354c20 6 40 8 61 6M444 370c18 8 37 12 55 13"/>
+    <path class="palm-line" d="M230 509c46 25 99 31 152 20M237 548c45 17 92 20 138 12"/>
+    <path d="M184 470c-18-54-16-131 3-202" fill="none" stroke="#a84838" stroke-width="12" stroke-linecap="round" marker-end="url(#move-arrow)"/>
+  </g>
+
+</svg>

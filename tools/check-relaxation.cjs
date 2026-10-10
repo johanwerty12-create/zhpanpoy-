@@ -4,6 +4,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const project = path.resolve(__dirname, '..');
+const appShell = fs.readFileSync(path.join(project, 'index.html'), 'utf8');
+for (const script of ['app.js', 'relaxation-coach.js', 'hand-massage.js']) {
+  assert.match(appShell, new RegExp('/' + script.replace('.', '\\.') + '\\?v=technique-visuals-20261010'), 'Release cache key is bumped for ' + script);
+}
 const clock = { now: 0, next: 0, intervals: new Map() };
 class ClockDate extends Date { static now() { return clock.now; } }
 let roots = [];
@@ -71,10 +75,13 @@ assert.equal(new Set(handImages).size, 15, 'Every hand technique needs its own u
 assert.ok(handImages.includes('hand-gentle-wrist-circles-v2.webp'));
 assert.ok(evaluate('handMassageTechniques.every(item => item.what && item.place && item.contact && item.direction && item.pressure && item.notice && item.avoid && item.alt)'));
 const receiverLedStretch = evaluate("handMassageTechniques.find(item => item.id === 'gentle-finger-stretch')");
-assert.equal(receiverLedStretch.image, 'hand-gentle-finger-stretch-receiver-led.webp');
+assert.equal(receiverLedStretch.image, 'hand-gentle-finger-stretch-receiver-led.svg');
 assert.match(receiverLedStretch.what, /receiver.*themselves/i, 'The finger movement stays receiver-led');
 assert.match(receiverLedStretch.visualCue, /never pull/i, 'The visual explicitly rules out practitioner traction');
 assert.ok(fs.existsSync(path.join(project, 'assets', 'lessons', receiverLedStretch.image)));
+const receiverLedDiagram = fs.readFileSync(path.join(project, 'assets', 'lessons', receiverLedStretch.image), 'utf8');
+assert.match(receiverLedDiagram, /RECIPIENT MOVES/);
+assert.match(receiverLedDiagram, /does not grasp or pull the finger/i);
 const kneadArtwork = evaluate('lessonArtworkByType.knead');
 assert.equal(kneadArtwork.image, 'lesson-05-kneading-sequence.webp');
 assert.match(kneadArtwork.alt, /Three-frame sequence/);
@@ -246,11 +253,11 @@ assert.match(filteredItems[2].querySelector('.sequence-key-hint').textContent, /
 const quickHandMarkup = evaluate('handMassageQuickPracticeMarkup(lessons[9])');
 assert.equal((quickHandMarkup.match(/class="hand-quick-card"/g) || []).length, 15);
 checkAssets(quickHandMarkup);
-assert.match(quickHandMarkup, /hand-gentle-finger-stretch-receiver-led\.webp/);
-assert.match(quickHandMarkup, /receiver moves, you never pull/i);
+assert.match(quickHandMarkup, /hand-gentle-finger-stretch-receiver-led\.svg/);
+assert.match(quickHandMarkup, /recipient moves; support the palm only; never pull/i);
 const handPageMarkup = evaluate('handMassagePage()');
-assert.match(handPageMarkup, /hand-gentle-finger-stretch-receiver-led\.webp/);
-assert.match(handPageMarkup, /receiver moves, you never pull/i);
+assert.match(handPageMarkup, /hand-gentle-finger-stretch-receiver-led\.svg/);
+assert.match(handPageMarkup, /recipient moves; support the palm only; never pull/i);
 assert.equal((quickHandMarkup.match(/class="hand-motion-cue"/g) || []).length, 1, 'The forearm-circle step needs its circular motion cue');
 for (let i = 0; i < 6; i++) {
   const point = evaluate(`pressurePoints[${i}]`);

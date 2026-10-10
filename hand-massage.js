@@ -110,14 +110,14 @@ const handMassageTechniques = [
     avoid: 'Pinching, holding pressure, squeezing a joint, or continuing through discomfort.'
   },
   {
-    id: 'gentle-finger-stretch', title: 'Gentle Finger Stretch', image: 'hand-gentle-finger-stretch-receiver-led.webp',
-    alt: 'Two frames show a supported palm-up hand and light side support at one finger, followed by a slightly longer relaxed position; the receiver controls the movement.',
-    visualCue: 'Two frames · light support only; the receiver moves, you never pull.',
-    what: 'The receiver gently straightens one relaxed finger themselves while you support it lightly; do not pull.',
-    place: 'Support the palm and keep the wrist straight and relaxed.',
-    contact: 'Rest your fingers lightly along the sides of the finger as a guide, not a grip.',
-    direction: 'The receiver slowly straightens only within their easy range, then relaxes; do not move the finger for them.',
-    pressure: 'No pulling force. The person controls the entire movement.',
+    id: 'gentle-finger-stretch', title: 'Gentle Finger Stretch', image: 'hand-gentle-finger-stretch-receiver-led.svg',
+    alt: 'Two-panel palm-up hand diagram: a supported, relaxed index finger then the recipient gently straightens that finger themselves. No practitioner grips or pulls it.',
+    visualCue: 'Recipient moves; support the palm only; never pull the finger.',
+    what: 'Invite the receiver to gently straighten one relaxed finger themselves; never move it for them.',
+    place: 'Rest the palm-up hand on a towel; keep the wrist straight and relaxed.',
+    contact: 'Keep the moving finger free; offer still palm support only if asked.',
+    direction: 'The receiver straightens their own finger within an easy range, then relaxes.',
+    pressure: 'No traction or external force; the receiver controls the whole motion.',
     notice: 'Movement is small, voluntary, and comfortable; stopping is easy.',
     avoid: 'Passive pulling, levering, end-range stretch, pain, or any stiff/injured finger.'
   },
