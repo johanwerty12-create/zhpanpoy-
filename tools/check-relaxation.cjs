@@ -5,8 +5,12 @@ const path = require('node:path');
 const vm = require('node:vm');
 const project = path.resolve(__dirname, '..');
 const appShell = fs.readFileSync(path.join(project, 'index.html'), 'utf8');
-for (const script of ['app.js', 'relaxation-coach.js', 'hand-massage.js']) {
-  assert.match(appShell, new RegExp('/' + script.replace('.', '\\.') + '\\?v=technique-visuals-20261010'), 'Release cache key is bumped for ' + script);
+for (const [script, version] of Object.entries({
+  'app.js': 'technique-visuals-20261010',
+  'relaxation-coach.js': 'technique-visuals-20261010b',
+  'hand-massage.js': 'technique-visuals-20261010'
+})) {
+  assert.match(appShell, new RegExp('/' + script.replace('.', '\\.') + '\\?v=' + version), 'Release cache key is bumped for ' + script);
 }
 const clock = { now: 0, next: 0, intervals: new Map() };
 class ClockDate extends Date { static now() { return clock.now; } }
@@ -89,9 +93,10 @@ assert.match(kneadArtwork.caption, /gather a little.*release fully.*Never pinch/
 assert.ok(fs.existsSync(path.join(project, 'assets', 'lessons', kneadArtwork.image)));
 assert.match(evaluate('lessonPage(5)'), /lesson-05-kneading-sequence\.webp/, 'Lesson 5 renders the three-stage kneading sequence');
 assert.match(evaluate('quickVersion(lessons[4])'), /lesson-05-kneading-sequence\.webp/, 'Kneading Quick Practice uses the same teaching visual');
-const wristCuePath = 'M480 260 A34 34 0 1 1 478 259';
+const wristCuePath = 'M487 304 A34 34 0 0 1 487 236 A34 34 0 0 1 487 304';
 assert.ok(evaluate("handMovementCueSvg('gentle-wrist-circles')").includes(wristCuePath), 'The wrist circle overlay is centered on the photographed fingertip contact');
-assert.ok(fs.readFileSync(path.join(project, 'assets', 'lessons', 'movement-cues', 'gentle-wrist-circles.svg'), 'utf8').includes(wristCuePath), 'Follow Along uses the same photo-checked wrist cue');
+assert.equal(evaluate("routineMotionCueImages['gentle-wrist-circles']"), 'gentle-wrist-circles-v2.svg');
+assert.ok(fs.readFileSync(path.join(project, 'assets', 'lessons', 'movement-cues', 'gentle-wrist-circles-v2.svg'), 'utf8').includes(wristCuePath), 'Follow Along uses the same photo-checked wrist cue');
 const handFollowAlongStages = evaluate('routineCoachedStages(routineData[7])');
 const fingerStretchStage = handFollowAlongStages.find(stage => stage.techniqueId === 'gentle-finger-stretch');
 assert.equal(fingerStretchStage.image, receiverLedStretch.image, 'Hand Follow Along uses the receiver-led finger image');
@@ -548,7 +553,7 @@ for (let routineId = 0; routineId < 9; routineId++) {
     }
     if (routineId === 7 && stage.techniqueId === 'gentle-wrist-circles') {
       assert.equal(followDialog.querySelector('.follow-motion-cue').hidden, false);
-      assert.equal(followDialog.querySelector('.follow-motion-cue').src, '/assets/lessons/movement-cues/gentle-wrist-circles.svg');
+      assert.equal(followDialog.querySelector('.follow-motion-cue').src, '/assets/lessons/movement-cues/gentle-wrist-circles-v2.svg');
     }
     if (routineId === 8) {
       const marker = followDialog.querySelector('.follow-point-marker');
