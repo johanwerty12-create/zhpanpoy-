@@ -64,7 +64,7 @@ const lessons = [
     feel: "A gentle rolling or lifting sensation in soft muscle. The area should feel warmer, not sore or bruised.",
     mistakes: ["Pinching the skin between fingertips.", "Squeezing as if kneading dough.", "Working over a tendon, joint, bruise, or acute injury."],
     safety: "Do not knead injured, swollen, inflamed, or acutely painful areas. If there is an injury or medical condition, ask a qualified professional before massage.",
-    practice: ["gather, do not pinch", "small lift", "smooth release", "keep moving"], visual: ["knead", "A small lift and release creates rhythm without force.", "Hand diagram showing a gentle lift and release over soft tissue"],
+    practice: ["gather a little", "do not pinch", "release fully", "keep moving"], visual: ["knead", "Broad contact: gather a little, then fully release.", "Three-frame calf sequence: broad hand contact, a small shallow gather, and a full release."],
     quiz: [["What is beginner kneading?", ["A deep squeeze", "A small lift and release", "A fast pinch"], 1, "Keep the lift small, shallow, and rhythmic."], ["What should you avoid?", ["Soft muscle", "Moving along gradually", "Pinching the skin"], 2, "Use the broad palm and finger pads instead of pinching."]]
   },
   {
@@ -363,7 +363,7 @@ const lessonArtworkByType = {
   hands: { image: "lesson-02-hands.webp", alt: "Two relaxed hands rest palm-down on a towel with neutral, straight wrists.", caption: "Keep fingers relaxed and let the broad palm spread contact." },
   glide: { image: "lesson-03-gliding.webp", alt: "A therapist's palm glides along a supported forearm while the wrist stays relaxed.", caption: "Use a smooth working stroke and ease pressure on the return." },
   circles: { image: "lesson-04-circles-relaxed.webp", alt: "A relaxed broad palm rests on the back shoulder of a seated, supported client, clearly below and away from the neck.", caption: "Settle the broad palm on soft back shoulder muscle; use only a tiny skin circle." },
-  knead: { image: "lesson-05-kneading.webp", alt: "A therapist gently gathers soft calf tissue with a relaxed hand.", caption: "Lift and release a little tissue; do not pinch or squeeze." },
+  knead: { image: "lesson-05-kneading-sequence.webp", alt: "Three-frame sequence: a broad relaxed hand contacts soft calf muscle, gathers a very small amount, then releases fully; the shin and Achilles are clear.", caption: "1 Broad contact → 2 gather a little → 3 release fully. Never pinch." },
   shoulders: { image: "lesson-06-shoulders.webp", alt: "Two relaxed palms rest over a clothed client's shoulder muscles, away from the neck.", caption: "Stay on soft shoulder muscle; keep the neck and joints clear." },
   back: { image: "lesson-07-upper-back.webp", alt: "A therapist's hands rest on either side of the spine over a clothed client's back.", caption: "Move over broad muscle beside the spine, never directly on it." },
   neck: { image: "lesson-08-neck-support.webp", alt: "A reclined head rests on a pillow while soft fingers rest at the back skull edge without lifting.", caption: "The pillow carries the head. Hands offer optional still contact without lifting or pulling." },

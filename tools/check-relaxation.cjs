@@ -70,6 +70,25 @@ const handImages = Array.from(evaluate('handMassageTechniques.map(item => item.i
 assert.equal(new Set(handImages).size, 15, 'Every hand technique needs its own unique image');
 assert.ok(handImages.includes('hand-gentle-wrist-circles-v2.webp'));
 assert.ok(evaluate('handMassageTechniques.every(item => item.what && item.place && item.contact && item.direction && item.pressure && item.notice && item.avoid && item.alt)'));
+const receiverLedStretch = evaluate("handMassageTechniques.find(item => item.id === 'gentle-finger-stretch')");
+assert.equal(receiverLedStretch.image, 'hand-gentle-finger-stretch-receiver-led.webp');
+assert.match(receiverLedStretch.what, /receiver.*themselves/i, 'The finger movement stays receiver-led');
+assert.match(receiverLedStretch.visualCue, /never pull/i, 'The visual explicitly rules out practitioner traction');
+assert.ok(fs.existsSync(path.join(project, 'assets', 'lessons', receiverLedStretch.image)));
+const kneadArtwork = evaluate('lessonArtworkByType.knead');
+assert.equal(kneadArtwork.image, 'lesson-05-kneading-sequence.webp');
+assert.match(kneadArtwork.alt, /Three-frame sequence/);
+assert.match(kneadArtwork.caption, /gather a little.*release fully.*Never pinch/);
+assert.ok(fs.existsSync(path.join(project, 'assets', 'lessons', kneadArtwork.image)));
+assert.match(evaluate('lessonPage(5)'), /lesson-05-kneading-sequence\.webp/, 'Lesson 5 renders the three-stage kneading sequence');
+assert.match(evaluate('quickVersion(lessons[4])'), /lesson-05-kneading-sequence\.webp/, 'Kneading Quick Practice uses the same teaching visual');
+const wristCuePath = 'M480 260 A34 34 0 1 1 478 259';
+assert.ok(evaluate("handMovementCueSvg('gentle-wrist-circles')").includes(wristCuePath), 'The wrist circle overlay is centered on the photographed fingertip contact');
+assert.ok(fs.readFileSync(path.join(project, 'assets', 'lessons', 'movement-cues', 'gentle-wrist-circles.svg'), 'utf8').includes(wristCuePath), 'Follow Along uses the same photo-checked wrist cue');
+const handFollowAlongStages = evaluate('routineCoachedStages(routineData[7])');
+const fingerStretchStage = handFollowAlongStages.find(stage => stage.techniqueId === 'gentle-finger-stretch');
+assert.equal(fingerStretchStage.image, receiverLedStretch.image, 'Hand Follow Along uses the receiver-led finger image');
+assert.match(fingerStretchStage.short, /receiver.*themselves/i);
 const pointImages = Array.from(evaluate('pressurePoints.map(point => pressurePointVisualSpecs[point.id].image)'));
 assert.equal(new Set(pointImages).size, 6, 'Each pressure point must have its own body-context image');
 for (const image of pointImages) assert.ok(fs.existsSync(path.join(project, 'assets', 'lessons', image)), 'Missing point image: ' + image);
@@ -227,6 +246,11 @@ assert.match(filteredItems[2].querySelector('.sequence-key-hint').textContent, /
 const quickHandMarkup = evaluate('handMassageQuickPracticeMarkup(lessons[9])');
 assert.equal((quickHandMarkup.match(/class="hand-quick-card"/g) || []).length, 15);
 checkAssets(quickHandMarkup);
+assert.match(quickHandMarkup, /hand-gentle-finger-stretch-receiver-led\.webp/);
+assert.match(quickHandMarkup, /receiver moves, you never pull/i);
+const handPageMarkup = evaluate('handMassagePage()');
+assert.match(handPageMarkup, /hand-gentle-finger-stretch-receiver-led\.webp/);
+assert.match(handPageMarkup, /receiver moves, you never pull/i);
 assert.equal((quickHandMarkup.match(/class="hand-motion-cue"/g) || []).length, 1, 'The forearm-circle step needs its circular motion cue');
 for (let i = 0; i < 6; i++) {
   const point = evaluate(`pressurePoints[${i}]`);

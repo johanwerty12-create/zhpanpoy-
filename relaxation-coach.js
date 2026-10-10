@@ -25,7 +25,7 @@ function scalpCoachedStages(technique) {
 
 function handMovementCueSvg(techniqueId, className) {
   const paths = {
-    'gentle-wrist-circles': ['M480 218 A42 42 0 1 1 478 217'],
+    'gentle-wrist-circles': ['M480 260 A34 34 0 1 1 478 259'],
     'forearm-glide': ['M290 436 C395 429 500 420 615 410'],
     'shoulder-glide': ['M485 430 C430 424 370 420 310 416', 'M565 430 C625 424 690 420 755 416'],
     'shoulder-circles': ['M635 376 C635 342 670 321 700 335 C736 350 736 393 704 411 C676 427 642 407 637 383'],
