@@ -4,8 +4,8 @@ let activeRoutineFollowAlong = null;
 let activeCoachedSessionKey = null;
 
 function comfortCoachMarkup(lesson) {
-  const heading = lesson.id === 8 ? 'Start light · check comfort · keep the head supported' : 'Start light · check comfort · adjust slowly';
-  return '<aside class="comfort-coach" aria-label="Comfort and relaxed hands"><h3>' + heading + '</h3><p>' + esc(lesson.pressure[0]) + '</p><p>' + esc(lesson.pressure[1]) + '</p><p><strong>Say:</strong> “Does this feel comfortable? If you want lighter pressure, let me know.”</p><p>Keep shoulders loose, wrists comfortable, elbows soft, and breathing normal. Slow down or switch hands if you tense. More pressure does not automatically mean better massage.</p><p class="comfort-stop">Stop for sharp or unusual pain, numbness, tingling, dizziness, faintness, or unusual weakness. The timer never overrides comfort.</p></aside>';
+  const heading = lesson.id === 8 ? 'Start light · check comfort · keep the head supported' : 'Start light · check comfort';
+  return '<aside class="comfort-coach" aria-label="Comfort and relaxed hands"><h3>' + heading + '</h3><p class="comfort-pressure"><strong>Pressure:</strong> ' + esc(lesson.pressure[0]) + '</p><p class="comfort-stop"><strong>Stop:</strong> sharp or unusual pain, numbness, tingling, dizziness, faintness, or unusual weakness. The timer never overrides comfort.</p><details class="comfort-more"><summary>Optional comfort and posture tips</summary><div class="comfort-more-copy"><p><strong>Next range:</strong> ' + esc(lesson.pressure[1]) + '</p><p><strong>Ask:</strong> “Does this feel comfortable? If you want lighter pressure, let me know.”</p><p><strong>Posture:</strong> Keep shoulders loose, wrists comfortable, elbows soft, and breathing normal. Slow down or switch hands if you tense. More pressure does not automatically mean better massage.</p></div></details></aside>';
 }
 
 function lessonCoachedStages(lesson) {
@@ -210,6 +210,7 @@ function bindGuidedPractices() {
       if (mode !== 'running') return;
       remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
       clear(); mode = 'paused'; toggle.textContent = 'Resume'; time.textContent = formatScalpTime(remaining);
+      previous.hidden = false;
       forward.hidden = false;
       status.textContent = message || 'Paused. Ease pressure off and rest your hands; resume only when both people are comfortable.';
     }

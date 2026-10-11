@@ -5,9 +5,11 @@ const path = require('node:path');
 const vm = require('node:vm');
 const project = path.resolve(__dirname, '..');
 const appShell = fs.readFileSync(path.join(project, 'index.html'), 'utf8');
+const polishCss = fs.readFileSync(path.join(project, 'design-polish.css'), 'utf8');
 for (const [script, version] of Object.entries({
-  'app.js': 'technique-visuals-20261010',
-  'relaxation-coach.js': 'technique-visuals-20261010b',
+  'app.js': 'full-ux-20261011',
+  'product-pass.js': 'full-ux-20261011',
+  'relaxation-coach.js': 'full-ux-20261011',
   'hand-massage.js': 'technique-visuals-20261010'
 })) {
   assert.match(appShell, new RegExp('/' + script.replace('.', '\\.') + '\\?v=' + version), 'Release cache key is bumped for ' + script);
@@ -87,12 +89,28 @@ const receiverLedDiagram = fs.readFileSync(path.join(project, 'assets', 'lessons
 assert.match(receiverLedDiagram, /RECIPIENT MOVES/);
 assert.match(receiverLedDiagram, /does not grasp or pull the finger/i);
 const kneadArtwork = evaluate('lessonArtworkByType.knead');
-assert.equal(kneadArtwork.image, 'lesson-05-kneading-sequence.webp');
-assert.match(kneadArtwork.alt, /Three-frame sequence/);
+assert.equal(kneadArtwork.image, 'lesson-05-kneading-sequence-v2.webp');
+assert.match(kneadArtwork.alt, /Three-panel sequence.*gathers a little without pinching.*lifts clear/);
 assert.match(kneadArtwork.caption, /gather a little.*release fully.*Never pinch/);
 assert.ok(fs.existsSync(path.join(project, 'assets', 'lessons', kneadArtwork.image)));
-assert.match(evaluate('lessonPage(5)'), /lesson-05-kneading-sequence\.webp/, 'Lesson 5 renders the three-stage kneading sequence');
-assert.match(evaluate('quickVersion(lessons[4])'), /lesson-05-kneading-sequence\.webp/, 'Kneading Quick Practice uses the same teaching visual');
+assert.match(evaluate('quickPracticeGuides[5].imageAlt'), /Three-panel photo sequence.*shallow gather without pinching.*lifted clear/);
+assert.match(evaluate('lessonPage(5)'), /lesson-05-kneading-sequence-v2\.webp/, 'Lesson 5 renders the distinct three-stage kneading sequence');
+assert.match(evaluate('quickVersion(lessons[4])'), /lesson-05-kneading-sequence-v2\.webp/, 'Kneading Quick Practice uses the same teaching visual');
+const neckArtwork = evaluate('lessonArtworkByType.neck');
+assert.equal(neckArtwork.image, 'lesson-08-neck-support-v2.webp');
+assert.match(neckArtwork.alt, /head rests fully on a pillow.*without lifting or pressing the neck/i);
+assert.match(neckArtwork.caption, /pillow carries the head.*never the neck/i);
+assert.ok(fs.existsSync(path.join(project, 'assets', 'lessons', neckArtwork.image)));
+assert.match(evaluate('quickPracticeGuides[8].imageAlt'), /head rests fully on a pillow.*without lifting or pressing the neck/i);
+assert.match(evaluate('lessonPage(8)'), /lesson-08-neck-support-v2\.webp/, 'Lesson 8 uses the independently supported head visual');
+assert.match(evaluate('quickVersion(lessons[7])'), /lesson-08-neck-support-v2\.webp/, 'Neck Quick Practice uses the same safe support visual');
+assert.match(polishCss, /body\s*\{\s*font-size:\s*18px/);
+assert.match(polishCss, /@media\s*\(max-width:\s*760px\)\s*\{\s*body\s*\{\s*font-size:\s*18px;/, 'Mobile body type remains at the readable 18px floor');
+assert.match(polishCss, /\.page :is\(p, li, label, legend, summary, dd, dt\) \{ font-size: 18px !important; \}/);
+assert.match(polishCss, /\.page :is\(button, a\) \{ font-size: 16px !important; \}/, 'Primary and secondary controls retain a readable type floor');
+assert.match(polishCss, /\.footer :is\(span, a\) \{ font-size: 16px !important; \}/, 'Footer text is not left at miniature sizes');
+assert.match(polishCss, /--focus-ring:\s*#87411f/);
+assert.match(polishCss, /\.quick-practice-page \.reference-hero/);
 const wristCuePath = 'M487 304 A34 34 0 0 1 487 236 A34 34 0 0 1 487 304';
 assert.ok(evaluate("handMovementCueSvg('gentle-wrist-circles')").includes(wristCuePath), 'The wrist circle overlay is centered on the photographed fingertip contact');
 assert.equal(evaluate("routineMotionCueImages['gentle-wrist-circles']"), 'gentle-wrist-circles-v2.svg');
@@ -107,8 +125,11 @@ for (const image of pointImages) assert.ok(fs.existsSync(path.join(project, 'ass
 for (let id = 1; id <= lessonCount; id++) {
   for (const markup of [evaluate(`lessonPage(${id})`), evaluate(`quickVersion(lessons[${id - 1}])`)]) {
     checkAssets(markup);
+    assert.ok(!markup.includes('See the hand placement, then practice the small action below.'), 'Avoid redundant generic Quick Practice copy in lesson ' + id);
     assert.ok(markup.includes('data-coach-session='), 'Missing guided practice for lesson ' + id);
     assert.ok(markup.includes('Start light'), 'Missing comfort guide for lesson ' + id);
+    assert.ok(markup.includes('class="comfort-more"'), 'Optional coaching details should be collapsed for lesson ' + id);
+    assert.ok(markup.includes('class="comfort-stop"'), 'Immediate stop guidance must remain visible for lesson ' + id);
     assert.ok(!markup.includes('scalp-practice-start') && !markup.includes('class="button primary small practice-start"'));
   }
   const detailedLesson = evaluate(`fullLesson(lessons[${id - 1}])`);
@@ -117,6 +138,7 @@ for (let id = 1; id <= lessonCount; id++) {
   assert.match(detailedLesson, /data-sequence-item="1" aria-current="step"/, 'Detailed lessons begin with their first keyboard step selected');
   assert.equal(evaluate(`lessons[${id - 1}].quiz.length`), 2);
 }
+assert.match(evaluate('quickPracticePage()'), /Pick a skill; use ←\/→ to move\./, 'Quick Practice keeps its entry guidance concise');
 const pages = ['home()', 'course()', 'techniques()', 'areas()', 'routines()', 'safety()', 'progressPage()', 'reference()', 'pressurePointsPage()', 'handMassagePage()', 'quickPracticePage()', 'notFound()'];
 pages.forEach(page => { const html = evaluate(page); assert.ok(html.includes('<main'), page); checkAssets(html); });
 assert.match(evaluate('progressPage()'), /0 \/ 9/);
@@ -773,6 +795,11 @@ assert.equal(guided.querySelector('.coach-toggle').textContent, 'Resume');
 documentHandlers.keydown({ key: ' ', code: 'Space', target: guidedTarget, defaultPrevented: false, altKey: false, ctrlKey: false, metaKey: false, shiftKey: false, isComposing: false,
   preventDefault() {}, stopPropagation() {} });
 assert.equal(guided.querySelector('.coach-toggle').textContent, 'Pause', 'Space resumes paused guided practice');
+click(guided, '.coach-toggle');
+assert.equal(guided.querySelector('.coach-stage-previous').hidden, false, 'Pausing a later stage exposes its Previous control');
+assert.equal(guided.querySelector('.coach-stage-previous').disabled, false, 'Previous is enabled once a prior stage exists');
+click(guided, '.coach-stage-previous');
+assert.equal(guided.querySelector('.coach-stage-count').textContent, 'Stage 1 of 3', 'Visible Previous returns to the earlier practice stage');
 evaluate('stopAllCoachedSessions()');
 
 // Full-screen Follow Along uses its visible controls even if focus is outside its dialog.

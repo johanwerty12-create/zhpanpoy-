@@ -643,3 +643,278 @@ body { background: var(--paper); font-family: 'Segoe UI', system-ui, sans-serif;
   .scalp-module .scalp-visual-enlarge, .scalp-module .scalp-card-body { grid-column: 1; grid-row: auto; }
   .scalp-module .scalp-card-heading { grid-column: 1; }
 }
+
+/* Course-wide readability, contrast, and first-screen efficiency. */
+:root {
+  --color-text-muted: #40564a;
+  --ink-soft: #40564a;
+  --muted: #4b6053;
+  --coral: #963f2e;
+  --focus-ring: #87411f;
+}
+
+body {
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.page {
+  width: min(1380px, calc(100% - 48px));
+}
+
+.page-narrow {
+  width: min(960px, calc(100% - 48px));
+}
+
+.page > section + section {
+  margin-top: 28px;
+}
+
+.page :is(p, li, label, legend, summary, dd, dt) {
+  font-size: 18px;
+  line-height: 1.58;
+}
+
+.page .lede,
+.page .section-heading > p {
+  font-size: 18px;
+  line-height: 1.55;
+}
+
+.page h1 { font-size: clamp(42px, 4.5vw, 62px); }
+.page h2 { font-size: clamp(29px, 2.8vw, 38px); }
+.page h3 { font-size: clamp(21px, 1.8vw, 26px); }
+.page h4 { font-size: 20px; }
+
+.shell-header { min-height: 72px; }
+.nav-link { min-height: 48px; font-size: 16px; }
+.button,
+.page .button { min-height: 48px; font-size: 16px; }
+.button.small,
+.page .button.small { min-height: 46px; }
+
+.page :is(small, .muted, .eyebrow, .lesson-kicker, .badge, .routine-tag,
+  .practice-count, .practice-status, .progress-caption, .lesson-progress-label,
+  .routine-time, .visual-caption, .practice-visual-label, .detail-label,
+  .reference-card-meta span, .course-stat span, .progress-big span,
+  .lesson-footer small, .sequence-key-hint, .practice-progression li,
+  .routine-card-progress, .routine-preview summary, .routine-preview li,
+  .routine-safety, .home-explore-link span, .hand-hero-facts span) {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.page :is(.reference-card p, .reference-hub-card p, .area-card p,
+  .area-explorer-card p, .routine-card p, .routine-card li,
+  .routine-card-enhanced .routine-description, .routine-step-list li p,
+  .routine-safety, .feature-card p, .hand-page-hero figcaption,
+  .hand-technique-card figcaption, .hand-quick-card figcaption,
+  .hand-quick-card dd, .area-detail strong, .area-card small) {
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.page .practice-picker-link strong { font-size: 16px; }
+.page .practice-picker-link small { font-size: 15px; }
+.page .practice-instructions li,
+.page .practice-watch li,
+.page .practice-avoid p { font-size: 18px; }
+.page .practice-visual-label { font-size: 15px; }
+.page .quick-version-head p { font-size: 18px; }
+
+.page :is(.pp-detail p, .pp-notice p, .pp-safety-box dd,
+  .pp-show-how li p, .pp-sources p, .pp-sources li) {
+  font-size: 16px !important;
+  line-height: 1.55 !important;
+}
+
+.page :is(.pp-point-area, .pp-region-label, .pp-detail h4, .pp-notice h4,
+  .pp-safety-box h4, .pp-safety-box dt, .pp-channel, .pp-visual-frame figcaption,
+  .pp-results-status, .pp-search-label, .pp-area-select-label) {
+  font-size: 15px;
+}
+
+.page :is(.follow-instruction, .visual-learning-instruction) { font-size: 18px; }
+.page :is(.follow-cues dd, .visual-learning-cues dd, .visual-learning-what p,
+  .visual-learning-avoid, .visual-learning-safety-details summary,
+  .visual-learning-status, .visual-learning-timer-note) { font-size: 16px; }
+.page :is(.follow-cues dt, .visual-learning-cues dt, .visual-learning-area,
+  .visual-learning-step-title, .visual-learning-what strong,
+  .visual-learning-safety, .visual-learning-stop, .follow-status,
+  .follow-safety, .coach-stage-count, .follow-phase-label) { font-size: 15px; }
+.page .visual-phase-track li { font-size: 13px; line-height: 1.3; }
+
+.page :is(input, select, textarea) {
+  min-height: 48px;
+  border-color: #718477;
+  font-size: 16px;
+}
+
+.page .button:not(.primary):not(.coral),
+.page .pp-area-chip,
+.page .routine-intent-nav a {
+  border-color: #718477;
+}
+
+.page :is(button, a, input, select, summary):focus-visible {
+  outline: 3px solid var(--focus-ring) !important;
+  outline-offset: 3px;
+}
+
+.hero { min-height: 370px; gap: clamp(28px, 4vw, 54px); }
+.hero-art { min-height: clamp(330px, 31vw, 390px); }
+.stat-strip,
+.feature-grid { margin-bottom: 38px; }
+
+.page.quick-practice-page {
+  padding-top: clamp(24px, 2.6vw, 38px);
+}
+
+.quick-practice-page .reference-hero {
+  gap: 18px 28px;
+  margin-bottom: 14px;
+}
+
+.quick-practice-page .reference-hero h1 {
+  margin-bottom: 8px;
+  font-size: clamp(42px, 4.2vw, 56px);
+}
+
+.quick-practice-page .reference-hero .lede {
+  margin-bottom: 0;
+}
+
+.quick-practice-picker-row {
+  padding: 10px 14px;
+  margin-bottom: 14px;
+}
+
+.page .quick-version {
+  padding: clamp(18px, 2vw, 26px);
+}
+
+.comfort-coach {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 18px;
+  padding: 16px 18px;
+}
+
+.comfort-coach > h3,
+.comfort-pressure,
+.comfort-stop,
+.comfort-more { grid-column: 1 / -1; }
+.comfort-coach > h3 { margin: 0; font-size: 22px; }
+.comfort-coach .comfort-pressure,
+.comfort-coach .comfort-stop { margin: 0; }
+.comfort-coach .comfort-pressure { color: #243f31; }
+.comfort-coach .comfort-stop { color: #692f27; }
+.comfort-more {
+  padding-top: 7px;
+  border-top: 1px solid #cbd9ce;
+}
+.comfort-more summary {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  color: #214f3a;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.comfort-more-copy {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  padding-top: 8px;
+}
+.comfort-more-copy p { margin: 0; font-size: 16px; }
+
+.page .routine-stack { gap: 28px; }
+.page .routine-choice-grid { gap: 14px; }
+.page .routine-card-enhanced { gap: 10px; }
+.page .routine-step-list li { padding: 12px; }
+.page .footer { font-size: 16px; }
+
+@media (max-width: 760px) {
+  body { font-size: 18px; }
+  .page { width: min(100% - 32px, 900px); }
+  .page-narrow { width: min(100% - 32px, 900px); }
+  .page :is(p, li, label, legend, summary, dd, dt) { font-size: 18px; }
+  .page .lede,
+  .page .section-heading > p { font-size: 18px; }
+  .page :is(.reference-card p, .reference-hub-card p, .area-card p,
+    .area-explorer-card p, .routine-card p, .routine-card li,
+    .routine-card-enhanced .routine-description, .routine-step-list li p,
+    .feature-card p, .hand-page-hero figcaption, .hand-technique-card figcaption,
+    .hand-quick-card figcaption, .hand-quick-card dd) { font-size: 16px; }
+  .hero { min-height: 0; }
+  .hero-art { min-height: clamp(260px, 72vw, 340px); }
+  .quick-practice-page .reference-hero { display: grid; grid-template-columns: 1fr auto; align-items: end; }
+  .quick-practice-page .reference-hero h1 { font-size: clamp(40px, 9vw, 48px); }
+  .quick-practice-page .reference-hero .button { padding-inline: 12px; }
+  .quick-practice-picker-row { padding: 10px 12px; }
+  .page .quick-version { padding: 16px; }
+  .comfort-coach { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 14px; }
+  .comfort-more-copy { grid-template-columns: minmax(0, 1fr); }
+  .page .visual-learning-layout { gap: 12px; }
+  .page .visual-phase-track li { font-size: 16px; }
+}
+
+@media (max-width: 420px) {
+  .page { width: calc(100% - 24px); }
+  .page-narrow { width: calc(100% - 24px); }
+  .page.quick-practice-page { padding-top: 24px; }
+  .quick-practice-page .reference-hero { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .quick-practice-page .reference-hero > .button { justify-self: start; }
+  .page .visual-phase-track li { font-size: 16px; }
+  .page .quick-version { padding: 13px; }
+}
+
+/* Keep instructional text and essential supporting labels readable everywhere. */
+.page :is(p, li, label, legend, summary, dd, dt) { font-size: 18px !important; }
+.page :is(small, .eyebrow, .badge, .lesson-kicker, .routine-tag, .practice-count,
+  .practice-status, .progress-caption, .lesson-progress-label, .routine-time,
+  .visual-caption, .practice-visual-label, .detail-label, .reference-card-meta span,
+  .course-stat span, .progress-big span, .lesson-footer small, .sequence-key-hint,
+  .practice-progression li, .routine-card-progress, .routine-preview summary,
+  .routine-preview li, .routine-safety, .home-explore-link span, .hand-hero-facts span,
+  .follow-step-count, .follow-area, .follow-cues dt, .follow-phase-label,
+  .follow-status, .follow-safety, .coach-stage-count, .visual-phase-track li,
+  .visual-learning-count, .visual-learning-frame-label, .visual-learning-area,
+  .visual-learning-what strong, .visual-learning-cues dt, .visual-learning-safety,
+  .visual-learning-stop, .visual-learning-safety-details summary,
+  .visual-learning-timer-note, .visual-learning-status, .pp-point-area,
+  .pp-region-label, .pp-channel, .pp-visual-frame figcaption, .pp-results-status,
+  .pp-search-label, .pp-area-select-label, .pp-detail h4, .pp-notice h4,
+  .pp-safety-box h4, .pp-safety-box dt, .pp-hero-facts span, .pp-point-index,
+  .hand-technique-card figcaption, .hand-quick-card figcaption,
+  .hand-quick-card dt, .practice-picker-link strong, .practice-picker-link small,
+  .practice-enlarge-hint, .quick-step span, .quick-step strong, .full-lesson summary b,
+  .full-lesson summary small, .full-lesson summary > strong, .lesson-meta, .status,
+  .course-next p, .goal-card small, .aside-card p, .lesson-link, .lesson-link .small-num,
+  .practice-brief span, .quick-safety, .coach-next, .coach-time-note, .comfort-stop,
+  .routine-save-note, .progress-learning-summary span, .follow-transition,
+  .visual-learning-timer .eyebrow, .scalp-zoom-hint, .pp-photo-marker-label,
+  .routine-intent-nav a, .hero-note, .position-item p, .info-card p, .pressure p,
+  .feel-card p, .mistake-list, .safety-callout p, .practice-top p, .quiz-option,
+  .quiz-feedback, .lesson-card p, .area-card small, .pp-area-heading > span,
+  .pp-point-head h3 span, .scalp-card-number, .coach-stage-visual figcaption) {
+  font-size: 16px !important;
+  line-height: 1.45;
+}
+.page .lesson-number { font-size: 16px !important; }
+.page :is(button, a) { font-size: 16px !important; }
+.scalp-zoom-hint { font-size: 16px !important; }
+.footer :is(span, a) { font-size: 16px !important; }
+
+@media (max-width: 760px) {
+  .quick-practice-page .reference-hero .eyebrow,
+  .quick-practice-page .reference-hero > .button,
+  .quick-practice-picker-row > span,
+  .quick-version-head > .badge,
+  .quick-practice-path > div { display: none; }
+  .quick-practice-path { display: block; padding-bottom: 8px; }
+  .quick-version-head { margin-top: 8px; }
+  .practice-progression { gap: 4px; }
+}
