@@ -918,3 +918,564 @@ body {
   .quick-version-head { margin-top: 8px; }
   .practice-progression { gap: 4px; }
 }
+
+/* Large-print system: prioritize comfortable reading over fitting the old grid. */
+:root {
+  --craft-body-size: 24px;
+  --craft-support-size: 20px;
+  --craft-action-size: 22px;
+  --craft-instruction-size: 26px;
+  --craft-section-size: 38px;
+  --craft-title-size: 48px;
+  --craft-safety-size: 24px;
+  --craft-key-size: 32px;
+}
+
+html { scroll-padding-top: 96px; }
+body {
+  font-size: var(--craft-body-size) !important;
+  line-height: 1.5 !important;
+}
+body :is(div, span, small, a, button, label, legend, summary, p, li, dd, dt,
+  figcaption, caption, blockquote, td, th, strong, em, time, output) {
+  font-size: max(20px, 1em) !important;
+}
+
+/* Regular reading text. Keep the body's requested 24px size across all routes. */
+body :is(p, li, dd, blockquote, td, th, .lede, .section-heading > p,
+  .routine-step-list li p, .practice-instructions li, .practice-watch li) {
+  font-size: var(--craft-body-size) !important;
+  line-height: 1.5 !important;
+}
+
+/* Supporting text and UI labels never fall below 20px. */
+body :is(small, label, legend, summary, dt, figcaption, caption,
+  .eyebrow, .badge, .muted, .lesson-kicker, .routine-tag, .practice-count,
+  .practice-status, .progress-caption, .lesson-progress-label, .routine-time,
+  .visual-caption, .practice-visual-label, .detail-label, .reference-card-meta span,
+  .course-stat span, .progress-big span, .lesson-footer small, .sequence-key-hint,
+  .practice-progression li, .routine-card-progress, .routine-preview summary,
+  .routine-safety, .home-explore-link span, .hand-hero-facts span,
+  .section-heading > p,
+  .follow-step-count, .follow-area, .follow-cues dt, .follow-phase-label,
+  .follow-status, .follow-safety, .coach-stage-count, .visual-phase-track li,
+  .visual-learning-count, .visual-learning-frame-label, .visual-learning-area,
+  .visual-learning-what strong, .visual-learning-cues dt,
+  .visual-learning-safety-details summary, .visual-learning-timer-note,
+  .visual-learning-status, .pp-point-area, .pp-region-label, .pp-channel,
+  .pp-visual-frame figcaption, .pp-results-status, .pp-search-label,
+  .pp-area-select-label, .pp-point-head h3 span, .scalp-card-number,
+  .practice-picker-link strong, .practice-picker-link small, .practice-enlarge-hint,
+  .full-lesson summary b, .full-lesson summary small, .lesson-meta, .status,
+  .course-next p, .goal-card small, .aside-card p, .lesson-link,
+  .lesson-link .small-num, .practice-brief span, .coach-time-note,
+  .routine-save-note, .progress-learning-summary span, .pp-area-heading > span,
+  .scalp-zoom-hint, .pp-photo-marker-label, .hero-note, .position-item p,
+  .info-card p, .pressure p, .feel-card p, .mistake-list, .safety-callout p,
+  .practice-top p, .quiz-feedback, .lesson-card p, .area-card small,
+  .hand-page-hero figcaption, .hand-technique-card figcaption,
+  .hand-quick-card figcaption, .hand-quick-card dt, .hand-quick-card dd,
+  .progress-routine-summary li, .follow-along-visual figcaption,
+  .follow-cues dd, .follow-transition, .visual-learning-what p,
+  .visual-learning-safety, .visual-learning-stop, .pp-safety-box dt,
+  .pp-hero-facts span, .quick-step span, .quick-step strong,
+  .practice-picker-link small, .reference-hub-card p, .reference-card p,
+  .area-card p, .area-explorer-card p, .routine-card p, .routine-card li,
+  .feature-card p, .explore-guide-grid .reference-hub-card strong,
+  .home-explore-link, .footer, .footer span, .footer a, .brand-text) {
+  font-size: var(--craft-support-size) !important;
+  line-height: 1.45 !important;
+}
+body :is([class*="eyebrow"], [class*="label"], [class*="hint"],
+  [class*="meta"], [class*="caption"], [class*="kicker"], [class*="status"],
+  [class*="tag"], [class*="note"], [class*="source"], [class*="small"]) {
+  font-size: var(--craft-support-size) !important;
+  line-height: 1.45 !important;
+}
+body :is([class*="count"], [class*="number"]) {
+  font-size: var(--craft-key-size) !important;
+  line-height: 1.15 !important;
+  font-variant-numeric: tabular-nums;
+}
+body :is(.scalp-card-group, .hand-point-source, .technique-source,
+  .source-note, .image-source, .footer-note) {
+  font-size: var(--craft-support-size) !important;
+}
+
+/* Inline emphasis inherits its readable parent instead of keeping tiny overrides. */
+body :is(span, strong, b, em, i, time, output, code) {
+  font-size: inherit !important;
+}
+body a { font-size: var(--craft-action-size) !important; }
+body :is(.lesson-link, .lesson-footer a, .sequence-nav a,
+  .lesson-next, .lesson-previous, .next-step, .previous-step,
+  .home-explore-link, .footer a, .home-explore-link span) {
+  font-size: var(--craft-action-size) !important;
+}
+
+/* Clear hierarchy for titles and section headings. */
+body h1,
+body .quick-practice-page .reference-hero h1 {
+  font-size: clamp(44px, 4.2vw, var(--craft-title-size)) !important;
+  line-height: 1.08 !important;
+  text-wrap: balance;
+}
+body h2 {
+  font-size: clamp(34px, 3.2vw, var(--craft-section-size)) !important;
+  line-height: 1.16 !important;
+  text-wrap: balance;
+}
+body h3 {
+  font-size: 34px !important;
+  line-height: 1.2 !important;
+  text-wrap: balance;
+}
+body h4 {
+  font-size: 34px !important;
+  line-height: 1.25 !important;
+}
+
+/* Practical instruction panels get more emphasis than explanatory copy. */
+body :is(.practice-instructions li, .practice-watch li, .practice-avoid p,
+  .follow-instruction, .visual-learning-instruction, .coach-instruction,
+  .coach-stage-title, .pp-detail p, .pp-show-how li p,
+  .hand-technique-copy p, .routine-step-list li p, .routine-step p,
+  .practice-step p, .lesson-instruction, .technique-instruction,
+  .quick-version-head p, .comfort-pressure, .follow-cues dd,
+  .visual-learning-cues dd, .visual-learning-what p) {
+  font-size: var(--craft-instruction-size) !important;
+  line-height: 1.45 !important;
+}
+
+/* Keep important safety and stop cues prominent, not buried in fine print. */
+body :is(.comfort-stop, .follow-safety, .quick-safety, .routine-safety,
+  .visual-learning-safety, .visual-learning-stop, .safety-callout,
+  .safety-callout p, .pp-safety-box p, .pp-notice p, .pp-notice,
+  .practice-stop, .stop-notice, .hand-safety p, .lesson-safety p) {
+  font-size: var(--craft-safety-size) !important;
+  font-weight: 700 !important;
+  line-height: 1.45 !important;
+}
+body .follow-transition { font-size: var(--craft-action-size) !important; }
+
+/* Large, steady controls for navigation, actions, and form fields. */
+body :is(button, .button, [role="button"], .menu-toggle, nav a,
+  .nav-link, .main-nav a, .routine-intent-nav a) {
+  min-height: 60px;
+  padding-block: 12px;
+  font-size: var(--craft-action-size) !important;
+  line-height: 1.25 !important;
+  white-space: normal;
+}
+body :is(button, .button, [role="button"], .menu-toggle, nav a,
+  .nav-link, .main-nav a, .routine-intent-nav a) :is(span, small, strong, em) {
+  font-size: inherit !important;
+}
+body :is(input, select, textarea) {
+  min-height: 60px;
+  padding: 12px 16px;
+  font-size: var(--craft-action-size) !important;
+  line-height: 1.35 !important;
+}
+body textarea { min-height: 140px; }
+body :is(label, legend) { font-weight: 700; }
+
+/* Clocks, step counts, and progress numbers need to read at a glance. */
+body :is(.timer, .coach-time, .follow-time, .visual-learning-time,
+  .progress-big strong, .progress-learning-summary strong,
+  .course-stat strong, .stat strong, .sequence-picker-progress, .lesson-number, .small-num,
+  .pp-point-index, .follow-step-count, .quick-step strong) {
+  font-size: var(--craft-key-size) !important;
+  line-height: 1.15 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Let the larger type use the available canvas and wrap instead of clipping. */
+.page { width: min(1480px, calc(100% - 48px)); }
+.page-narrow { width: min(1160px, calc(100% - 48px)); }
+.page :is(section, article, aside, figure, .card, .panel, .lesson-card,
+  .reference-card, .routine-card, .area-card, .feature-card) { min-width: 0; }
+body :is(p, li, dd, dt, label, summary, figcaption, button, a) {
+  overflow-wrap: break-word;
+}
+.page > section + section { margin-top: clamp(24px, 2.2vw, 34px); }
+.page .section-heading { gap: 20px 28px; margin-bottom: 24px; }
+.page :is(.card, .panel, .lesson-card, .reference-card, .routine-card,
+  .area-card, .feature-card) { padding: clamp(18px, 2vw, 30px); }
+
+@media (max-width: 760px) {
+  body { font-size: 24px !important; }
+  .page, .page-narrow { width: calc(100% - 24px); }
+  body h1,
+  body .quick-practice-page .reference-hero h1 { font-size: 44px !important; }
+  body h2 { font-size: 34px !important; }
+  body h3 { font-size: 34px !important; }
+  body h4 { font-size: 34px !important; }
+  body :is(.follow-along-layout, .follow-layout, .visual-learning-layout,
+    .quick-practice-layout, .routine-detail-layout, .lesson-layout) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  body :is(button, .button, [role="button"], .menu-toggle,
+    .nav-link, .main-nav a, .routine-intent-nav a) {
+    min-height: 60px;
+    max-width: 100%;
+  }
+  .page :is(.quick-version, .comfort-coach, .follow-along-shell,
+    .visual-learning-panel, .routine-card, .pp-point-card) {
+    padding: 18px;
+  }
+  .page .visual-learning-figure img,
+  .page .follow-along-visual img { max-width: 100%; height: auto; }
+}
+
+@media (max-width: 420px) {
+  .page, .page-narrow { width: calc(100% - 20px); }
+  .page :is(.quick-version, .comfort-coach, .follow-along-shell,
+    .visual-learning-panel, .routine-card, .pp-point-card) { padding: 16px; }
+  body :is(button, .button, [role="button"], .nav-link, .main-nav a) {
+    padding-inline: 14px;
+  }
+}
+
+/* The hand lesson has several actions and a longer stop cue; never let flex shrink them. */
+#app .hand-quick-practice .quick-practice-path {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+}
+#app .hand-quick-practice .practice-progression {
+  width: 100%;
+  max-width: 100%;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+#app .hand-quick-practice .practice-progression li {
+  min-width: 0;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+#app .hand-quick-practice .quick-version-bottom {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  width: 100%;
+}
+#app .hand-quick-practice .quick-version-bottom .quick-safety {
+  flex: initial;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+#app .hand-quick-practice .quick-version-bottom .quick-safety > span:last-child {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+#app .hand-quick-practice .quick-version-bottom .practice-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  justify-content: stretch;
+}
+#app .hand-quick-practice .quick-version-bottom .practice-actions > .button {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  white-space: normal;
+}
+
+@media (max-width: 600px) {
+  #app .routine-card-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #app .routine-card-top .routine-time-large {
+    justify-self: start;
+    max-width: 100%;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Guard text-heavy and media cards against intrinsic-width overflow. */
+body .page * { min-width: 0; }
+body :is(img, svg, video, canvas) { max-width: 100%; }
+body .page :is(.quiz-option, .quiz-feedback, .scalp-card-group,
+  .hand-point-source, .routine-save-note, .image-source, .technique-source) {
+  font-size: var(--craft-support-size) !important;
+}
+
+/* Final readability floors: keep legacy selectors from shrinking app text. */
+#app p,
+#app li,
+#app dd,
+#app blockquote,
+#app td,
+#app th {
+  font-size: max(var(--craft-body-size), 1em) !important;
+  line-height: 1.5 !important;
+}
+#app small,
+#app label,
+#app legend,
+#app summary,
+#app dt,
+#app figcaption,
+#app caption,
+#app .eyebrow,
+#app .badge,
+#app .muted,
+#app .lesson-kicker,
+#app .routine-tag,
+#app .reference-card-meta span,
+#app .detail-label,
+#app .section-heading > p,
+#app .quiz-option,
+#app .quiz-feedback,
+#app .scalp-card-group,
+#app .hand-point-source,
+#app .routine-save-note,
+#app .image-source,
+#app .technique-source,
+#app [class*="eyebrow"],
+#app [class*="label"],
+#app [class*="hint"],
+#app [class*="meta"],
+#app [class*="caption"],
+#app [class*="kicker"],
+#app [class*="status"],
+#app [class*="tag"],
+#app [class*="note"],
+#app [class*="source"],
+#app [class*="small"] {
+  font-size: var(--craft-support-size) !important;
+  line-height: 1.45 !important;
+}
+#app div,
+#app span,
+#app strong,
+#app b,
+#app em,
+#app i,
+#app time,
+#app output,
+#app code {
+  font-size: max(var(--craft-support-size), 1em) !important;
+}
+#app a,
+#app button,
+#app [role="button"],
+#app .button,
+#app a[class*="small"],
+#app button[class*="small"],
+#app [role="button"][class*="small"],
+#app button.quiz-option,
+#app a.quiz-option,
+#app #main-nav a,
+#app .footer a {
+  font-size: var(--craft-action-size) !important;
+  line-height: 1.25 !important;
+  white-space: normal;
+}
+#app button,
+#app [role="button"],
+#app .button,
+#app #main-nav a {
+  min-height: 60px;
+}
+#app .button span,
+#app .button small,
+#app .button strong,
+#app .button em {
+  font-size: inherit !important;
+}
+#app input,
+#app select,
+#app textarea {
+  min-height: 60px;
+  font-size: var(--craft-action-size) !important;
+}
+#app h1 {
+  font-size: clamp(44px, 4.2vw, var(--craft-title-size)) !important;
+  line-height: 1.08 !important;
+}
+#app h2 {
+  font-size: clamp(34px, 3.2vw, var(--craft-section-size)) !important;
+  line-height: 1.16 !important;
+}
+#app h3,
+#app h4 { font-size: 34px !important; }
+#app h5 {
+  font-size: 26px !important;
+  line-height: 1.3 !important;
+}
+#app .practice-instructions li,
+#app .practice-watch li,
+#app .practice-avoid p,
+#app .follow-instruction,
+#app .visual-learning-instruction,
+#app .coach-instruction,
+#app .coach-stage-title,
+#app .pp-detail p,
+#app .pp-show-how li p,
+#app .hand-technique-copy p,
+#app .routine-step-list li p,
+#app .routine-step p,
+#app .practice-step p,
+#app .lesson-instruction,
+#app .technique-instruction,
+#app .quick-version-head p,
+#app .comfort-pressure,
+#app .follow-cues dd,
+#app .visual-learning-cues dd,
+#app .visual-learning-what p,
+#app [class*="instruction"] {
+  font-size: max(var(--craft-instruction-size), 1em) !important;
+  line-height: 1.45 !important;
+}
+#app .comfort-stop,
+#app .follow-safety,
+#app .quick-safety,
+#app .routine-safety,
+#app .visual-learning-safety,
+#app .visual-learning-stop,
+#app .safety-callout,
+#app .safety-callout p,
+#app .pp-safety-box p,
+#app .pp-notice p,
+#app .pp-notice,
+#app .practice-stop,
+#app .stop-notice,
+#app .hand-safety p,
+#app .lesson-safety p {
+  font-size: max(var(--craft-safety-size), 1em) !important;
+  font-weight: 700 !important;
+}
+#app .timer,
+#app .coach-time,
+#app .follow-time,
+#app .visual-learning-time,
+#app .progress-big strong,
+#app .progress-learning-summary strong,
+#app .course-stat strong,
+#app .stat strong,
+#app .sequence-picker-progress,
+#app .lesson-number,
+#app .small-num,
+#app .pp-point-index,
+#app .follow-step-count,
+#app .quick-step strong,
+#app [class*="count"],
+#app [class*="number"] {
+  font-size: max(var(--craft-key-size), 1em) !important;
+  line-height: 1.15 !important;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Keep large-type practice controls usable between phone and desktop breakpoints. */
+@media (max-width: 900px) {
+  #app .quick-practice-path {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+  }
+  #app .practice-progression {
+    width: 100%;
+    max-width: 100%;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  #app .practice-progression li {
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    text-align: center;
+  }
+  #app .quick-version-bottom {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    align-items: start;
+  }
+  #app .quick-version-bottom .quick-safety {
+    display: flex;
+    flex: 1 1 100%;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    align-items: flex-start;
+  }
+  #app .quick-version-bottom .quick-safety > span:last-child {
+    flex: 1 1 0;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+  #app .quick-version-bottom .practice-actions {
+    display: flex;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  #app .quick-version-bottom .practice-actions > .button {
+    flex: 1 1 220px;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  #app .practice-progression {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  #app .practice-progression li {
+    min-height: 60px;
+    padding: 9px 8px;
+    overflow-wrap: anywhere;
+  }
+  #app .pp-point-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: 12px;
+  }
+  #app .pp-point-head > div,
+  #app .pp-point-card h3 {
+    min-width: 0;
+    max-width: 100%;
+  }
+  #app .pp-point-head .pp-point-index,
+  #app .pp-point-head .visual-learning-trigger {
+    justify-self: start;
+    max-width: 100%;
+  }
+  #app .pp-point-card h3 {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: normal;
+  }
+}
+
+@media (max-width: 760px) {
+  #app .lesson-card > div:nth-of-type(3) {
+    grid-column: 2;
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  #app .lesson-card > div:nth-of-type(3) .button {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    justify-self: stretch;
+    white-space: normal;
+  }
+  #app .lesson-card > .sequence-key-hint {
+    grid-column: 2;
+    min-width: 0;
+  }
+}
